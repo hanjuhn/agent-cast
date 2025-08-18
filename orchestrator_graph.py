@@ -11,6 +11,8 @@ from .agents import (
     PersonalizeAgent,
     QueryWriterAgent,
     SearcherAgent,
+    KnowledgeGraphAgent,
+    KGSearchAgent,
     DBConstructorAgent,
     ResearcherAgent,
     CriticAgent,
@@ -30,6 +32,8 @@ def create_orchestrator_graph() -> StateGraph:
     personalize = PersonalizeAgent()
     query_writer = QueryWriterAgent()
     searcher = SearcherAgent()
+    knowledge_graph = KnowledgeGraphAgent()
+    kg_search = KGSearchAgent()
     db_constructor = DBConstructorAgent()
     researcher = ResearcherAgent()
     critic = CriticAgent()
@@ -41,6 +45,8 @@ def create_orchestrator_graph() -> StateGraph:
     workflow.add_node(AGENT_NAMES["PERSONALIZE"], personalize.process)
     workflow.add_node(AGENT_NAMES["QUERY_WRITER"], query_writer.process)
     workflow.add_node(AGENT_NAMES["SEARCHER"], searcher.process)
+    workflow.add_node(AGENT_NAMES["KNOWLEDGE_GRAPH"], knowledge_graph.process)
+    workflow.add_node(AGENT_NAMES["KG_SEARCH"], kg_search.process)
     workflow.add_node(AGENT_NAMES["DB_CONSTRUCTOR"], db_constructor.process)
     workflow.add_node(AGENT_NAMES["RESEARCHER"], researcher.process)
     workflow.add_node(AGENT_NAMES["CRITIC"], critic.process)
@@ -50,8 +56,10 @@ def create_orchestrator_graph() -> StateGraph:
     # 엣지 추가 - 순차적 실행
     workflow.add_edge(AGENT_NAMES["ORCHESTRATOR"], AGENT_NAMES["PERSONALIZE"])
     workflow.add_edge(AGENT_NAMES["PERSONALIZE"], AGENT_NAMES["SEARCHER"])
-    workflow.add_edge(AGENT_NAMES["SEARCHER"], AGENT_NAMES["QUERY_WRITER"])
-    workflow.add_edge(AGENT_NAMES["QUERY_WRITER"], AGENT_NAMES["DB_CONSTRUCTOR"])
+    workflow.add_edge(AGENT_NAMES["SEARCHER"], AGENT_NAMES["KNOWLEDGE_GRAPH"])
+    workflow.add_edge(AGENT_NAMES["KNOWLEDGE_GRAPH"], AGENT_NAMES["QUERY_WRITER"])
+    workflow.add_edge(AGENT_NAMES["QUERY_WRITER"], AGENT_NAMES["KG_SEARCH"])
+    workflow.add_edge(AGENT_NAMES["KG_SEARCH"], AGENT_NAMES["DB_CONSTRUCTOR"])
     workflow.add_edge(AGENT_NAMES["DB_CONSTRUCTOR"], AGENT_NAMES["RESEARCHER"])
     workflow.add_edge(AGENT_NAMES["RESEARCHER"], AGENT_NAMES["CRITIC"])
     workflow.add_edge(AGENT_NAMES["CRITIC"], AGENT_NAMES["SCRIPT_WRITER"])

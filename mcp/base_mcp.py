@@ -6,7 +6,14 @@ from dataclasses import dataclass
 import asyncio
 import logging
 
-from constants.mcp import MCP_CONNECTION_STATUS, MCP_ERROR_CODES
+try:
+    from .constants.mcp import MCP_CONNECTION_STATUS, MCP_ERROR_CODES
+except ImportError:
+    # 직접 실행할 때를 위한 절대 경로
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from constants.mcp import MCP_CONNECTION_STATUS, MCP_ERROR_CODES
 
 
 @dataclass

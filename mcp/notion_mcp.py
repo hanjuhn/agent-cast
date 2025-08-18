@@ -499,7 +499,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-def save_notion_data_to_files(data: Dict[str, Any], output_dir: str = "output/mcp_notion"):
+def save_notion_data_to_files(data: Dict[str, Any], output_dir: str = "output/notion_data"):
     """노션 데이터를 파일로 저장합니다."""
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)

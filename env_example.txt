@@ -1,3 +1,7 @@
-#노션 MCP
+# 노션 MCP
 NOTION_INTEGRATION_TOKEN=secret_your_integration_token_here
 NOTION_WORKSPACE_ID=your_workspace_id_here
+
+# 슬랙 MCP
+SLACK_BOT_TOKEN=xoxb-your-bot-token-here
+SLACK_WORKSPACE_ID=T1234567890

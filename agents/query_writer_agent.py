@@ -1,9 +1,16 @@
 """Query Writer Agent for generating RAG search queries."""
 
 from typing import Any, Dict, List
-from ..constants import AGENT_NAMES, QUERY_WRITER_SYSTEM_PROMPT
-from .base_agent import BaseAgent, AgentResult
-from ..state import WorkflowState
+try:
+    from constants import AGENT_NAMES, QUERY_WRITER_SYSTEM_PROMPT
+    from constants.llm_client import get_llm_client
+    from agents.base_agent import BaseAgent, AgentResult
+    from state import WorkflowState
+except ImportError:
+    from ..constants import AGENT_NAMES, QUERY_WRITER_SYSTEM_PROMPT
+    from ..constants.llm_client import get_llm_client
+    from .base_agent import BaseAgent, AgentResult
+    from ..state import WorkflowState
 
 
 class QueryWriterAgent(BaseAgent):
@@ -19,6 +26,13 @@ class QueryWriterAgent(BaseAgent):
         self.timeout = 60
         self.retry_attempts = 2
         self.priority = 3
+        
+        # LLM 클라이언트 초기화
+        try:
+            self.llm_client = get_llm_client()
+        except Exception as e:
+            self.log_execution(f"LLM 클라이언트 초기화 실패: {str(e)}", "WARNING")
+            self.llm_client = None
     
     async def process(self, state: WorkflowState) -> WorkflowState:
         """RAG 검색 쿼리 생성을 수행합니다."""
@@ -29,15 +43,31 @@ class QueryWriterAgent(BaseAgent):
             if not self.validate_inputs(state):
                 raise ValueError("필수 입력이 누락되었습니다: current_progress, personal_info, research_context")
             
-            # 개인화된 정보 분석
-            personal_info = state.personal_info
-            research_context = state.research_context
-            current_progress = state.current_progress
+            # 개인화된 정보 통합
+            personalized_info = {
+                "personal_info": state.personal_info,
+                "research_context": state.research_context,
+                "current_progress": state.current_progress
+            }
             
-            # RAG 쿼리 생성
-            rag_query = self._generate_rag_query(personal_info, research_context, current_progress)
-            search_scope = self._define_search_scope(personal_info, research_context)
-            research_priorities = self._determine_research_priorities(personal_info, research_context)
+            # 사용자 쿼리 (있는 경우)
+            user_query = getattr(state, 'user_query', '')
+            
+            # LLM을 사용하여 RAG 쿼리 생성 (또는 기본 방식 사용)
+            if self.llm_client is not None:
+                self.log_execution("LLM을 사용한 RAG 쿼리 생성 중...")
+                rag_query_data = await self.llm_client.generate_rag_queries(
+                    personalized_info=personalized_info,
+                    user_query=user_query
+                )
+            else:
+                self.log_execution("LLM 클라이언트 없음, 기본 쿼리 생성 방식 사용", "WARNING")
+                rag_query_data = self._generate_basic_rag_queries(personalized_info, user_query)
+            
+            # 결과 구조화
+            rag_query = self._extract_rag_query(rag_query_data)
+            search_scope = self._extract_search_scope(rag_query_data)
+            research_priorities = self._extract_research_priorities(rag_query_data)
             
             # 결과 생성
             result = AgentResult(
@@ -48,8 +78,9 @@ class QueryWriterAgent(BaseAgent):
                     "research_priorities": research_priorities
                 },
                 metadata={
-                    "query_generation_method": "rule_based",
-                    "personalization_level": "high"
+                    "query_generation_method": "llm_based",
+                    "personalization_level": "high",
+                    "llm_response": rag_query_data
                 }
             )
             
@@ -65,8 +96,8 @@ class QueryWriterAgent(BaseAgent):
         except Exception as e:
             self.log_execution(f"RAG 검색 쿼리 생성 실패: {str(e)}", "ERROR")
             
-            # 기본 쿼리 생성
-            fallback_query = self._generate_fallback_query()
+            # 폴백 쿼리 생성
+            fallback_query = await self._generate_fallback_query(state)
             
             result = AgentResult(
                 success=False,
@@ -83,122 +114,133 @@ class QueryWriterAgent(BaseAgent):
             self.log_execution("기본 쿼리 사용으로 계속 진행")
             return updated_state
     
-    def _generate_rag_query(self, personal_info: Dict, research_context: Dict, current_progress: Dict) -> Dict[str, Any]:
-        """개인화된 정보를 바탕으로 RAG 쿼리를 생성합니다."""
-        # Slack에서 수집된 키워드 활용
-        research_keywords = personal_info.get("research_keywords", [])
-        
-        # Notion에서 수집된 연구 방향 활용
-        research_direction = research_context.get("research_direction", "")
-        
-        # Gmail에서 수집된 컨퍼런스 정보 활용
-        conferences = current_progress.get("ai_conferences", [])
-        
-        # 쿼리 구성
-        primary_queries = [
-            f"{research_direction} 최신 연구 동향",
-            f"{' '.join(research_keywords)} 최신 논문",
-            "AI 최적화 알고리즘 발전 방향",
-            "머신러닝 성능 향상 기법"
-        ]
-        
-        secondary_queries = [
-            "AI 연구 컨퍼런스 2024",
-            "머신러닝 최적화 논문",
-            "데이터 품질 향상 방법",
-            "실시간 AI 시스템 최적화"
-        ]
-        
+    def _extract_rag_query(self, rag_query_data: Dict[str, Any]) -> Dict[str, Any]:
+        """LLM 응답에서 RAG 쿼리 정보를 추출합니다."""
         return {
-            "primary_queries": primary_queries,
-            "secondary_queries": secondary_queries,
-            "keywords": research_keywords,
-            "research_area": research_direction,
-            "conference_focus": [conf["name"] for conf in conferences if conf.get("relevance") == "high"]
+            "primary_queries": rag_query_data.get("primary_queries", []),
+            "secondary_queries": rag_query_data.get("secondary_queries", []),
+            "keywords": rag_query_data.get("keywords", []),
+            "research_area": " ".join(rag_query_data.get("keywords", [])[:3]),
+            "expected_results": rag_query_data.get("expected_results", [])
         }
     
-    def _define_search_scope(self, personal_info: Dict, research_context: Dict) -> Dict[str, Any]:
-        """검색 범위를 정의합니다."""
+    def _extract_search_scope(self, rag_query_data: Dict[str, Any]) -> Dict[str, Any]:
+        """LLM 응답에서 검색 범위를 추출합니다."""
+        search_scope = rag_query_data.get("search_scope", {})
         return {
-            "time_range": "2023-2024",  # 최근 2년
-            "sources": [
-                "arxiv.org",
-                "papers.ssrn.com",
-                "scholar.google.com",
-                "ieee.org",
-                "acm.org"
-            ],
-            "languages": ["en", "ko"],
-            "document_types": ["research_paper", "conference_proceedings", "technical_report"],
-            "priority_sources": ["arxiv.org", "ieee.org"]  # 우선 검색할 소스
+            "time_range": search_scope.get("time_range", "2023-2024"),
+            "sources": search_scope.get("sources", ["arxiv.org", "ieee.org"]),
+            "languages": search_scope.get("languages", ["en", "ko"]),
+            "document_types": search_scope.get("document_types", ["research_paper"]),
+            "priority_sources": search_scope.get("sources", ["arxiv.org"])[:2]  # 상위 2개를 우선 소스로
         }
     
-    def _determine_research_priorities(self, personal_info: Dict, research_context: Dict) -> List[Dict[str, Any]]:
-        """연구 우선순위를 결정합니다."""
-        priorities = []
+    def _extract_research_priorities(self, rag_query_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """LLM 응답에서 연구 우선순위를 추출합니다."""
+        priorities = rag_query_data.get("research_priorities", [])
         
-        # Slack 대화에서 파악된 우선순위
-        conversations = personal_info.get("recent_conversations", [])
-        for conv in conversations:
-            if "key_points" in conv:
-                for point in conv["key_points"]:
-                    priorities.append({
-                        "topic": point,
-                        "priority": "high",
-                        "source": "slack_conversation",
-                        "deadline": None
-                    })
-        
-        # Notion 연구 노트에서 파악된 우선순위
-        research_notes = research_context.get("research_notes", [])
-        for note in research_notes:
-            priorities.append({
-                "topic": note,
-                "priority": "medium",
-                "source": "notion_research_notes",
-                "deadline": None
-            })
-        
-        # Gmail 컨퍼런스 정보에서 파악된 우선순위
-        conferences = personal_info.get("ai_conferences", [])
-        for conf in conferences:
-            if conf.get("relevance") == "high":
-                priorities.append({
-                    "topic": f"{conf['name']} 준비",
-                    "priority": "high",
-                    "source": "gmail_conference",
-                    "deadline": conf.get("deadline")
+        # 기본 구조 보장
+        formatted_priorities = []
+        for priority in priorities:
+            if isinstance(priority, dict):
+                formatted_priorities.append({
+                    "topic": priority.get("topic", ""),
+                    "priority": priority.get("priority", "medium"),
+                    "source": "llm_analysis",
+                    "rationale": priority.get("rationale", ""),
+                    "deadline": None
                 })
         
         # 우선순위별 정렬
         priority_order = {"high": 1, "medium": 2, "low": 3}
-        priorities.sort(key=lambda x: priority_order.get(x["priority"], 3))
+        formatted_priorities.sort(key=lambda x: priority_order.get(x["priority"], 3))
         
-        return priorities
+        return formatted_priorities
     
-    def _generate_fallback_query(self) -> Dict[str, Any]:
-        """기본 쿼리를 생성합니다."""
+    def _generate_basic_rag_queries(self, personalized_info: Dict[str, Any], user_query: str) -> Dict[str, Any]:
+        """LLM 없이 기본적인 RAG 쿼리를 생성합니다."""
+        # 개인화 정보에서 키워드 추출
+        personal_info = personalized_info.get("personal_info", {})
+        research_context = personalized_info.get("research_context", {})
+        
+        keywords = personal_info.get("research_keywords", ["AI", "머신러닝"])
+        interests = research_context.get("research_interests", ["AI 연구"])
+        
         return {
-            "rag_query": {
-                "primary_queries": ["AI 연구 동향 2024", "머신러닝 최신 기법"],
-                "secondary_queries": ["AI 최적화 알고리즘", "데이터 품질 향상"],
-                "keywords": ["AI", "머신러닝", "최적화"],
-                "research_area": "AI 기반 시스템 최적화",
-                "conference_focus": []
-            },
+            "primary_queries": [
+                f"{' '.join(keywords[:2])} 최신 연구 동향",
+                f"{interests[0] if interests else 'AI'} 관련 논문"
+            ],
+            "secondary_queries": [
+                f"{keyword} 응용 사례" for keyword in keywords[:2]
+            ],
+            "keywords": keywords,
             "search_scope": {
                 "time_range": "2023-2024",
                 "sources": ["arxiv.org", "ieee.org"],
-                "languages": ["en"],
-                "document_types": ["research_paper"],
-                "priority_sources": ["arxiv.org"]
+                "languages": ["en", "ko"],
+                "document_types": ["research_paper"]
             },
             "research_priorities": [
                 {
-                    "topic": "AI 연구 동향 파악",
-                    "priority": "high",
-                    "source": "fallback",
-                    "deadline": None
+                    "topic": interest,
+                    "priority": "high" if i == 0 else "medium",
+                    "rationale": "기본 관심 주제"
                 }
-            ]
+                for i, interest in enumerate(interests[:3])
+            ],
+            "expected_results": ["논문", "기술 동향"]
         }
+    
+    async def _generate_fallback_query(self, state: WorkflowState) -> Dict[str, Any]:
+        """기본 쿼리를 생성합니다."""
+        self.log_execution("폴백 쿼리 생성 중...")
+        
+        try:
+            # 상태에서 사용 가능한 정보 추출
+            user_query = getattr(state, 'user_query', '')
+            
+            # LLM을 사용한 기본 쿼리 생성 시도
+            fallback_data = await self.llm_client.generate_rag_queries(
+                personalized_info={
+                    "personal_info": {"research_keywords": ["AI", "머신러닝"]},
+                    "research_context": {"research_interests": ["AI 연구"]},
+                    "current_progress": {"ai_conferences": []}
+                },
+                user_query=user_query or "AI 연구 동향에 대한 정보"
+            )
+            
+            return {
+                "rag_query": self._extract_rag_query(fallback_data),
+                "search_scope": self._extract_search_scope(fallback_data),
+                "research_priorities": self._extract_research_priorities(fallback_data)
+            }
+            
+        except Exception as e:
+            self.log_execution(f"폴백 LLM 쿼리 생성 실패: {str(e)}", "WARNING")
+            # 하드코딩된 기본 쿼리
+            return {
+                "rag_query": {
+                    "primary_queries": ["AI 연구 동향 2024", "머신러닝 최신 기법"],
+                    "secondary_queries": ["AI 최적화 알고리즘", "데이터 품질 향상"],
+                    "keywords": ["AI", "머신러닝", "최적화"],
+                    "research_area": "AI 기반 시스템 최적화",
+                    "expected_results": ["논문", "기술 동향"]
+                },
+                "search_scope": {
+                    "time_range": "2023-2024",
+                    "sources": ["arxiv.org", "ieee.org"],
+                    "languages": ["en", "ko"],
+                    "document_types": ["research_paper"],
+                    "priority_sources": ["arxiv.org"]
+                },
+                "research_priorities": [
+                    {
+                        "topic": "AI 연구 동향 파악",
+                        "priority": "high",
+                        "source": "fallback",
+                        "rationale": "기본 관심 주제",
+                        "deadline": None
+                    }
+                ]
+            }

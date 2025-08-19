@@ -5,3 +5,8 @@ NOTION_WORKSPACE_ID=your_workspace_id_here
 # 슬랙 MCP
 SLACK_BOT_TOKEN=xoxb-your-bot-token-here
 SLACK_WORKSPACE_ID=T1234567890
+
+# Gmail MCP
+GMAIL_CREDENTIALS_FILE=credentials.json
+GMAIL_TOKEN_FILE=token.json
+GMAIL_USER_ID=me

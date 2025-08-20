@@ -496,8 +496,33 @@ class NotionMCP(BaseMCP):
 
 # 데이터 저장 및 메인 실행 함수들
 import json
+import re
 from datetime import datetime
 from pathlib import Path
+
+def sanitize_filename(filename: str) -> str:
+    """Windows 파일명에 사용할 수 없는 문자를 제거/대체합니다."""
+    if not filename:
+        return "untitled"
+    
+    # Windows에서 허용하지 않는 문자들을 안전한 문자로 대체
+    filename = re.sub(r'[<>:"/\\|?*\[\]]', '_', filename)
+    
+    # 연속된 언더스코어를 하나로 정리
+    filename = re.sub(r'_+', '_', filename)
+    
+    # 앞뒤 공백 및 언더스코어 제거
+    filename = filename.strip('_')
+    
+    # 파일명이 비어있으면 기본값 사용
+    if not filename:
+        filename = "untitled"
+    
+    # 파일명 길이 제한 (Windows 경로 제한 고려)
+    if len(filename) > 200:
+        filename = filename[:200]
+    
+    return filename
 
 def save_notion_data_to_files(data: Dict[str, Any], output_dir: str = "output/notion_data"):
     """노션 데이터를 파일로 저장합니다."""
@@ -520,17 +545,18 @@ def save_notion_data_to_files(data: Dict[str, Any], output_dir: str = "output/no
             json.dump(db, f, ensure_ascii=False, indent=2)
         print(f"💾 DB 저장: {db_file}")
         
-
-    
     # 페이지들을 마크다운으로 저장 (내용이 있는 페이지만)
     used_filenames = set()
+    saved_pages = 0
+    
     for i, page in enumerate(data.get('pages', []), 1):
         # content가 없거나 비어있는 페이지는 건너뛰기
         if 'content' not in page or not page['content']:
             print(f"⚠️  빈 페이지 건너뛰기: {page['title']}")
             continue
             
-        page_title = page['title'].replace(' ', '_').replace('/', '_').replace('(', '').replace(')', '') or f"page_{i}"
+        # 파일명 정리
+        page_title = sanitize_filename(page['title'])
         
         # 중복 파일명 처리
         original_title = page_title
@@ -540,33 +566,42 @@ def save_notion_data_to_files(data: Dict[str, Any], output_dir: str = "output/no
             counter += 1
         used_filenames.add(page_title)
         
+        # 마크다운 파일 저장
         page_file = output_path / f"{page_title}.md"
         
-        with open(page_file, 'w', encoding='utf-8') as f:
-            f.write(f"# {page['title']}\n\n")
-            f.write(f"**페이지 ID:** {page['id']}\n")
-            f.write(f"**생성일:** {page.get('created', 'N/A')}\n")
-            f.write(f"**마지막 수정:** {page.get('last_edited', 'N/A')}\n")
-            f.write(f"**URL:** {page.get('url', 'N/A')}\n")
-            f.write("\n---\n\n")
-            
-            # 페이지 내용 출력
-            for block in page['content']:
-                block_type = block.get('type', 'paragraph')
-                text = block.get('text', '')
+        try:
+            with open(page_file, 'w', encoding='utf-8') as f:
+                f.write(f"# {page['title']}\n\n")
+                f.write(f"**페이지 ID:** {page['id']}\n")
+                f.write(f"**생성일:** {page.get('created', 'N/A')}\n")
+                f.write(f"**마지막 수정:** {page.get('last_edited', 'N/A')}\n")
+                f.write(f"**URL:** {page.get('url', 'N/A')}\n")
+                f.write("\n---\n\n")
                 
-                if block_type.startswith('heading'):
-                    level = int(block_type.split('_')[1]) if '_' in block_type else 1
-                    f.write(f"{'#' * level} {text}\n\n")
-                elif block_type == 'paragraph':
-                    f.write(f"{text}\n\n")
-                elif 'list' in block_type:
-                    prefix = "-" if "bulleted" in block_type else "1."
-                    f.write(f"{prefix} {text}\n")
-                else:
-                    f.write(f"{text}\n\n")
-        
-        print(f"📄 페이지 저장: {page_file}")
+                # 페이지 내용 출력
+                for block in page['content']:
+                    block_type = block.get('type', 'paragraph')
+                    text = block.get('text', '')
+                    
+                    if block_type.startswith('heading'):
+                        level = int(block_type.split('_')[1]) if '_' in block_type else 1
+                        f.write(f"{'#' * level} {text}\n\n")
+                    elif block_type == 'paragraph':
+                        f.write(f"{text}\n\n")
+                    elif 'list' in block_type:
+                        prefix = "-" if "bulleted" in block_type else "1."
+                        f.write(f"{prefix} {text}\n")
+                    else:
+                        f.write(f"{text}\n\n")
+            
+            print(f"📄 페이지 저장: {page_file}")
+            saved_pages += 1
+            
+        except Exception as e:
+            print(f"❌ 페이지 저장 실패 ({page['title']}): {e}")
+            continue
+    
+    print(f"✅ 총 {saved_pages}개 페이지를 마크다운으로 저장했습니다.")
     
     # 간단한 요약 출력 (파일 저장하지 않음)
     databases = data.get('databases', [])
@@ -576,9 +611,12 @@ def save_notion_data_to_files(data: Dict[str, Any], output_dir: str = "output/no
     print(f"📊 수집 요약:")
     print(f"   데이터베이스: {len(databases)}개")
     print(f"   페이지: {len(content_pages)}개 (총 {len(pages)}개 중)")
+    print(f"   마크다운 저장: {saved_pages}개")
+    
     for db in databases:
         entry_count = len(db.get('entries', []))
         print(f"   - {db['title']}: {entry_count}개 항목")
+    
     return output_path
 
 
@@ -644,11 +682,14 @@ async def main():
         search_results = await notion.search_pages("", None)  # 전체 페이지 검색
         pages = []
         
-        for result in search_results[:5]:  # 처음 5개만
+        print(f"   전체 검색 결과: {len(search_results)}개 페이지")
+        
+        for i, result in enumerate(search_results, 1):
+            print(f"   [{i}/{len(search_results)}] 페이지 처리 중: {result.get('title', '제목 없음')}")
             page_content = await notion.get_page_content(result['id'])
             pages.append(page_content)
             content_count = len(page_content.get('content', []))
-            print(f"   {page_content['title']}: {content_count}개 블록")
+            print(f"      {page_content['title']}: {content_count}개 블록")
         
         # 3. 데이터 저장
         print("\n💾 3. 데이터 저장...")

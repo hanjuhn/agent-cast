@@ -10,10 +10,136 @@
   },
   "databases": [
     {
-      "id": "253d3416-0518-80a4-ab0c-e5c0934f4822",
-      "title": "Naver Cloud AI DevDay",
+      "id": "255d3416-0518-80de-afa8-c2810f3d75f5",
+      "title": "논문 리뷰",
       "description": "",
-      "last_edited": "2025-08-18T11:35:00.000Z",
+      "last_edited": "2025-08-20T08:03:00.000Z",
+      "created": "2025-08-20T07:56:00.000Z",
+      "url": "https://www.notion.so/255d3416051880deafa8c2810f3d75f5",
+      "properties": {
+        "생성일": "created_time",
+        "태그": "multi_select",
+        "이름": "title"
+      },
+      "entries": [
+        {
+          "id": "255d3416-0518-80ff-acf3-d7b17f884b8b",
+          "title": "[NLP 학습] 3주차 : LoRA / 논문 리뷰 : LoRA: Low-Rank Adaptation of Large Language Models",
+          "last_edited": "2025-08-20T08:03:00.000Z",
+          "created": "2025-08-20T08:03:00.000Z",
+          "url": "https://www.notion.so/NLP-3-LoRA-LoRA-Low-Rank-Adaptation-of-Large-Language-Models-255d3416051880ffacf3d7b17f884b8b",
+          "properties": {
+            "생성일": "2025-08-20T08:03:00.000Z",
+            "태그": [],
+            "이름": "[NLP 학습] 3주차 : LoRA / 논문 리뷰 : LoRA: Low-Rank Adaptation of Large Language Models"
+          }
+        },
+        {
+          "id": "255d3416-0518-80d2-81c9-c7cc5f499e8a",
+          "title": "[논문 리뷰] Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "last_edited": "2025-08-20T08:02:00.000Z",
+          "created": "2025-08-20T08:02:00.000Z",
+          "url": "https://www.notion.so/Retrieval-Augmented-Generation-for-Knowledge-Intensive-NLP-Tasks-255d3416051880d281c9c7cc5f499e8a",
+          "properties": {
+            "생성일": "2025-08-20T08:02:00.000Z",
+            "태그": [],
+            "이름": "[논문 리뷰] Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks"
+          }
+        },
+        {
+          "id": "255d3416-0518-809a-a993-c168289ba55d",
+          "title": "[논문 리뷰] BERT",
+          "last_edited": "2025-08-20T08:02:00.000Z",
+          "created": "2025-08-20T08:01:00.000Z",
+          "url": "https://www.notion.so/BERT-255d34160518809aa993c168289ba55d",
+          "properties": {
+            "생성일": "2025-08-20T08:01:00.000Z",
+            "태그": [],
+            "이름": "[논문 리뷰] BERT"
+          }
+        },
+        {
+          "id": "255d3416-0518-804c-94d8-ce5ddf57c5ba",
+          "title": "[논문리뷰] Large Language Models to Diffusion Finetuning",
+          "last_edited": "2025-08-20T08:01:00.000Z",
+          "created": "2025-08-20T08:00:00.000Z",
+          "url": "https://www.notion.so/Large-Language-Models-to-Diffusion-Finetuning-255d34160518804c94d8ce5ddf57c5ba",
+          "properties": {
+            "생성일": "2025-08-20T08:00:00.000Z",
+            "태그": [],
+            "이름": "[논문리뷰] Large Language Models to Diffusion Finetuning"
+          }
+        }
+      ]
+    },
+    {
+      "id": "255d3416-0518-80d1-b780-fb24816b141f",
+      "title": "프로젝트 회고",
+      "description": "",
+      "last_edited": "2025-08-20T07:59:00.000Z",
+      "created": "2025-08-20T07:55:00.000Z",
+      "url": "https://www.notion.so/255d3416051880d1b780fb24816b141f",
+      "properties": {
+        "생성일": "created_time",
+        "태그": "multi_select",
+        "이름": "title"
+      },
+      "entries": [
+        {
+          "id": "255d3416-0518-8025-b474-ffd2a2a9cd8d",
+          "title": "데이콘 관광데이터 경진대회 비전공자 수상 후기",
+          "last_edited": "2025-08-20T07:59:00.000Z",
+          "created": "2025-08-20T07:59:00.000Z",
+          "url": "https://www.notion.so/255d341605188025b474ffd2a2a9cd8d",
+          "properties": {
+            "생성일": "2025-08-20T07:59:00.000Z",
+            "태그": [],
+            "이름": "데이콘 관광데이터 경진대회 비전공자 수상 후기"
+          }
+        },
+        {
+          "id": "255d3416-0518-8048-9732-c29e448cbe24",
+          "title": "[ML] 데이콘 AI 경진대회 후기",
+          "last_edited": "2025-08-20T07:59:00.000Z",
+          "created": "2025-08-20T07:56:00.000Z",
+          "url": "https://www.notion.so/ML-AI-255d3416051880489732c29e448cbe24",
+          "properties": {
+            "생성일": "2025-08-20T07:56:00.000Z",
+            "태그": [],
+            "이름": "[ML] 데이콘 AI 경진대회 후기"
+          }
+        },
+        {
+          "id": "255d3416-0518-8084-a58f-ca9775bcd821",
+          "title": "[부스트캠프 AI Tech] 문장 간 유사도(STS) 측정 프로젝트 회고",
+          "last_edited": "2025-08-20T07:57:00.000Z",
+          "created": "2025-08-20T07:55:00.000Z",
+          "url": "https://www.notion.so/AI-Tech-STS-255d341605188084a58fca9775bcd821",
+          "properties": {
+            "생성일": "2025-08-20T07:55:00.000Z",
+            "태그": [],
+            "이름": "[부스트캠프 AI Tech] 문장 간 유사도(STS) 측정 프로젝트 회고"
+          }
+        },
+        {
+          "id": "255d3416-0518-80d0-97d1-c0db2fe7734c",
+          "title": "[2024-1] A-IDLE 프로젝트 회고",
+          "last_edited": "2025-08-20T07:57:00.000Z",
+          "created": "2025-08-20T07:54:00.000Z",
+          "url": "https://www.notion.so/2024-1-A-IDLE-255d3416051880d097d1c0db2fe7734c",
+          "properties": {
+            "생성일": "2025-08-20T07:54:00.000Z",
+            "태그": [],
+            "이름": "[2024-1] A-IDLE 프로젝트 회고"
+          }
+        }
+      ]
+    },
+    {
+      "id": "253d3416-0518-80a4-ab0c-e5c0934f4822",
+      "title": "컨퍼런스",
+      "description": "",
+      "last_edited": "2025-08-20T07:55:00.000Z",
       "created": "2025-08-18T08:35:00.000Z",
       "url": "https://www.notion.so/253d3416051880a4ab0ce5c0934f4822",
       "properties": {
@@ -62,6 +188,2470 @@
     }
   ],
   "pages": [
+    {
+      "id": "255d3416-0518-80ff-acf3-d7b17f884b8b",
+      "title": "[NLP 학습] 3주차 : LoRA / 논문 리뷰 : LoRA: Low-Rank Adaptation of Large Language Models",
+      "last_edited": "2025-08-20T08:03:00.000Z",
+      "created": "2025-08-20T08:03:00.000Z",
+      "url": "https://www.notion.so/NLP-3-LoRA-LoRA-Low-Rank-Adaptation-of-Large-Language-Models-255d3416051880ffacf3d7b17f884b8b",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "이전 포스트에서 다룬 언어모델에 대한 이해를 바탕으로 LoRA에 대해 학습해본다. LoRA와 관련된 논문 \"LoRA: Low-Rank Adaptation of Large Language Models\"를 리뷰한다."
+        },
+        {
+          "type": "paragraph",
+          "text": "1. LoRA"
+        },
+        {
+          "type": "paragraph",
+          "text": "2. 논문 리뷰"
+        },
+        {
+          "type": "heading_3",
+          "text": "1. LoRA"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "Microsoft Research에서 2021년 발표한 \"LoRA: Low-Rank Adaptation of Large Language Models\" 논문에서 제안된 모델"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "LLM을 더 효율적으로 tuning하기 위한 기술로 주목을 받음"
+        },
+        {
+          "type": "paragraph",
+          "text": "1) LoRA 등장 배경"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "NLP에선 대규모 언어모델을 각각의 task에 맞게 fine-tuning하는 것이 일반적이었음 pre-training 과정에서 어느정도 최적화된 파라미터를 각 task에 맞게 조정pre-train 모델의 크기가 커지면서 파라미터 전체를 fine-tuning하는 것에 많은 시간과 리소스가 소요대규모 언어모델의 fine-tuning을 더 효율적으로 할 수 있는 방법의 필요성"
+        },
+        {
+          "type": "quote",
+          "text": "➡️"
+        },
+        {
+          "type": "paragraph",
+          "text": "2) LoRA의 원리"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "W_0 (d*k) : pre-trained weight matrix, 사전학습 가중치 행렬"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "A (r*k), B (d*r) : rank decomposition matrices, 저차원 행렬"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "ΔW = B*A : ΔW_0를 저차원에서 근사, 업데이트 값"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "r : LoRA rank, r << min(d, k)"
+        },
+        {
+          "type": "paragraph",
+          "text": "→ A는 random gaussian initialization으로, B는 0으로 초기화"
+        },
+        {
+          "type": "paragraph",
+          "text": "행렬 A, B는 nn.linear layer 형태로 dense layers 뒤에 단순히 더해짐"
+        },
+        {
+          "type": "paragraph",
+          "text": "→ W_0 값은 고정한 채로 ΔW_0를 근사하는 저차원 행렬 BA를 학습"
+        },
+        {
+          "type": "paragraph",
+          "text": "→ ΔW = B*A값이 W_0에 더해지며 W_0가 간접적으로 업데이트 됨"
+        },
+        {
+          "type": "paragraph",
+          "text": "=> ΔW = B*A는 결국 W_0 중에서 task별로 중요하게 사용되는 일부 파라미터에 대해 학습"
+        },
+        {
+          "type": "paragraph",
+          "text": "=> pre-trained 모델의 전체 weight matrix를 업데이트하지 않고"
+        },
+        {
+          "type": "paragraph",
+          "text": "더 적은 수의 중요한 파라미터만 사용하는 rank decomposition matrices를 학습함으로써"
+        },
+        {
+          "type": "paragraph",
+          "text": "pre-trained LLM을 downstream task에 더 효율적으로 tuning"
+        },
+        {
+          "type": "paragraph",
+          "text": "출처 : https://velog.io/@d4r6j/PEFT-Parameter-Efficient-Fine-Tuning"
+        },
+        {
+          "type": "heading_3",
+          "text": "2. 논문 리뷰"
+        },
+        {
+          "type": "paragraph",
+          "text": "논문명 : LoRA: Low-Rank Adaptation of Large Language Models"
+        },
+        {
+          "type": "paragraph",
+          "text": "저자명 : Edward J. Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, Weizhu Chen"
+        },
+        {
+          "type": "paragraph",
+          "text": "https://arxiv.org/abs/2106.09685"
+        },
+        {
+          "type": "paragraph",
+          "text": "LoRA: Low-Rank Adaptation of Large Language Models\nAn important paradigm of natural language processing consists of large-scale pre-training on general domain data and adaptation to particular tasks or domains. As we pre-train larger models, full fine-tuning, which retrains all model parameters, becomes le\narxiv.org"
+        },
+        {
+          "type": "quote",
+          "text": "✏️ 논문 내용 정리"
+        },
+        {
+          "type": "paragraph",
+          "text": "▶ 0. Abstract"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "자연어 처리의 중요한 패러다임은 large-scale pre-training 모델을 특정 tasks로 adaptation하는 것"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "pre-train 모델의 규모가 커짐에 따라 모든 모델 파라미터를 재학습하는 full fine-tuning 방식은 점점 현실적이지 못하게 됨"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "LoRA 또는 Low-Rank Adaptation을 제안"
+        },
+        {
+          "type": "paragraph",
+          "text": "= freezes the pre-trained model weights"
+        },
+        {
+          "type": "paragraph",
+          "text": "+ injects trainable rank decomposition matrices into each layer of the Transformer architecture"
+        },
+        {
+          "type": "paragraph",
+          "text": "=> downstream tasks를 위해 훈련해야할 파라미터의 수를 크게 감소시키는 학습 방식"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "Adam으로 미세 조정된 GPT-3 175B에 비해 LoRA는 훈련하는 파라미터의 수를 10,000배, GPU 메모리 요구 사항을 3배 줄일 수 있었음"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "또한 LoRA는 훈련하는 파라미터가 적고 추가적인 inference latency이 없음"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "RobERTA, DeBERTA, GPT-2 및 GPT-3 pre-trained 모델의 성능을 향상시킴"
+        },
+        {
+          "type": "paragraph",
+          "text": "▶ 1. Introduction"
+        },
+        {
+          "type": "paragraph",
+          "text": "1) 기존 fine-tuning의 문제"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "대부분의 NLP에서 사전학습된 대규모 언어모델에 대하여 모든 파라미터를 fine-tuning해 downstream task에 adapt하는 방식"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "이러한 fine-tuning은 새로운 모델이 원래 모델만큼 많은 파라미터를 학습해야한다는 단점"
+        },
+        {
+          "type": "paragraph",
+          "text": "2) Low-Rank Adaptation (LoRA) approach"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "model adaptaion 과정에서 change in weights에도 low instrinsic rank가 있다고 가정"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "pretrained weights는 고정한 채로, weights' change in dense layers의 rank decomposition matrices를 최적화함으로써 기존의 dense layers를 간접적으로 훈련"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "deep layers를 직접적으로 학습하는 것이 아닌, weights' change의 low-rank matrices을 optimize"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "rank decomposition matrices = low-rank matrices"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "동일한 사전학습된 모델에 대해서도 low-rank matrices A, B를 다르게 둠으로써 다양한 작업에서 LoRA 모듈들을 구축할 수 있음"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "대부분의 파라미터에 대해 gradient를 계산하거나 optimizer state를 유지할 필요가 없어 훈련을 더 효율적으로 만들고 하드웨어도 적게 사용"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "간단한 linear 연산으로 trainable matrices와 frozen weights를 병합하기 때문에 inference latency가 도입되지 않음"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "기존의 다른 모델들과 함께 사용될 수 있음"
+        },
+        {
+          "type": "quote",
+          "text": "* inference latency"
+        },
+        {
+          "type": "paragraph",
+          "text": "▶ 2. Problem Statement"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "LoRA는 objective에 관계없이 사용 가능함"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "논문에서는 language modeling task에 대해 집중"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "주어진 task-specific prompt에 대하여 정답의 conditional probabilities를 최대화하는 task"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "P_Φ(y∣x) : 파라미터가 Φ인, Transformer 구조의 사전학습 언어모델"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "Z = {(x_i, y_i)} (i=1,..,N) : Context-Target Pairs의 훈련 데이터셋"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "P_Φ(y∣x)를 downstream conditional task generation task에 적용"
+        },
+        {
+          "type": "paragraph",
+          "text": "① Full Fine-tuning"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "모델은 pre-trained weights인 Φ_0로 초기화되고, backpropagation 과정에서 Φ_0 +ΔΦ로 업데이트"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "|ΔΦ| = |Φ_0|, 전체 파라미터를 gradient를 사용해 모두 업데이트"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "각각의 downstream task마다 |Φ_0| 크기의 파라미터를 업데이트 해야함"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "pre-trained weights |Φ_0| 크기가 커질수록 fine-tuning에 더 많은 연산이 요구"
+        },
+        {
+          "type": "paragraph",
+          "text": "② LoRA approach"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "Θ : LoRA 파라미터"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "|ΔΦ| = |ΔΦ(Θ)|, |Φ_0| >> |Θ| (|Φ_0|의 0.01% 정도)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "모든 pre-trained weights Φ_0에 대해서 업데이트 하는 것이 아니라,"
+        },
+        {
+          "type": "paragraph",
+          "text": "downstream task-specific increment ΔΦ(Θ)만큼에 대해서만 업데이트"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "LoRA를 이용해 backpropagation에서 파라미터의 일부만 업데이트"
+        },
+        {
+          "type": "paragraph",
+          "text": "▶ 3. Aren't Existing Solutions Good Enough?"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "model adaptation에서 파라미터 및 계산의 효율성을 증진하기 위한 시도는 이전부터 존재해왔음"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "크게 2가지 접근 방식이 존재하나 각각 한계점을 가지고 있음"
+        },
+        {
+          "type": "paragraph",
+          "text": "①  adding adapter layers → Adapter Layers Introduce Inference Latency"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "transformer block에 adapter layer를 추가하여, fine-tuning 대신 adapter layer만 학습시키는 방식"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "adapter layers에서 추가적인 연산 발생하는데, LNN은 adatper layer에서의 연산을 순차적으로 처리해야하기 때문에 연산 시간이 매우 증가함"
+        },
+        {
+          "type": "paragraph",
+          "text": "② optimizing input layer activations → Directly Optimizing the Prompt is Hard"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "language model의 입력으로 들어가는 input embedding에 prompt embedding을 추가하여, fine-tuning 대신 prompt embedding을 다양한 학습 방법으로 학습시키는 방식"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "대표적인 예시가 prefix tuning인데, 최적화가 어렵고 성능이 단조적으로 증가하지도 않음"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "downstream task로 tuning하는데 사용할 수 있는 sequence의 길이가 감소하는 문제도 존재"
+        },
+        {
+          "type": "paragraph",
+          "text": "▶ 4.Our Method"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "LoRA는 딥러닝 모델의 모든 dense layers에 사용가능함 이 논문에서는 Transformer Language Models에 대해 집중"
+        },
+        {
+          "type": "paragraph",
+          "text": "▶ 4.1 Low-Rank-Parametrized Update Matrices"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "NN은 행렬곱을 수행하는 많은 dense layers를 가지고 있는데, 이 layers의 weight matrices는 full-rank 사전학습된 언어모델은 임의의 더 작은 subspace로 전사되어도 효과적으로 학습될 수 있는 low instrisic dimension을 가지고 있음따라서 사전학습된 언어모델을 downstream task로 adaptation할 때, weights' update도 low instrisic dimension을 가질 것이라고 가정"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "W_0 (d*k) : pre-trained weight matrix"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "B (d∗r) / A (r∗k) : trainable rank decomposition matricesA = Random Gaussaian, B = 0 으로 초기화 → ΔW=BA=0로 초기화"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "ΔW = B*A : A와 B로 계산되는 trainable 파라미터의 업데이트 값"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "r : LoRA rank, r << min(d,k)"
+        },
+        {
+          "type": "quote",
+          "text": "- pre-trained 모델의 weight matrix는 고정한 상태에서"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "LoRA에서 업데이트의 특징"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "A Generalization of Full Fine-tuning: LoRA rank r을 원래 pre-trained weight matrices의 rank로 설정하면 full fine-tuning과 동일한 학습으로 수렴"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "No Additional Inference Latency: 모델을 다른 task로 전환할 때, B*A를 빼서 W_0를 얻고, W_0에 새로운 B'*A'를 바로 더해주면 되기 때문에 inference latency가 추가되지 않음"
+        }
+      ]
+    },
+    {
+      "id": "255d3416-0518-80d2-81c9-c7cc5f499e8a",
+      "title": "[논문 리뷰] Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+      "last_edited": "2025-08-20T08:02:00.000Z",
+      "created": "2025-08-20T08:02:00.000Z",
+      "url": "https://www.notion.so/Retrieval-Augmented-Generation-for-Knowledge-Intensive-NLP-Tasks-255d3416051880d281c9c7cc5f499e8a",
+      "content": [
+        {
+          "type": "heading_1",
+          "text": "Abstract"
+        },
+        {
+          "type": "paragraph",
+          "text": "대규모로 사전 훈련된 모델들은 파라미터에 지식을 저장하고, downstream task에 대해서 파인튜닝되었을 때 SOTA를 달성한다. 하지만 LLM의 지식에 접근하고 정확하게 활용하는 능력은 아직 제한적이며, 지식 집약적인 과제들에서는 task-specific한 구조에 비해 성능이 떨어지는 면이 있다. 또한, 결정에 대한 이유를 설명하거나, world knowledge를 업데이트하는 것은 여전히 남아 있는 과제이다. 사전 학습 모델로 하여금 파라미터 내의 지식을 활용하는 것이 아닌 다른 접근법을 취하게 하는 방법은 extractive downstream task들에 대해서만 연구되어 왔다. 이 논문에서는 RAG 모델을 위한 일반적인 파인 튜닝 레시피를 탐색한다. 이 논문에서는 parametric memory 부분이 사전 학습된 seq2seq 모델이고, non-parametric memory는 위키피디아의 dense vector index이고, 사전학습된 뉴럴 retriever로 접근한다. 논문에서는 두 가지 RAG 형식을 비교하는데, 하나는 전체 생성되는 단락이 모두 하나의 리트리벌된 글을 참고하게 하는 것이고, 다른 하나는 토큰별로 다른 글을 참고할 수 있게 하는 것이다. 논문에서는 여러 종류의 지식 집약적 NLP 과제에 대해 파인 튜닝을 진행했고, 세 개의 open domain QA 과제에- 대해 seq2seq 모델과 task-specific retreive-and-extract 구조를 능가하며 SOTA를 달성했다. 생성 과제에 있어서는 RAG 모델이 parametric-only seq2seq SOTA 모델보다 조금 더 구체적이고 다양하며 사실에 기반한 글을 생성하는 것을 관찰했다."
+        },
+        {
+          "type": "heading_1",
+          "text": "1. Introduction"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "사전 훈련된 모델의 한계점"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "parametric memory와 non-parametric (retrieval-based) memory를 결합한 하이브리드 모델들"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "논문에서 제안하는 모델"
+        },
+        {
+          "type": "heading_1",
+          "text": "2. Methods"
+        },
+        {
+          "type": "heading_3",
+          "text": "Notations"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "x: input sequence"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "z: text document to retrieve"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "y: target sequence to generate"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "→ x가 들어왔을 때, y를 생성하기 위해 z를 참고한다"
+        },
+        {
+          "type": "heading_3",
+          "text": "Components"
+        },
+        {
+          "type": "numbered_list_item",
+          "text": "pη(z|x): retreiver"
+        },
+        {
+          "type": "numbered_list_item",
+          "text": "pθ(yi|x,z,y1:i−1): generator"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "retriever와 generator를 학습하기 위해 retrieved document를 latent variable로 취급한다"
+        },
+        {
+          "type": "heading_1",
+          "text": "2.1 Models"
+        },
+        {
+          "type": "heading_3",
+          "text": "RAG-Sequence Model"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "모델이 sequence내의 각 target token을 예측할 때 같은 문서를 참조하는 접근법"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "PRAG-Sequence(y|x)≈∑z∈top−k(p(⋅|x))pη(z|x)pθ(y|x,z)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "PRAG-Sequence(y|x)≈∑z∈top−k(p(⋅|x))pη(z|x)pθ(y|x,z)=∑z∈top−k(p(⋅|x))pη(z|x)ΠNipθ(yi|x,z,yi−1)"
+        },
+        {
+          "type": "heading_3",
+          "text": "RAG-Token Model"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "모델이 각 토큰을 생성할 때 서로 다른 문서를 참조할 수 있다"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "먼저 retriever를 통해 Top K 개의 문서가 전달되고, generator는 각 document가 주어진 상황에서 다음 토큰을 예측"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "PRAG-Token(y|x)≈ΠNi∑z∈top−k(p(⋅|x))pη(z|x)pθ(yi|x,z,yi−1)"
+        },
+        {
+          "type": "heading_1",
+          "text": "2.2 Retriever: DPR"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "bi-encoder 아키텍쳐"
+        },
+        {
+          "type": "heading_3",
+          "text": "Notation"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "d(z)=BERTd(z)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "q(x)=BERTq(z):"
+        },
+        {
+          "type": "heading_3",
+          "text": "DPR Architecture"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "pη(z|x)∝exp(d(z)⊺q(x))"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "top K 개를 뽑는 작업은 MIPS(Maximum Inner Product Search)문제인데, sub-linear 시간 안에 해결 가능"
+        },
+        {
+          "type": "heading_1",
+          "text": "2.3 Generator: BART"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "BART-large 사용 (400M params)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "input은 x와 z를 concat 해서 사용"
+        },
+        {
+          "type": "heading_1",
+          "text": "2.4 Training"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "retriever/generator 를 따로 훈련하지 않고 한번에 훈련함"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "→ retriever는 어떤 문서를 전달해야 하는지 명시적으로 훈련받지 않고, generator가 최종으로 생성하는 결과물에 의해서만 학습된다"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "NLL loss: ∑j−logp(yj|xj)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "fine-tuning models: BERTq(query encoder), BART generator"
+        },
+        {
+          "type": "heading_1",
+          "text": "2.5 Decoding"
+        },
+        {
+          "type": "heading_3",
+          "text": "RAG-Token"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "각 시점에서, top-k 문서들과 이전 토큰을 참조해 현재 토큰에 대한 확률을 구하는 방식이기 때문에 기존과 같은 decoding이 가능하다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "p′θ(yi|x,y1:i−1)=∑z∈top−k(p(⋅|x))pη(z|x)pθ(yi|x,z,yi−1)"
+        },
+        {
+          "type": "heading_3",
+          "text": "RAG-Sequence"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "RAG-Sequence 방법은 각 시점에서 모든 문서를 고려한 해당 토큰의 확률을 구한 후 넘어가는 방법을 채택하지 않고, 반대로 문서를 고정하고 각 문서에 대한 sequence의 확률을 먼저 뽑는다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "즉, 토큰을 하나씩 늘려가며 확률을 찾아내는 beam search 방식으로 바로 적용할 수 없다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "대신 z에 대한 빔 서치를 함. z가 두 개라고 생각하고 예시를 써 보자."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "여기에서 marginalize를 하면,"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "그런데 p(y1|z2), p(y4|z1)은 구할 수 없음. (z2를 인풋으로 줬을 때 y1이 나온 적이 없으니까)"
+        },
+        {
+          "type": "heading_1",
+          "text": "3. Experiments & 4. Results"
+        },
+        {
+          "type": "heading_1",
+          "text": "3.1&4.1 Open-domain Question Answering"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "(질문, 답변): (x,y)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "NLL loss사용"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "Closed Book QA: parametric knowledge만 활용"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "Open Book QA: 검색 활용"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "NQ: Natural Questions"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "TQA: TriviaQA"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "WB: WebQuestions"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "CT: CuratedTrec"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "CT, WB 데이터셋은 작기 때문에 NQ RAG 모델로 초기화"
+        },
+        {
+          "type": "paragraph",
+          "text": "2, 3, 4에 해당"
+        },
+        {
+          "type": "heading_1",
+          "text": "3.2 & 4.2 Abstractive Question Answering"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "MSMACO NLG task"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "golden passage가 없으면 답변할 수 없는 문제가 많음에도 SOTA에 근접함"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "정성적으로는, 할루시네이션이 적고 BART보다 종종 더 사실에 기반한 답을 생성함"
+        },
+        {
+          "type": "heading_1",
+          "text": "3.3&4.3 Jeopardy Question Generation"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "보통 open domain QA 과제에서의 질문들은 짧고 간단하게 구성됨"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "Jepordy questions: entity에 대한 사실을 통해 entity를 예측하는 질문"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "human evaluation"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "RAG-Token 정량/정성적으로 더 좋은 성능을 얻음"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "RAG-Token이 더 좋은 성능을 얻은 이유는, Jeopardy 질문들이 서로 다른 두 정보를 결합할 때가 있기 때문으로 추정됨."
+        },
+        {
+          "type": "heading_1",
+          "text": "4.4 Fact Verification"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "FEVER:"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "FVR3"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "FVR2"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "RAG 모델에서 리트리벌된 문장이 gold evidence sentence와 overlap이 있었음"
+        },
+        {
+          "type": "heading_1",
+          "text": "4.5 Additional Results"
+        },
+        {
+          "type": "heading_3",
+          "text": "Generation Diversity"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "RAG 모델이 좀 더 다양한 trigram을 사용해서 생성함"
+        },
+        {
+          "type": "heading_3",
+          "text": "Retrieval Ablations"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "RAG 모델의 키 피쳐 중 하나는 관련된 문서를 retreive하도록 훈련하는 것. 이것이 잘 되었는지 검증하기 위해 트레이닝 과정에서 retriever를 freeze한다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "FEVER에서는 BM25가 더 좋은 결과를 내는데, FEVER의 주장들이 entity 중심이기 때문에 word-overlap based retrieval에 적합할 수 있다고 함."
+        },
+        {
+          "type": "heading_3",
+          "text": "Index hot-swapping"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "2016년 12월의 Wikipedia dump로 만든 index와 2018년 12월의 Wikipedia dump로 만든 index를 비교함"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "이 기간동안 바뀐 82명의 세계 지도자의 리스트를 가지고, “Who is {position}?” 질문으로 평가"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "이 실험을 통해 단순히 단순히 index 를 대체함으로서 RAG의 world knowledge를 대체할 수 있다는 것을 보여줌"
+        },
+        {
+          "type": "heading_3",
+          "text": "Effect of Retrieving more document"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "검색되는 문서의 수를 5개/10개로 실험해 보았는데 큰 성능차이는 없었음."
+        }
+      ]
+    },
+    {
+      "id": "255d3416-0518-809a-a993-c168289ba55d",
+      "title": "[논문 리뷰] BERT",
+      "last_edited": "2025-08-20T08:02:00.000Z",
+      "created": "2025-08-20T08:01:00.000Z",
+      "url": "https://www.notion.so/BERT-255d34160518809aa993c168289ba55d",
+      "content": [
+        {
+          "type": "heading_3",
+          "text": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"
+        },
+        {
+          "type": "paragraph",
+          "text": "Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova"
+        },
+        {
+          "type": "heading_1",
+          "text": "Abstract"
+        },
+        {
+          "type": "quote",
+          "text": "BERT = Bidirectional Encoder Representations from Transformers"
+        },
+        {
+          "type": "paragraph",
+          "text": "Attention Is All You Need에서 소개한 Transformer 구조를 활용한 Language Representation에 관한 논문이다. BERT는 모든 layer에서 left과 right context을 같이 고려함으로써 unlabeled text에서 양방향 심층 표현을 pre-train하도록 설계되었다. 결과적으로, pre-trained BERT는 output layer 추가와 fine-tuning(전이학습)을 통해 question answering 또는 language inference 같은 다양한 NLP task에서 SOTA를 달성하였다."
+        },
+        {
+          "type": "heading_1",
+          "text": "1. Introduction"
+        },
+        {
+          "type": "paragraph",
+          "text": "NLP task 종류"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "sentence-level task : natural language inference, paraphrasing. 문장 간의 관계를 예측."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "token-level task : named entity recognition, question answering. 모델은 token level에서 세밀한 결과(fine-grained output)를 생산해야 된다."
+        },
+        {
+          "type": "heading_3",
+          "text": "연구의 중요성"
+        },
+        {
+          "type": "paragraph",
+          "text": "Language model pre-training은 여러 NLP task를 향상시키는데 탁월하다."
+        },
+        {
+          "type": "heading_3",
+          "text": "최근 연구 현황"
+        },
+        {
+          "type": "paragraph",
+          "text": "pre-trained language representations을 적용하는 방식"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "feature-based approach : ex) ELMo. task-specific network에 pre-trained language representation을 추가적인 feature로 제공함."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "fine-tuning approach : ex) GPT. task-specific한 파라피터를 최소로 하고 모든 pre-trained된 파라미터를 downstream task를 학습을 통해 조금만 바꿔주는 방식"
+        },
+        {
+          "type": "heading_3",
+          "text": "선형 연구의 한계점"
+        },
+        {
+          "type": "paragraph",
+          "text": "일반적인 langauge model(ELMo, GPT)은 단방향(unidirectional) 또는 shallow bidirectional(단방향 + 단방향) 이기 때문에 pre-training에서 사용되는 아키텍처의 선택에 제한이 있다."
+        },
+        {
+          "type": "paragraph",
+          "text": "예) GPT에서 오직 left-to-right 구조(Transformer decoder 구조)를 사용하고 모든 토큰은 오직 이전 토큰만 고려한다. sentence level task에서는 차선책이지만 token-level task에서는 매우 좋지 않은 방법이다."
+        },
+        {
+          "type": "heading_3",
+          "text": "연구 내용 요약"
+        },
+        {
+          "type": "numbered_list_item",
+          "text": "masked language model(MLM)을 사용하여 deep bidirectional 구조를 가진다. BERT는 input token 전체과 masked token을 한번에 Transformer encoder에 넣고 원래 token을 예측하므로 deep bidirectional하다."
+        },
+        {
+          "type": "numbered_list_item",
+          "text": "pre-trained representations이 고도로 엔지니어링된 많은 작업별(task-specific) 아키텍처의 필요성을 감소시킨다는 것을 보여준다."
+        },
+        {
+          "type": "numbered_list_item",
+          "text": "BERT는 11개 NLP task에서 SOTA를 달성하였다"
+        },
+        {
+          "type": "heading_1",
+          "text": "2. Related Work"
+        },
+        {
+          "type": "heading_3",
+          "text": "2.1 Unspervised Feature-based Approaches"
+        },
+        {
+          "type": "paragraph",
+          "text": "ELMo, LSTM"
+        },
+        {
+          "type": "heading_3",
+          "text": "2.2 Unsupervised Fine-tuning Approaches"
+        },
+        {
+          "type": "paragraph",
+          "text": "OpenAI GPT(Generative Pre-trained Transformer)는 이전 단어들이 주어졌을 때 다음 단어가 무엇인지를 맞추는 과정에서 pre-trained한다. 구조는 Transformer decoder만 사용하고 문장 시작부터 순차적으로 계산한다는 점에서 일방향(unidirectional)이다. GPT는 문장 생성에 강점을 지녔다."
+        },
+        {
+          "type": "heading_3",
+          "text": "2.3 Transfer Learning from Supervised Data"
+        },
+        {
+          "type": "paragraph",
+          "text": "대용량 dataset을 사용하는 supervised tasks(natural language inference, machine translation)로부터 효과적인 transfer learning을 보여준다."
+        },
+        {
+          "type": "heading_1",
+          "text": "3. BERT"
+        },
+        {
+          "type": "paragraph",
+          "text": "BERT의 아키텍처는 Transformer 구조를 사용하지만, pre-training과 fine-tuning 시의 아키텍처를 조금 다르게하여 transfer learning을 용이하게 만드는 것이 핵심이다."
+        },
+        {
+          "type": "paragraph",
+          "text": "Model Architecture"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "multi-layer bidirectional Transformer encoder 구조 (Attention Is All You Need or tensor2tensor library 참조)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "BERT는 모델의 크기에 따라 base 모델과 large 모델로 나뉜다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "BERT_base 모델은 OpenAI GPT 모델과 hyper parameter가 동일하다. OpenAI GPT 모델은 제한된 self-attention을 수행하는 transformer decoder 구조이지만, BERT는 MLM과 NSP를 위해 self-attention을 수행하는 transformer encoder 구조이다."
+        },
+        {
+          "type": "paragraph",
+          "text": "Input/Output Representations"
+        },
+        {
+          "type": "paragraph",
+          "text": "Figure 2. BERT input representation"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "BERT의 input은 3가지 embedding 합으로 이루어진다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "WordPiece embedding을 사용한다. WordPiece(Wu et al., 2016)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "모든 문장의 첫번째 token은 [CLS]이다. 전체의 transformer 층을 다 거치고 난 뒤의 이러한 [CLS] token은 총합한 token sequence라는 걸 의미한다. classification task 경우, 단일 문장 또는 연속한 문장의 classification을 쉽게 할 수 있다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "setence pair는 하나의 문장으로 묶어져 입력된다. 문장을 구분하기 위해 2가지 방식을 사용한다. [SEP] token을 사용하거나 segment embedding을 사용하여 sentence A 또는 sentence B embeddng을 더해준다."
+        },
+        {
+          "type": "heading_3",
+          "text": "3.1 Pre-training BERT"
+        },
+        {
+          "type": "paragraph",
+          "text": "ELMo와 GPT는 left-to-right 또는 right-to-left 언어 모델을 사용하여 pre-training을 수행한다. 하지만, BERT는 이와 다르게 2가지의 새로운 unsupervised task로 pre-training을 수행한다."
+        },
+        {
+          "type": "paragraph",
+          "text": "Task #1. Masked LM"
+        },
+        {
+          "type": "paragraph",
+          "text": "input token 중 랜덤하게 mask하고 이를 학습하여 주변 단어의 context만 보고 masked token을 예측한다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "각 문장에서 랜덤하게 15% 비율로 [MASK] token으로 바꾸어준다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "text를 tokenization하는 방법은 WordPiece를 사용한다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "기존 언어모델에서 left-to-right를 통해 문장 전체를 predict하는 것과는 대조적으로, [MASK] token만을 predict하는 pre-training task를 수행한다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "이 [MASK] token은 pre-training에만 사용되고 fine-tuning에는 사용되지 않는다."
+        },
+        {
+          "type": "paragraph",
+          "text": "Task #2. Next Sentence Prediction (NSP)"
+        },
+        {
+          "type": "paragraph",
+          "text": "두 문장을 pre-training 시에 같이 넣어줘서 두 문장이 이어지는 문장인지 or 아닌지를 맞춘다. 50%는 실제로 이어지는 문장(IsNext), 50%는 랜덤하게 추출된 문장(NotNext)를 넣어줘서 BERT가 예측하도록 한다."
+        },
+        {
+          "type": "paragraph",
+          "text": "Why?"
+        },
+        {
+          "type": "paragraph",
+          "text": "QA(Question Answering)이나 NLI(Natural Language Inference) 같이 많은 downstream task는 두 문장 사이에 관계를 이해하는 것이 중요하다. 그래서 이를 위해서 BERT에서는 binarized NSP task를 수행한다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "pre-training 후, task는 97% ~ 98% accuracy를 달성함. QA나 NLI에도 의미있는 성능 향상을 이뤄냄."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pre-training data"
+        },
+        {
+          "type": "paragraph",
+          "text": "BERT_english는 BookCourpus(800M words)와 English Wikipedia (2,500 words)를 사용했다. Wikipedia에서는 리스트, 표, 헤더를 제외한 텍스트 문단들만 추출하였다."
+        },
+        {
+          "type": "heading_3",
+          "text": "3.2 Fine-tuning BERT"
+        },
+        {
+          "type": "paragraph",
+          "text": "sequence-level classification tasks의 경우, fine-tuning이 단순하다. task마다 task-specific input과 output을 BERT에 연결하고 모든 parameters를 fine-tuning한다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "pre-training에 비해 fine-tuning은 훨씬 빠르다."
+        },
+        {
+          "type": "heading_1",
+          "text": "4. Experiments"
+        },
+        {
+          "type": "paragraph",
+          "text": "11 NLP task에서의 BERT fine-tuning 결과이다."
+        },
+        {
+          "type": "heading_3",
+          "text": "4.1 GLUE"
+        },
+        {
+          "type": "paragraph",
+          "text": "The General Language Understanding Evaluation benchmarck (Wang et al., 2018)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "강건하고 범용적인 자연어 이해 시스템의 개발이라는 목적을 가지고 제작된 데이터셋. GLUE 내 9개의 task에 각각 점수를 매겨 최종 성능 점수를 계산함."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "32 batch size, 3 epochs, learing rate=5e-5~2e-5으로 fine-tuning"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "BERT_large가 BERT_base에 비해 성능이 뛰어나다."
+        },
+        {
+          "type": "heading_3",
+          "text": "4.2 SQuAD v1.1"
+        },
+        {
+          "type": "paragraph",
+          "text": "The Standford Question Answering Dataset(SQuAD v1.1)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "질문과 문단이 주어지고 그 중 substring인 정답을 맞추는 task. 정확한 답이 주어진 context 내에 존재할 것이라 가정함."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "32 batch size, 3 epochs, learing reate=5e-5로 fine-tuning"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "BERT_large는 기존 모든 시스템을 wide margin을 두고 최고 성능을 달성한다."
+        },
+        {
+          "type": "heading_3",
+          "text": "4.3 SQuAD v2.0"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "기존 데이터셋(SQuAD 1.1)에 새로운 5만 개 이상의 응답 불가능한 질문을 병합"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "단순히 정답이 가능할 때만 리턴하는 것이 아니라 주어진 본문에 정답이 없는 경우도 그 여부를 리턴하는 것이 좀더 어려워짐"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "48 batch size, 2 epochs, learning rate=5e-5로 fine-tuning"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "BERT는 이전보다 +5.1 F1 향상을 이뤄냈다"
+        },
+        {
+          "type": "heading_3",
+          "text": "4.4 SWAG"
+        },
+        {
+          "type": "paragraph",
+          "text": "The Situations With Adversarial Generations dataset"
+        },
+        {
+          "type": "paragraph",
+          "text": "일반적인 상식 추론을 측정하기 위해 사용되는 데이터셋"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "4개의 input sequences로 구성되며 각각은 given sentence(sentence A)와 가능한 continuation(sentence B)를 이은 것이다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "16 batch size, 3 epochs, learning rate=2e-5로 fine-tuning"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "BERT는 SWAG task에 대해 SOTA를 달성한다."
+        },
+        {
+          "type": "heading_1",
+          "text": "⭐ 5. Ablation Studies ⭐"
+        },
+        {
+          "type": "paragraph",
+          "text": ": 제안한 요소가 모델에 어떠한 영향을 미치는지 확인하고 싶을 때, 이 요소(feature)를 포함한 모델과 포함하지 않은 모델을 비교하는 것이다. 이를 통해, 시스템의 인과 관계(causality)를 간단히 확인 가능."
+        },
+        {
+          "type": "heading_3",
+          "text": "5.1 Effect of Pre-training Tasks"
+        },
+        {
+          "type": "paragraph",
+          "text": "3.1 Pre-training BERT에서 소개한 MLM과 NSP task를 하나씩 제거하면서 각각 task의 영향력를 알아보자. BERT_base와 동일한 hyperparameter로 실험을 진행하지만 ablation한 2가지 다른 모델로 실험을 진행한다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "No NSP : NSP를 없앤 모델"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "LTR & No NSP : MLM 대신 LTR을 사용하고 NSP를 없앤 모델. OpenAI GPT 모델과 완전히 동일하지만 더 많은 training data를 사용함"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "No NSP를 제거하면 QNLI, MNLI, SQuAD 성능 저하가 두드러진다"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "LTR 모델의 성능은 MLM 모델보다 낮다. (MRPC와 SQuAD에서 큰 차이) BiLSTM을 붙여도, MLM 보다 성능이 하락하는 것을 보아 MLM task가 더 Deep Bidirectional함을 알 수 있다."
+        }
+      ]
+    },
+    {
+      "id": "255d3416-0518-804c-94d8-ce5ddf57c5ba",
+      "title": "[논문리뷰] Large Language Models to Diffusion Finetuning",
+      "last_edited": "2025-08-20T08:01:00.000Z",
+      "created": "2025-08-20T08:00:00.000Z",
+      "url": "https://www.notion.so/Large-Language-Models-to-Diffusion-Finetuning-255d34160518804c94d8ce5ddf57c5ba",
+      "content": [
+        {
+          "type": "quote",
+          "text": "ICML 2025. [Paper] [Github]"
+        },
+        {
+          "type": "heading_2",
+          "text": "IntroductionPermalink"
+        },
+        {
+          "type": "paragraph",
+          "text": "LLM의 scalability는 현재 foundation model의 핵심 요소이지만, 언어 모델(LM)은 AGI에서 기대할 수 있는 여러 가지 귀중한 특성, 예를 들어 가장 중요한 의사 결정에 대한 연산량을 scaling하는 능력이 본질적으로 부족하다. 이러한 한계를 해결하기 위한 방법은 프롬프트나 타겟팅된 검색을 통해 더욱 섬세한 응답을 유도하고, 추론 과정을 생성된 토큰의 공간에 고정하는 데 집중하였다."
+        },
+        {
+          "type": "paragraph",
+          "text": "Diffusion model은 LM 패러다임을 보완하는 것으로 보이는 속성을 제공한다. 예를 들어, diffusion의 반복적인 특성은 생성된 출력의 길이와 관계없이 특정 task의 난이도나 사용자가 요구하는 모든 정확도 수준에 맞춰 컴퓨팅을 적응적으로 scaling할 수 있도록 한다. 그러나 이러한 유용한 속성에도 불구하고, 언어 학습을 위한 diffusion model은 현재 autoregressive 모델에 비해 상당히 뒤떨어져 있다."
+        },
+        {
+          "type": "paragraph",
+          "text": "본 논문에서는 LM to Diffusion (L2D)을 도입하여 두 프레임워크의 강점을 통합하는 것을 목표로 하였다. L2D는 사전 학습된 LM에 scaling 특성과 diffusion의 잠재력을 제공하는 새로운 fine-tuning 방법이다. Diffusion model을 처음부터 학습하는 대신, LM을 single-step diffusion으로 변환하여 autoregressive한 사전 학습 과정에서 효율적으로 획득한 방대한 이해를 활용한다. 그런 다음, 소량의 새로운 파라미터를 도입하여 모델에 새로운 다단계 추론 기술, 필요에 따라 계산을 scaling할 수 있는 능력, 그리고 강력한 guidance 기법을 통합할 수 있는 잠재력을 부여한다. 이 모든 것이 원래의 성능을 손상시키지 않으면서 가능하다."
+        },
+        {
+          "type": "heading_2",
+          "text": "Gaussian Diffusion for LM FinetuningPermalink"
+        },
+        {
+          "type": "heading_3",
+          "text": "1. L2D Parametrization and Training FormulationPermalink"
+        },
+        {
+          "type": "paragraph",
+          "text": "Diffusion model을 학습하기 위한 효과적인 loss 선택은 각 손상 수준에 포함된 부분 정보를 고려하여 손상되지 않은 타겟 데이터 포인트 p1의 값을 예측하는 것이다. p1이 continuous한 도메인에 대한 분포인 경우, 이는 일반적으로 DDPM 알고리즘에서 널리 사용되는 것처럼 모든 timestep t에 대해 단순한 MSE loss를 사용하여 수행된다."
+        },
+        {
+          "type": "paragraph",
+          "text": "LL2(θ)=Et,x0,x1[∥x1−fθ(xt,t)∥22]wherext=αtx1+βtx0,x0∼N(0,I)"
+        },
+        {
+          "type": "paragraph",
+          "text": "Diffusion을 위한 또 다른 주요 디자인 결정은 fθ가 학습할 denoising process를 정의하는 schedule의 선택이다. 이는 학습 및 inference의 모든 측면에 영향을 미친다. 본 논문에서는 schedule로 다음과 같은 αt와 βt를 사용한다."
+        },
+        {
+          "type": "paragraph",
+          "text": "αt=t,βt=(1−t)σ"
+        },
+        {
+          "type": "paragraph",
+          "text": "(σ는 모든 timestep에 대한 SNR을 선형적으로 조정하는 hyperparameter)"
+        },
+        {
+          "type": "paragraph",
+          "text": "이 선택은 diffusion에 대한 바람직한 “직선화” 속성을 가지고 있는 것으로 나타났고 최근 널리 채택되는 rectified flow matching의 schedule과 밀접하게 연관되어 있다. p0=N(0,σ2I)로 설정하면, schedule이 αt=t와 βt=1−t로 단순화된다."
+        },
+        {
+          "type": "paragraph",
+          "text": "Continuous한 경우와 달리 언어 모델링은 유한한 vocabulary V에 정의된 타겟 분포 p1에 대해 작동한다. 여기서 각 인덱스 y∈1,…,|V|에는 토큰 임베딩 x∈Rd가 대응한다. 이러한 주요 차이점은 언어 모델링에서 diffusion이 아직 우세한 레시피를 갖지 못한 주된 이유 중 하나이다."
+        },
+        {
+          "type": "paragraph",
+          "text": "본 논문에서는 일반적인 continuous diffusion에서와 같이 토큰 임베딩 x에 대한 diffusion을 선택했지만 MSE loss를 사용하지 않았다. 대신, 간단한 cross-entropy loss로 diffusion model을 학습시켜 기존의 single-step 언어 모델링과 직접 연결한다. 타겟 데이터 분포 p1에서 샘플링된 레이블 y로 인덱싱된 토큰 x1과 이전 토큰 c의 컨텍스트가 주어지면, diffusion loss는 다음과 같다."
+        },
+        {
+          "type": "paragraph",
+          "text": "LCE=−Ex0,x1,t[log(fθ(xt,t,c)y)],wherex0∼N(0,σ2I),x1=Vy∼p1t∼U[0,1],xt=tx1+(1−t)x0"
+        },
+        {
+          "type": "paragraph",
+          "text": "이 공식을 사용하면 diffusion model fθ가 표준 언어 모델처럼 vocabulary 토큰에 대한 |V|개의 logit을 예측하는 동시에 xt가 제공하는 다음 시퀀스 토큰에 대한 부분적인 정보를 활용할 수 있다. 이러한 단순성에도 불구하고, continuous한 출력을 사용하는 기존 diffusion model과 유사하게 inference 과정에서 연속적인 궤적을 그릴 수 있다."
+        },
+        {
+          "type": "heading_3",
+          "text": "2. L2D Inference FormulationPermalink"
+        },
+        {
+          "type": "paragraph",
+          "text": "기존의 continuous diffusion model을 사용하여 새로운 샘플을 생성하는 효과적인 방법은 fθ(xt,t)의 예측값 ^x를 사용하여 각 timestep t에서 marginal distribution pt를 보존하는 ODE를 구성하는 것이다. 하나의 diffusion process에 대해 이러한 유효한 ODE가 많이 존재하지만, 본 논문에서는 Rectified Flow의 공식을 채택하였다. 이 공식은 각 timestep t에서 denoising 궤적을 따라 일정한 속도 기대값을 산출하도록 설계되었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "dxt=^x−xt1−t"
+        },
+        {
+          "type": "paragraph",
+          "text": "그런 다음 denoising process는 t=0에서 시작하여, 순수한 noise로부터 xt를 샘플링한 후, 이전 예측값들을 재사용하면서 xt를 더 낮은 noise level t+Δt으로 이동시키는 방향인 dxt를 따라 점진적으로 수행된다. 가장 간단한 경우 이 과정은 오일러 적분과 같으며, 다양한 요구 사항에 따라 모든 ODE solver를 사용할 수 있다."
+        },
+        {
+          "type": "paragraph",
+          "text": "Vocabulary에 대한 범주형 확률을 출력하는 이 예측은 continuous diffusion처럼 dxt를 얻는 데 직접 사용될 수 없다. 그러나 이러한 확률을 V에 저장된 vocabulary 임베딩과 함께 사용하여 임의의 유효한 속도 dxt에 대한 ^x를 추정할 수 있다. CDCD는 ^x를 임베딩에 대한 가중 평균으로 사용하는 반면, 본 논문에서는 fθ로 예측된 확률을 사용하여 각 diffusion step t에서 개별 ^x∈V를 샘플링한다. 이 두 추정값의 기대값은 일치하지만, 본 논문의 선택은 ODE가 추적하는 denoising 궤적에 약간의 확률성을 다시 도입한다. 실제로, 이러한 확률론적 특성은 diffusion 프레임워크의 자기 교정 특성 중 일부를 더 잘 활용하는 데 유용하다."
+        },
+        {
+          "type": "heading_3",
+          "text": "3. LMs as Single-step Diffusion ModelsPermalink"
+        },
+        {
+          "type": "paragraph",
+          "text": "저자들이 L2D 디자인에서 내린 선택은 기존 LM 프레임워크와 명확한 연관성을 갖는다. LCE(θ)를 사용하여 diffusion model을 학습시키는 것은 표준적인 next-token prediction으로 해석될 수 있다. 여기서 모델에는 타겟 y에 대한 어느 정도의 지식이 포함된 추가 diffusion 토큰 xt가 제공되며, 정보는 전혀 없음(t=0)에서 완전한 정보(t=1)까지 다양하다. 따라서 LM은 t=0일 때 L2D와 동일한 loss로 본질적으로 학습되며, 여기서 xt는 타겟 y와 전혀 상관관계가 없다. 마찬가지로, inference 시에는 모델의 logit에서 샘플링 예산 T까지 점점 더 정확한 다음 토큰 ^x를 반복적으로 샘플링한다. 따라서 기존 LM 추론은 T=1인 이 절차의 특수한 경우로 볼 수 있으며, 여기서는 모델의 첫 번째 샘플만 y를 예측하는 데 사용된다."
+        },
+        {
+          "type": "paragraph",
+          "text": "이러한 디자인 선택의 목적은 L2D가 새로운 모델을 처음부터 학습하는 것이 아니라, fine-tuning 방식을 통해 사전 학습된 LM을 확장하는 것을 목표로 한다는 것이다. 처음부터 diffusion 학습을 완전히 도입하는 것이 더 일반적일 수 있지만, 이는 기존 autoregressive 모델링에 내재된 학습 scalability와 강력한 inductive bias를 일부 상실할 위험이 있다. 또한, L2D는 기존 foundation model에 이미 인코딩된 광범위한 “system 1” 이해를 직접적으로 활용할 수 있도록 하며, 기존 능력을 기반으로 구축함으로써 엄청난 비용을 피할 수 있다."
+        },
+        {
+          "type": "heading_2",
+          "text": "L2D ImplementationPermalink"
+        },
+        {
+          "type": "paragraph",
+          "text": "저자들은 사전 학습된 transformer가 diffusion의 multi-step scaling 기능을 효율적으로 활용하면서도 원래의 single-step 생성 성능을 유지할 수 있도록 L2D 구현을 모듈식 확장으로 설계했다. 이를 위해 L2D는 아키텍처에 병렬적인 diffusion 경로를 도입했다. 이 경로에서는 diffusion 토큰 xt가 전파되어 최종 layer의 고정된 메인 LM 경로에만 영향을 미친다."
+        },
+        {
+          "type": "heading_3",
+          "text": "1. Diffusion Path ParametrizationPermalink"
+        },
+        {
+          "type": "heading_3",
+          "text": "구조 및 초기화Permalink"
+        },
+        {
+          "type": "paragraph",
+          "text": "LM의 원래 아키텍처에 대한 별도의 병렬 경로 내에서 diffusion 토큰 xt를 처리한다. 이 선택을 통해 컨텍스트 c에서 손상되지 않은 토큰을 처리하는 원래 능력을 잃을 위험 없이 모델 파라미터의 부분 집합만 최적화할 수 있다."
+        },
+        {
+          "type": "paragraph",
+          "text": "Transformer 아키텍처와 메인 경로 fθl과 동일한 수의 block을 사용하여 diffusion 경로 fθd를 구현한다. 각 block은 MLP block과 self-attention의 query layer에서 가져온 layer의 부분 집합으로 구성된다. 또한 사전 학습된 LM의 지식을 최대한 활용하기 위해, diffusion 경로의 모든 layer도 θl의 가중치로 초기화한다."
+        },
+        {
+          "type": "paragraph",
+          "text": "실제로 이 초기화를 통해 간단한 LoRA로 diffusion 경로를 최적화할 수 있다. 또한, θd와 θl 모두에서 LM의 원래 가중치를 재사용하여 작은 LoRA 모듈만 저장하면 되므로 L2D의 메모리 오버헤드를 크게 최소화한다."
+        },
+        {
+          "type": "heading_3",
+          "text": "Diffusion 경로 구성 요소Permalink"
+        },
+        {
+          "type": "paragraph",
+          "text": "Diffusion 경로의 transformer block은 일련의 residual MLP 모듈과 cross-attention 모듈로 구성된다. MLP 모듈은 fθl의 해당 모듈과 동일한 구조를 따르는 반면, cross-attention 모듈은 query와 output linear layer만 parameterize한다. 특히 cross-attention 동안 타겟 토큰 yk에 대한 diffusion 토큰 xkt는 fθl의 해당 self-attention 모듈에서 이미 계산된 모든 이전 key와 value에 대해 attention을 수행한다. LM의 linear head 바로 앞, 모든 block 이후에 fθ에서 처리된 정보만 메인 경로로 다시 통합한다. 구체적으로, 두 경로를 fθl+wdfθd로 병합하며, 여기서 diffusion 토큰 xkt의 rescale된 latent는 이전 토큰 xk−1의 latent에 더해진다."
+        },
+        {
+          "type": "heading_3",
+          "text": "속성 및 장점Permalink"
+        },
+        {
+          "type": "paragraph",
+          "text": "본 디자인 선택은 여러 토큰을 한 번에 생성하는 기존 diffusion 아키텍처에 비해 몇 가지 주요 장점을 가지고 있다. Inference 과정에서 fθl의 latent 표현을 KV 캐시와 함께 저장함으로써, diffusion step 수에 관계없이 생성된 각 토큰에 대해 메인 경로의 출력을 한 번만 계산하면 된다."
+        },
+        {
+          "type": "paragraph",
+          "text": "또한, k번째 타겟 토큰에 대한 diffusion 토큰은 이전 위치의 메인 경로에만 영향을 미치므로, 시퀀스 batch 차원에 걸쳐 학습을 완전히 병렬화하여 timestep t1,…,tk의 샘플링과 diffusion 토큰 x1t1,…,xKtK의 샘플링을 독립적으로 수행할 수 있다. 이를 통해 diffusion loss의 분산을 크게 완화하고, 데이터 batch에서 샘플링된 각 입력 컨텍스트 x0,…,xK−1의 모든 K개의 시퀀스 위치에 대해 독립적인 diffusion loss를 효율적으로 얻을 수 있다."
+        },
+        {
+          "type": "heading_3",
+          "text": "2. L2D ConditioningPermalink"
+        },
+        {
+          "type": "heading_3",
+          "text": "Diffusion space vocabularyPermalink"
+        },
+        {
+          "type": "paragraph",
+          "text": "fθd를 컨디셔닝하기 위해, 기본 LM의 사전 학습된 토큰 vocabulary Vl로부터 diffusion 경로에 대한 discrete한 토큰 임베딩 집합을 포함하는 vocabulary x∈V를 구성한다. 특히, linear mapping Wv∈R¯d×d를 학습시켜 각 사전 학습된 임베딩 Vly을 ¯d차원의 저차원 임베딩으로 변환하고, 나중에 고정된 norm √¯d로 rescaling한다."
+        },
+        {
+          "type": "paragraph",
+          "text": "Vy=√¯dWvVly∥WvVly∥2,∀y=1,…,|V|"
+        },
+        {
+          "type": "paragraph",
+          "text": "이 정규화 단계는 학습하는 동안 샘플링된 노이즈 x0∼N(0,σ2I)로 인한 손상 효과를 최소화하기 위해 V의 토큰 크기가 무한대로 증가하는 것을 방지한다. 이 방법은 V의 토큰 임베딩을 자연스럽게 분산시켜 데이터 매니폴드 전체에서 각 구성 요소마다 단위 분산을 갖는 분포를 생성한다. 마지막으로, diffusion 경로 시작 부분에 작은 2-layer MLP를 사용하여 diffusion 토큰 임베딩을 d차원으로 다시 매핑한다."
+        },
+        {
+          "type": "heading_3",
+          "text": "Timestep 컨디셔닝Permalink"
+        },
+        {
+          "type": "paragraph",
+          "text": "현재 timestep t∈[0,1]에 대하여 diffusion 경로를 세 가지 다른 방식으로 컨디셔닝한다."
+        },
+        {
+          "type": "numbered_list_item",
+          "text": "일반적인 diffusion model과 마찬가지로 t에서 sinusoidal feature를 추출하고 이를 작은 네트워크로 처리하여 fθd의 모든 layer normalization에 대한 shift 파라미터와 scale 파라미터를 얻는다."
+        },
+        {
+          "type": "numbered_list_item",
+          "text": "각 transformer block의 residual을 합산하기 전에 적용하는 추가적인 time-conditioned element-wise rescaling을 사용한다."
+        },
+        {
+          "type": "numbered_list_item",
+          "text": "Diffusion 경로 fθd의 출력을 scaling하는 데 사용되는 가중치 항 wd를 컨디셔닝하기 위해 timestep 임베딩을 사용한다."
+        },
+        {
+          "type": "paragraph",
+          "text": "그러나 처음 두 경우처럼 wd를 네트워크 wθd(t)의 출력으로 만드는 대신, wd를 wθd(0)의 값으로 shift한다."
+        },
+        {
+          "type": "paragraph",
+          "text": "wd(t)=wθd(t)−wθd(0)"
+        },
+        {
+          "type": "paragraph",
+          "text": "이렇게 하면 t=0에서 diffusion 경로가 항상 0으로 곱해져 fθl의 원래 출력이 변경되지 않는다. 따라서 xt가 순수한 noise일 때 L2D가 사전 학습된 LM의 강력한 single-step 성능을 저하시키지 않도록 보장하며, t가 1로 증가하고 xt가 더 많은 과거 계산 및 지식을 포함함에 따라 diffusion 경로가 예측에 점점 더 큰 영향을 미치도록 하는 강력한 inductive bias를 제공한다."
+        },
+        {
+          "type": "heading_3",
+          "text": "Classifier-free guidancePermalink"
+        },
+        {
+          "type": "paragraph",
+          "text": "Classifier-free guidance를 통해 task 또는 데이터셋에 대한 추가적인 컨텍스트 정보를 기반으로 L2D 모델을 효과적으로 컨디셔닝할 수 있다. 학습 과정에서는 timestep 임베딩에 J+1개의 옵션 집합 g0,…,gJ에서 학습된 클래스 임베딩을 더한다. 여기서 옵션 g0는 추가적인 컨텍스트 정보가 제공되지 않을 때 적용되는 null 클래스 임베딩으로 사용되며, 주어진 dropout 확률로 학습된다. Inference 과정에서 task 레이블 j∈(1,…,J)에 접근할 수 있다면, 가이드된 타겟 예측 ^xg를 구성할 수 있다."
+        },
+        {
+          "type": "paragraph",
+          "text": "^xg=wg×fθ(xt,t,gj,c)−(1−wg)×fθ(xt,t,g0,c)"
+        },
+        {
+          "type": "paragraph",
+          "text": "(wg≥1는 guidance 강도 파라미터)"
+        },
+        {
+          "type": "paragraph",
+          "text": "이 방법은 diffusion model에 목표에 맞는 생성 능력을 효과적으로 제공하며, 사용자가 범용성과 특정 task 전문성을 절충할 수 있도록 한다."
+        },
+        {
+          "type": "heading_2",
+          "text": "Experimental ResultsPermalink"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "구현 디테일"
+        },
+        {
+          "type": "heading_3",
+          "text": "1. L2D Across Modern Large Language ModelsPermalink"
+        },
+        {
+          "type": "paragraph",
+          "text": "다음은 다양한 언어 모델과의 성능 비교 결과이다."
+        },
+        {
+          "type": "heading_3",
+          "text": "2. Analysis and ExtensionsPermalink"
+        },
+        {
+          "type": "paragraph",
+          "text": "다음은 inference 시에 timestep t에 따른 L2D의 성능을 비교한 결과이다."
+        },
+        {
+          "type": "paragraph",
+          "text": "다음은 다양한 설정에 대한 L2D의 성능을 비교한 결과이다."
+        },
+        {
+          "type": "paragraph",
+          "text": "다음은 adaptive ODE solver를 사용하였을 때, task에 따른 성능과 step 수를 비교한 결과이다."
+        },
+        {
+          "type": "paragraph",
+          "text": "다음은 guidance 강도 wg에 대한 효과를 비교한 결과이다."
+        }
+      ]
+    },
+    {
+      "id": "255d3416-0518-8025-b474-ffd2a2a9cd8d",
+      "title": "데이콘 관광데이터 경진대회 비전공자 수상 후기",
+      "last_edited": "2025-08-20T07:59:00.000Z",
+      "created": "2025-08-20T07:59:00.000Z",
+      "url": "https://www.notion.so/255d341605188025b474ffd2a2a9cd8d",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "작년 9월, 10월에 데이콘에서 주최하는 관광데이터 분류 경진대회에서 최종 순위 2등으로 수상에 성공했다. 비록 시간이 조금 지났지만 그때의 경험을 글로 작성해도 좋을 것 같아서  이번 글을 시작하게 되었다. 시간의 서사대로 차근차근 수상 후기를 풀어보겠다."
+        },
+        {
+          "type": "heading_1",
+          "text": "데이콘 관광데이터 경진대회에 참하게 된 계기"
+        },
+        {
+          "type": "paragraph",
+          "text": "비전공자로서 AI 공부를 시작한 것은 작년 7월이었다. 머신러닝부터 시작해서 컴퓨터 비전, 객체 인식, 자연어 처리, 음성 인식 순으로 기본기를 공부하고 배운것들을 점검하기 위해 알아보다가 캐글 도전을 먼저 고민하였다. 하지만 캐글은 고인물들이 너무 많다는 썰이 있어서...비전공자인 필자가 하기에는 조금 진입 장벽인 높다고 생각했다. 배운 것들을 바탕으로 해볼 만한 콘테스트 플랫폼을 찾다가 흔히 국내판 캐글이라고 평가되는 데이콘에 도전하기로 마음을 먹었다. 마침 데이콘에서는 관광데이터 경진대회가 열리고 있었는데, 관광지의 이미지와 텍스트 설명을 바탕으로 어떤 카테고리의 관광지인지 분류하는 대회였기에, TF-IDF를 통한 머신러닝과 딥러닝 CV 모델, NLP 모델을 다뤄보면서 많은 공부가 될 것이라고 생각했기에 옳다구나 하고 참가하게 되었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "참고로 참가가 정말 쉽다! 그냥 회원가입 후 원하는 대회로 들어가면 오른쪽 상단 쪽에 참가하기가 있다. 클릭하면 끝난다ㅎㅎ"
+        },
+        {
+          "type": "heading_1",
+          "text": "대회 초반, 머신러닝 & CV 학습"
+        },
+        {
+          "type": "paragraph",
+          "text": "처음에는 높은 순위가 목적이 아니었고, 배웠던 것들을 직접 적용하면서 활용해 보는 것이었기 때문에 바로 최적의 모델을 적용하기보다는 관광지에 대한 텍스트 설명을 바탕으로 여러 ML Model들을 돌려보았다. SVM, Random-Forest, XGBoost 등을 돌려보고, Grid-Search를 통해 최적의 하이퍼 파라미터 튜닝을 찾았고, Voting Classify를 통해 Soft & Hard voting을 통해 점수를 올리려고 노력했다."
+        },
+        {
+          "type": "paragraph",
+          "text": "이때까지만 해도 순위가 낮았다. ML만 가지고도 절반 안으로는 들어가긴 했지만 그래도 높다고 할 만한 순위는 아니었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "ML을 어느 정도 해보고 난 뒤 이미지 학습을 시작했다."
+        },
+        {
+          "type": "paragraph",
+          "text": "처음에는 Resnet50을 이용해서 전이학습을 하다가, 이후에는 Sota로 분류되는 크기가 큰 모델들을 사용해 봤다. Densnet201이나 EfficientNet B6, regnet, VIT 등을 적용해 봤는데 어떠한 것을 사용해도 높은 점수가 나오지 않았다. 하면서 기본적으로 이 task가 분류해야하는 label의 수가 총 128개였기 때문에 비슷한 장면이 많은 이미지로는 구분하는데 한계가 있다고 판단을 내렸다."
+        },
+        {
+          "type": "heading_1",
+          "text": "중반, KLUE-RoBERTa large를 통한 순위 급상승"
+        },
+        {
+          "type": "paragraph",
+          "text": "머신러닝, CV를 다뤄봤기 때문에 다음으로는 NLP 학습을 시작했다. 처음에는 LSTM과 GRU를 활용해 직접 설계를 해봤고 어느 정도 성능을 확인한 뒤에는 사전학습된 버트 계열의 모델을 사용했다. KoBert를 사용했을 때, 의미 있는 상승을 맛볼 수 있었고, KLUE-RoBERTa large를 사용했을 때 10위권 안쪽으로까지 진입하게 되었다. 처음 시작했을때까지만 해도 상위 10퍼 정도만 해도 잘한 게 아닐까 생각했었는데 10위 안까지 들어오고 나니 충분히 수상권 안까지도 갈 수 있겠다는 자신감이 생겼고, 기대감도 생겼다."
+        },
+        {
+          "type": "heading_1",
+          "text": "후반, 성능 향상을 위한 다양한 시도 및 앙상블"
+        },
+        {
+          "type": "paragraph",
+          "text": "이때부터, 어떻게 하면 성능을 향상할 수 있을까 정말 많이 고민해 보고 많이 시도해 봤다. 가설을 세우고 시도해보고 실패하면 또 다시 가설을 세워서 시도해 보고 무한 반복이었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "같이 참가했던 친구와 나누는 대화는 어떻게 하면 더 올라갈 수 있을지에 대한 것이었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "특히 데이터를 최대한 분석하고, 전처리 쪽에서 다양한 시도들을 적용해 봤는데 이를 통해 조금씩 순위를 끌어올릴 수 있었다. 주어진 데이터에 적합한 텍스트 어그멘테이션 법도 고민해 보고 노이즈를 어떻게 처리할지에 대해서도 정말 많은 고민들을 했던 것 같다."
+        },
+        {
+          "type": "paragraph",
+          "text": "그리고 그간 학습했던 ML, CV, NLP의 결과를 적절하게 앙상블(하드보팅) 했더니 어느새 수상권까지 들어가게 되었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "여기에 데이콘에 멀티모달 코드를 공유해 주신 분이 계셔서 그 코드를 참고해서 멀티모달까지 함께 보팅 했더니 최고 순위 1위까지 찍어봤다ㅎㅎ 비록 마지막에 다른 분께 밀려서 최종 2등을 기록했지만 충분히 만족스러운 결과였고, 너무나도 많은 공부가 된 좋은 경험이었다. 후기를 작성하면서도 당시를 생각하면 너무 즐거웠던 것 같다."
+        },
+        {
+          "type": "paragraph",
+          "text": "개인적으로 딥러닝을 공부하고 있다면 데이콘 플랫폼에서 공부해 보는 것을 권유하고 싶다. 우선 소위 한국판 캐글이기에 접근성이 너무 좋고, 다양한 콘테스트들이 열리기 때문에 원하는 TASK의 콘테스트를 참가할 수 있다. 그리고 운영하시는 직원분들이나 다른 유저분들도 친절하셔서 코드도 많이 공유해 주시고 함께 성장해나가는 계기가 될 수 있는 것 같다. 그리고 무엇보다 재밌다!! 그냥 단순히 AI를 공부하는 것보다 바로바로 결과가 나오는 테스트에 참가하는 것은 동기부여 자체가 다른 것 같다!! (혹시라도 이 글을 읽고 계신 분이라면 꼭 데이콘에 도전해 보세요!)"
+        },
+        {
+          "type": "paragraph",
+          "text": "그리고, 비전공자라고 기죽을 필요도 전혀 없는 것 같다. 깊은 수준의 수학적인 계산까지는 이해하지 못하더라도 어떤 식으로 동작하는지, 그리고 어떠한 방식으로 접근하면 좀더 개선할 수 있는지 논리력을 조금씩 늘려나간다면 필자처럼 데이콘에서 충분히 좋은 성과를 거둘 수 있지 않을까 싶다."
+        },
+        {
+          "type": "paragraph",
+          "text": "[출처] 데이콘 관광데이터 경진대회 비전공자 수상 후기|작성자 Yeon s"
+        }
+      ]
+    },
+    {
+      "id": "255d3416-0518-8048-9732-c29e448cbe24",
+      "title": "[ML] 데이콘 AI 경진대회 후기",
+      "last_edited": "2025-08-20T07:59:00.000Z",
+      "created": "2025-08-20T07:56:00.000Z",
+      "url": "https://www.notion.so/ML-AI-255d3416051880489732c29e448cbe24",
+      "content": [
+        {
+          "type": "quote",
+          "text": "데이콘 Basic 전화 해지 여부 분류 AI 경진대회"
+        },
+        {
+          "type": "heading_1",
+          "text": "참가 목표"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "에이블스쿨을 통해 들었던 수업 내용 써먹기"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "새로운 것 하나 시도하기"
+        },
+        {
+          "type": "heading_1",
+          "text": "대회 분석"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "가입일, 음성사서함 이용 건수, 상담 전화 건수, 시간대별 통화 정보 등을 이용해 고객의 전화 해지 여부를 예측하는 머신러닝 분류 문제이다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "점수는 테스트 결과에 대한 F1-macro score를 사용한다."
+        },
+        {
+          "type": "heading_2",
+          "text": "F1-macro score"
+        },
+        {
+          "type": "heading_3",
+          "text": "F1-score"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "우선 분류문제에 대한 모델의 성능을 나타낼 수 있는 대표적 지표이다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "이전에 정리해 둔 것이 있다."
+        },
+        {
+          "type": "quote",
+          "text": "머신러닝 평가지표"
+        },
+        {
+          "type": "heading_3",
+          "text": "macro"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "평균을 구하는 하나의 방법 중, 평균의 평균을 구한것을 macro라고 한다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "예를들어 다음과 같을 때recall-A : 0.3, 데이터 개수 60개recall-B : 0.5 , 데이터 개수 10개recall-C : 0.4, 데이터 개수 30개각각의 평균을 클래스 수로 나눈 것이 macro 평균이다.macro-avg = (0.3 + 0.5 + 0.4) / 3 = 0.4"
+        },
+        {
+          "type": "heading_3",
+          "text": "micro"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "micro는 역시 평균을 구하는 방법으로, 각 데이터의 개수대로 평균을 낸 것이다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "micro-avg = (0.3 * 60) + (0.5 * 10) + (0.4 * 30) / (60 + 10 + 30) = 0.35"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "macro에 비해 데이터가 더 많은 쪽으로 치우친다."
+        },
+        {
+          "type": "heading_1",
+          "text": "EDA"
+        },
+        {
+          "type": "heading_2",
+          "text": "y-data profiling"
+        },
+        {
+          "type": "quote",
+          "text": "ydata-profiling Docs"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "EDA 과정을 매우 쉽고 간편하게 할 수 있는 ydata profiling을 시도해보았다."
+        },
+        {
+          "type": "heading_3",
+          "text": "전화해지여부(target)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "먼저 전화해지 여부인데, 해지하지 않은 사람(0)이 더 많은 불균형 클래스임을 알 수 있다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "1에 대한 검출도를 높이기 위해서는 오버샘플링 또는 언더샘플링 고려가 필요해보인다."
+        },
+        {
+          "type": "heading_3",
+          "text": "가입일, 음성사서함이용수"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "데이터가 왼쪽으로 치우친 형태를 보인다. 특히 음성서함은 상당수의 데이터가 0에 위치해있다."
+        },
+        {
+          "type": "heading_3",
+          "text": "가입일"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "가입일에 대한 barplot을 확인했을 때 유의한 가입일에 따라 유의한 차이가 있어보이지는 않았다."
+        },
+        {
+          "type": "heading_3",
+          "text": "음성사서함이용수"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "value_counts로 확인해 봤을 때는, 음성사서함을 하나도 이용하지 않았을 때 해지하는 비율이 다소 높은 경향을 보였다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "box plot은 다음과 같다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "이건 뒤늦게 알게된 사실인데, 음성사서함의 대부분의 이용횟수는 200회 미만이고, 딱 9개의 데이터만 200을 넘는 값을 가지고 있었다. 이를 이상치로 간주하고, 나머지 값의 최대치 근처로 조정을 한 뒤 모델링을 진행했으면 조금이라도 성능이 상승하지 않았을까 하는 아쉬움이 있다."
+        },
+        {
+          "type": "heading_3",
+          "text": "통화관련 데이터"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "대체로 특정 구간별로 데이터가 나뉘는 듯한 모습을 보였다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "이를 범주화하는 것도 충분히 가능한 시도라고 생각하지만, 비슷한 성격을 띄는 새로운 변수를 추가해보는 것을 시도하였다."
+        },
+        {
+          "type": "heading_1",
+          "text": "데이터 전처리"
+        },
+        {
+          "type": "heading_2",
+          "text": "Feature 생성"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "통화관련 데이터에서 보였던 데이터가 구간별로 나뉘는 현상이 요금제와 관련이 있지 않을까 추측하였다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "범주를 나누기보다는 통화 시간당 요금을 새로운 특징이라고 생성하였다. (둘 다 시도해보면 좋을 것 같지만 시간 관계상 하나만 시도)같은 시간을 통화 하더라도 돈을 더 많이 낸 사람이 이탈하는 비율이 높지 않을까? 라는 가정이다."
+        },
+        {
+          "type": "heading_2",
+          "text": "오버샘플링 (SMOTE)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "앞서 EDA 단계에서 불균형 클래스임을 파악했으므로, 오퍼샘플링을 통해 클래스 수를 맞추려고 시도했다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "기존에 머신러닝을 배우면서 한번도 오버샘플링을 시도해본적이 없었는데 배울 수 있는 기회가 생겨서 좋았다."
+        },
+        {
+          "type": "quote",
+          "text": "[머신러닝] 언더샘플링과 오버샘플링"
+        },
+        {
+          "type": "heading_3",
+          "text": "imblanced learn"
+        },
+        {
+          "type": "quote",
+          "text": "공식 홈페이지"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "scikit-learn을 이용한 머신러닝을 하고 있다면, imbalanced-learn 패키지를 이용하여 쉽게 언더샘플링, 오버샘플링 기법을 적용할 수 있다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "코랩을 사용한다면 별도로 설치가 필요하며, import imblearn으로 사용할 수 있다."
+        },
+        {
+          "type": "paragraph",
+          "text": "!pip install -U imbalanced-learn"
+        },
+        {
+          "type": "code",
+          "text": "from imblearn.over_sampling import SMOTE\n\n# SMOTE\nsmote = SMOTE()\nx_res, y_res = smote.fit_resample(x, y)\n\n# SMOTE - x_train에만 적용\nsmote = SMOTE()\nx_train_res, y_train_res = smote.fit_resample(x_train, y_train)"
+        },
+        {
+          "type": "heading_2",
+          "text": "데이터 분리"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "데이터를 학습용 데이터와 검증용 데이터로 분리하는 작업을 거쳤다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "처음에는 오버샘플링을 적용한 뒤, 분리하였으나 테스트 데이터 역시 불균형 상태일 가능성이 높으므로 먼저 학습용과 검증용을 분리한 뒤, 학습용에만 오버샘플링을 적용하는 방식도 진행하였다."
+        },
+        {
+          "type": "code",
+          "text": "from sklearn.model_selection import train_test_split\n\nx_train, x_val, y_train, y_val = \\\ntrain_test_split(x_train, y_train, test_size=0.2, stratify=y_train)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "학습용, 검증용이 동일한 분포를 갖도록 하기 위해 stratify를 적용하였다."
+        },
+        {
+          "type": "heading_1",
+          "text": "모델링"
+        },
+        {
+          "type": "heading_2",
+          "text": "CatBoost"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "마찬가지로 기존에 사용해 본 적이 없던 CatBoost 모델을 사용해보았다. CatBoost는 XGBoost와 동일하게 트리 기반의 Boosting 학습 방법을 이용하는 모델로, 이전 모델의 outputs을 다음 모델의 Inputs으로 넣어 잔차(오차)를 줄여나가는 방법을 이용한다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "XGBoost와의 가장 큰 차이점은 XGBoost는 모든 학습데이터를 이용하여 오차를 줄여나가지만, Catboost는 학습데이터에서 랜덤하게 정해진 순서에 따라 데이터를 샘플링하여 사용한다. 때문에 과대적합의 위험이 비교적 적다는 장점이 있다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "scikit learn에서 제공하지 않는 모델이므로 별도 설치가 필요하다.!pip install catboost"
+        },
+        {
+          "type": "code",
+          "text": "from catboost import CatBoostClassifier\n\nparams = {\n\t'learning_rate' : 0.29,\n    'iterations' : 500,\n    'max_depth' : 12,\n    'l2_leaf_reg' : 3,\n    'id_type' : 'Iter',\n    'od_wait' : 100,\n    'use_best_model' : True,\n    'eval_metric' : 'F1'\n}\n\nmodel = CatBoostClassifier(**params)\n\nmodel.fit(x_train_res, y_train_res, eval_set=(x_val, y_val))\n\ny_pred= model.predict(x_test)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "모델링 당시에는 몰라서 F1-Score를 로스 함수로 지정하였으나, sklearn의 f1-macro 함수를 불러와 커스텀 로스 함수로 지정하면 eval_metric으로 사용할 수 있다."
+        },
+        {
+          "type": "heading_2",
+          "text": "베이지안 최적화(Bayesian Optimization)"
+        },
+        {
+          "type": "quote",
+          "text": "Optimizing the inbound process with a machine learning model"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "쿠팡에서 머신러닝을 통해 문제를 해결하는 과정을 담은 칼럼을 개제하여 읽어보았더니, Bayesian Search라는 방법을 사용했다는 것을 알게되었다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "기존에 Grid Search, Random Search만 사용해보았기에 이것도 시도해보게 되었다."
+        },
+        {
+          "type": "heading_3",
+          "text": "베이지안 서치 수행 과정"
+        },
+        {
+          "type": "quote",
+          "text": "참고자료"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "원리를 다루고 싶었지만, 내용이 너무 어려운 것 같아 추후에 별도로 강의를 들어야 할 것 같다. 대신 어떤 과정을 거쳐서 베이지안 최적화가 이루어지는지 정도를 다루고자 한다."
+        },
+        {
+          "type": "heading_3",
+          "text": "1. 설정값 입력"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "베이지안 서치에 필요한 설정값을 입력한다."
+        },
+        {
+          "type": "heading_3",
+          "text": "2. 초기값 랜덤 샘플링"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "RandomSearch와 동일하게 입력값을 랜덤하게 샘플링하여 정한다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "내가 베이지안 서치를 잘 이해한게 맞다면, 원래 이 과정에서 n번까지 랜덤한 샘플링 입력값으로 목적함수의 결과를 구하는데, 인자로 설정하는 방법을 못찾아서 이 과정을 어떻게 진행하는지 모르겠다."
+        },
+        {
+          "type": "heading_3",
+          "text": "3. Surrogate Model로 확률적 추정"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "초기 입력값에 대한 목적함수 결과를 구했다면, Surrogate Model이라는 확률적 추정을 하는 모델을 통해 다음 입력값을 결정하고 정한 평가 횟수 N에 도달할 때 까지 평가를 이어나간다."
+        },
+        {
+          "type": "heading_3",
+          "text": "코드"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "scikit-learn이 베이지안 최적화를 제공하지는 않지만, 거의 동일한 문법으로 사용할 수 있도록 해주는 scikit-optimize 패키지가 있다."
+        },
+        {
+          "type": "quote",
+          "text": "scikit-optimize"
+        },
+        {
+          "type": "paragraph",
+          "text": "! pip install scikit-optimize"
+        },
+        {
+          "type": "code",
+          "text": "from catboost import CatBoostClassifier\nfrom skopt import BayesSearchCV\nfrom skopt.space import Real, Integer\n\n\nmodel = CatBoostClassifier(task_type=\"GPU\", devices='0:1')\n\nparams = {\n    'l2_leaf_reg' : Integer(2, 30)\n    'learning_rate' : Real(0.01, 10, 'log-uniform')\n\t'iterations' : Integer(50, 1001),\n    'max_depth' : Integer(3, 12)\n}\n\nbayes = BayesSearchCV(model,\n\t\t\t\t\t  search_spaces=params,\n                      scoring='f1_macro',\n                      cv=5,\n                      verbose=True,\n                      n_jobs=-1,\n                      n_iter=30)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "사용시 주의할 점은 기존의 range()나 np.linspace() 대신 패키지에서 제공하는 클래스를 사용해야 한다."
+        },
+        {
+          "type": "heading_1",
+          "text": "예측"
+        },
+        {
+          "type": "heading_2",
+          "text": "Feature Importance"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "새로 추가한 컬럼의 중요도가 제일 낮은 것으로 나타났다."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "생각외로 중요할 것이라 생각한 음성사서함 이용의 중요도가 낮게 나왔는데, 이상치를 적절히 처리하고 모델링을 했다면 중요도가 조금 더 높게 나오지 않았을까 조심스럽게 예측해본다."
+        },
+        {
+          "type": "heading_2",
+          "text": "테스트 점수"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "test-score는 0.8024로 540여며의 참가자 중 171등을 기록했다."
+        },
+        {
+          "type": "heading_1",
+          "text": "소감"
+        }
+      ]
+    },
+    {
+      "id": "255d3416-0518-8084-a58f-ca9775bcd821",
+      "title": "[부스트캠프 AI Tech] 문장 간 유사도(STS) 측정 프로젝트 회고",
+      "last_edited": "2025-08-20T07:57:00.000Z",
+      "created": "2025-08-20T07:55:00.000Z",
+      "url": "https://www.notion.so/AI-Tech-STS-255d341605188084a58fca9775bcd821",
+      "content": [
+        {
+          "type": "heading_3",
+          "text": "너무나도 늦은 회고록이지만 뒤늦게라도 Boostcamp STS 프로젝트를 회고하려 합니다."
+        },
+        {
+          "type": "heading_3",
+          "text": "최종 성적"
+        },
+        {
+          "type": "heading_3",
+          "text": "Public 2위 : 0.9378"
+        },
+        {
+          "type": "heading_3",
+          "text": "Private 3위 : 0.9417"
+        },
+        {
+          "type": "heading_3",
+          "text": "프로젝트 시작 전"
+        },
+        {
+          "type": "paragraph",
+          "text": "인생에서의 첫 캐글형식의 순위형 프로젝트였다.리더보드형 프로젝트를 함에 앞서 의욕도 많이 앞섰고, 잘 하고 싶은 마음이 가득했었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "높은 순위를 프로젝트하면서 한번은 가지고 싶었고 추후 팀을 자유롭게 꾸릴때 높은 성적은 도움이 될 것이라고 생각했다."
+        },
+        {
+          "type": "heading_3",
+          "text": "프로젝트 진행"
+        },
+        {
+          "type": "paragraph",
+          "text": "3주간 진행된 프로젝트에서 추석이라는 기간이 포함되어있었고 실질적으로는 약 2주 정도의 기간동안 프로젝트를 집중할 수 있었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "이 글을 찾아서 들어오시는 분들은 부스트캠프 사람들로 예상이 되기에 프로젝트의 소개는 넘어가도록 하겠습니다."
+        },
+        {
+          "type": "paragraph",
+          "text": "위 그림은 프로젝트의 타임라인이다.약 두달이 지나서야 쓰는 회고지만 지금 보면 다음과 같은 타임라인은 정말 잘못 되었다고 생각한다."
+        },
+        {
+          "type": "paragraph",
+          "text": "EDA와 앙상블을 동시에 진행하다니,,,"
+        },
+        {
+          "type": "heading_3",
+          "text": "우리팀이 범했던 실수에 대해서 먼저 말하고자 한다."
+        },
+        {
+          "type": "heading_3",
+          "text": "1. EDA의 중요성 간과"
+        },
+        {
+          "type": "paragraph",
+          "text": "Boostcamp에서 프로젝트를 마칠 때 마다 2팀 정도 발표를 자원하거나지원자가 없다면 Private 높은 순위의 팀이 발표를 맡아서 하게 된다."
+        },
+        {
+          "type": "paragraph",
+          "text": "이번 프로젝트에서는 Public에서 3등 팀이 Private에서 1위를 하게 된 것을 보고 저팀의 노하우가 궁금했다."
+        },
+        {
+          "type": "paragraph",
+          "text": "1위의 비결은 바로 EDA였다. 우리팀의 패착은 모델의 성능에만 집중을 했었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "그 어떤 팀보다 모델 탐색과 실험은 잘했다라고 생각하고 그것이 높은 순위를 얻게된 비결이라고 생각했다."
+        },
+        {
+          "type": "paragraph",
+          "text": "그렇지만 1등팀은 데이터셋의 모든 문장들을 일일히 수동으로 Quality check를 했다고 발표에서 전달해줬다."
+        },
+        {
+          "type": "paragraph",
+          "text": "(여기서 우리팀이 졌다고 생각했다)"
+        },
+        {
+          "type": "paragraph",
+          "text": "EDA라는 것을 처음해본 우리팀은 사실 라벨의 분포정도 확인을 해보았고, 분포를 맞춰주자.. 라는 결론을 내고"
+        },
+        {
+          "type": "paragraph",
+          "text": "Undersampling, Oversampling, Swap등의 방식을 적용해보고 해당 증강데이터셋을 학습데이터셋으로 사용해본 결과모델별로 성능이 아주 소폭 상승하거나 대부분 하락했었다.그렇지만 데이터 셋 내에서 오라벨 등, 노이즈가 껴있을 것이라는 상상을 하진 않았다."
+        },
+        {
+          "type": "paragraph",
+          "text": "왜 성능이 오르지 않지라는 분석을 하지 않았다. 그렇기에 데이터 셋을 뜯어볼 생각조차 없었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "그 이후에 어느정도 앙상블의 성능향상이 더뎌지자 KoEDA나 다른 방식의 증강을 뒤늦게 생각한 것이 정말 아쉽다."
+        },
+        {
+          "type": "paragraph",
+          "text": "STS와 같은 단순 태스크들에서는 EDA에 조금 더 시간을 투자할 수 있었을 텐데와 같은 생각을 지금에서야 한다."
+        },
+        {
+          "type": "heading_3",
+          "text": "2.  무모한 모델 탐색"
+        },
+        {
+          "type": "paragraph",
+          "text": "아까 위에서도 말했듯, 거의 모델 탐색과 동시에 앙상블을 진행했다."
+        },
+        {
+          "type": "paragraph",
+          "text": "아무래도 첫 프로젝트고, 관련 지식이 없던 나는 어떤 것이 좋은 모델이지 라는 인사이트가 전혀없었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "사실 그렇기에 모델을 무작위로 시간을 투자해서 많이 실험을 했고, 리더보드에 제출하는 형식으로 성능을 평가했었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "모델에 대한 이해없이, 높은 순위만을 찾기 위해서 모델 선정의 기준도 없이 실험한 것은 반성해야 한다고 생각한다."
+        },
+        {
+          "type": "paragraph",
+          "text": "벤치마크라는 것을 뒤늦게 알았고 이 이후 앞으로의 순위형 프로젝트에서 벤치마크를 기준으로 높은 성능의 모델을 먼저 실험해봐야 하겠다는 간단한 생각을 갖게 되었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "(지금 두세달 전의 나는 무모했다. 거의 30개가 넘는 모델들을 주구장창 돌려봤다)"
+        },
+        {
+          "type": "paragraph",
+          "text": "무모한 도전 (Hoxy 이거 아시나요)"
+        },
+        {
+          "type": "heading_3",
+          "text": "3. 무지성 앙상블"
+        },
+        {
+          "type": "paragraph",
+          "text": "1등 방법론에 대해 들으면서 앙상블을 마지막날 하루 정도만 투자하였고,그외에는 계속 단일모델로 성능을 높이는 실험을 했다고 전달 받았다."
+        },
+        {
+          "type": "paragraph",
+          "text": "우리팀, 아니 거의 내가 모델실험을 주로했었는데 높은 성능의 모델들을 계속 무지성으로 앙상블을 진행했다. 앙상블에 사용된 모델의 개수가 16개인가 (다 많아서 읊지도 못한다)"
+        },
+        {
+          "type": "paragraph",
+          "text": "LV 2에서 Data-Centric 프로젝트를 하는데 해당 프로젝트는 모델의 변경없이 데이터 셋만 변경시켜서 성능을 높이는 프로젝트다."
+        },
+        {
+          "type": "paragraph",
+          "text": "우리팀은 LV 1때 데이터셋을 하나도 건드리지 않고 모델링 + 앙상블로만 성능을 높이는 프로젝트를 했던 것 같다."
+        },
+        {
+          "type": "paragraph",
+          "text": "EDA에 대한 고찰이 필요하다. 정말 우리팀에게 필요하다고 생각했다."
+        },
+        {
+          "type": "paragraph",
+          "text": "추가적으로 단순히 순위를 높이는 프로젝트를 하는 것 보다 어떤 논리적인 흐름으로 실험을 진행했는지,"
+        },
+        {
+          "type": "paragraph",
+          "text": "그 실험에서 얻을 수 있는 것과 그 결과를 분석하고 정리하는 것이 앞으로의 프로젝트에서 도움이 되리라 생각했다."
+        },
+        {
+          "type": "paragraph",
+          "text": "앙상블로 좋은 결과를 냈지만, 다른 팀들이 프라이빗에서 대부분 Private 점수가 많이 오르는데 우리팀만 소폭 상승했고,그 원인을 중첩 앙상블의 과적합이 일어났다고 생각한다."
+        },
+        {
+          "type": "heading_3",
+          "text": "아쉬웠던 점도 말했으면 잘했던 점도 정리하고자 한다."
+        },
+        {
+          "type": "heading_3",
+          "text": "1. 허깅페이스 사용 익히기"
+        },
+        {
+          "type": "paragraph",
+          "text": "컴공 전공이라고 말하기 아쉬울 정도로 사실 인공지능을 알지 못했고, 웹개발은 더군다나 더 모른다."
+        },
+        {
+          "type": "paragraph",
+          "text": "생각보다 컴공 출신의 사람들을 만나면 어느정도 인공지능에 대한 공부도 하고오고, Transformer가 뭔지 대략적으로 알고 오는 것 같다."
+        },
+        {
+          "type": "paragraph",
+          "text": "다만 나는 그런 것들을 전혀 몰랐고, LV 1에서의 강의들이 솔직히 지금도 어렵고, 이해가 다 되는 것은 아니다."
+        },
+        {
+          "type": "paragraph",
+          "text": "그런 점에서 Hugging Face에 대해 익히는 시간을 많이 가졌고,단순히 모델을 바꿔가며 실험을 했지만 Hugging Face에는 많이 익숙해졌다.추가적으로 다양한 기능들을 탐구하게 된 시간이라고 생각한다."
+        },
+        {
+          "type": "heading_3",
+          "text": "2. 베이스라인 이해하기"
+        },
+        {
+          "type": "paragraph",
+          "text": "파이썬에 대해서는 잘 알았지만 개념이 부족해서인가 파이토치와 관련한 코드는 이해가 잘 되지 않았다."
+        },
+        {
+          "type": "paragraph",
+          "text": "이를 어떻게 극복했냐 하면은 그냥 뚫어지게 쳐다봤다."
+        },
+        {
+          "type": "paragraph",
+          "text": "사실 프로젝트에 쏟는 시간이 정말 많았다고 생각한다.코드를 단순히 돌리는 게 아니라 이코드가 왜 나왔지라는 주석을 달아보며 이해하려 했다.이런 시간들이 정말 추후 LV 2에서도 도움이 많이 됐다고 생각한다."
+        },
+        {
+          "type": "heading_3",
+          "text": "3. 깃 사용법 익히기, 협업 툴 적응하기"
+        },
+        {
+          "type": "paragraph",
+          "text": "노션 사용도 익숙하지 않고, 깃 사용도 거의 처음이라 Git Flow에 대한 이해가 부족했는데 사용하면서 Git에 대한 기초를 다졌다."
+        },
+        {
+          "type": "paragraph",
+          "text": "추후 부스트캠프에서 개발자스럽게 GitHub 사용하기 강의가 있어서 그 때 많은 공부를 했었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "깃허브와 랩업리포트를 확인 할수 있게 GitHub 링크를 남겨두겠습니다."
+        },
+        {
+          "type": "paragraph",
+          "text": "GitHub - boostcampaitech7/level1-semantictextsimilarity-nlp-15: level1-semantictextsimilarity-nlp-15 created by GitHub Classroom\nlevel1-semantictextsimilarity-nlp-15 created by GitHub Classroom - boostcampaitech7/level1-semantictextsimilarity-nlp-15\ngithub.com"
+        },
+        {
+          "type": "paragraph",
+          "text": "7기 이후 다음 기수분들이 저의 글들을 본다면, 당장 순위에 연연해하지 않고 팀의 실험을 이어나간다면 좋을 것 같습니다~"
+        },
+        {
+          "type": "paragraph",
+          "text": "+ 전 기수의 실험들을 너무 쫓지말기!"
+        }
+      ]
+    },
+    {
+      "id": "255d3416-0518-80d0-97d1-c0db2fe7734c",
+      "title": "[2024-1] A-IDLE 프로젝트 회고",
+      "last_edited": "2025-08-20T07:57:00.000Z",
+      "created": "2025-08-20T07:54:00.000Z",
+      "url": "https://www.notion.so/2024-1-A-IDLE-255d3416051880d097d1c0db2fe7734c",
+      "content": [
+        {
+          "type": "quote",
+          "text": "아무것도 남기지 않는다면, 아무것도 남지 않을 것입니다."
+        },
+        {
+          "type": "paragraph",
+          "text": "저는 2024-1학기 (2024.03.04~2024.06.20)에 4학년 캡스톤디자인 프로젝트를 팀과 함께 진행했습니다."
+        },
+        {
+          "type": "paragraph",
+          "text": "이번 회고록에서는 단순히 프로젝트의 전체 내용을 다루기보다는, 제가 직접 기여한 부분에 초점을 맞추어 작성하고자 합니다."
+        },
+        {
+          "type": "heading_3",
+          "text": "📢 프로젝트 소개"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "프로젝트 인원 : 4명 (데이터사이언스 전공)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "프로젝트 : 생성형 AI를 활용한 블로그 콘텐츠 자동화 솔루션"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "깃허브 링크 : A-IDLE 깃허브"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "협업 : Github, Notion, Discord, Slack"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "기술스택"
+        },
+        {
+          "type": "heading_3",
+          "text": "👩🏻‍💻 나의 역할"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "베이스라인 코드 구축 (3주)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "Knowledge generation (데이터 수집 & 전처리) (2주)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "Knowledge selection (데이터 추출) (2주)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "프롬프트 엔지니어링 페르소나 작성 (1주)"
+        },
+        {
+          "type": "heading_3",
+          "text": "2. 🚩 주요 내용"
+        },
+        {
+          "type": "paragraph",
+          "text": "'오.지.통' 블로그 글감을 위한 뉴스 기사를 찾기 위해 크롤링을 통해 적절한 뉴스를 추출하고, 이를 프롬프트에 전달하는 파이프라인 구축"
+        },
+        {
+          "type": "heading_3",
+          "text": "3.☝🏻 요구 사항"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "최신순으로 당일 뉴스를 추출하여 비용/시간 최적화된 크롤링"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "크롤링되지 않는 뉴스 기사 및 발행 일자 데이터 전처리"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "기사의 핵심 주제가 지하철 관련 기사인지 데이터 추출"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "중복 기사 분류 및 필요한 정보 포함 여부을 고려한 데이터 추출"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "전체적인 프로젝트 가이드라인 및 베이스라인 구축"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "실 '오.지.통'에 적용 가능한 정확한 데이터 요구"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "브랜딩 블로그 컨셉에 맞는 '지통이' 페르소나 구축"
+        },
+        {
+          "type": "heading_3",
+          "text": "4.🙆🏻‍♂️ 공헌한 점"
+        },
+        {
+          "type": "paragraph",
+          "text": "'오지통'의 서비스에 사용할 베이스라인 구축, 데이터 수집, 전처리, 프롬프트 엔지니어닝 페르소나 구축 담당"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "블로그 글 생성이라는 목적에 맞게 베이스라인 구축"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "자동화을 위한 비용/시간문제를 줄이기 위한 여러 가지 실험 진행"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "데이터 추출의 정확성을 높이기 위해 직접 레이블을 진행하여 실제 유용한 뉴스 기사인지 판별"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "실제 기업이 사용하는 페르소나를 레퍼런스로 '지통이' 캐릭터 페르소나 구축"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "여러 방법을 시도하면서 실 서비스에서 사용하기 위한 실험 진행"
+        },
+        {
+          "type": "heading_3",
+          "text": "5. 📍사용한 스킬 또는 지식"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "베이스라인 구축"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "knowledge generation 실험"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "knowledge selection 실험"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "페르소나 부여"
+        },
+        {
+          "type": "heading_3",
+          "text": "6. 💡결과/성과"
+        },
+        {
+          "type": "heading_3",
+          "text": "1) '오.지.통' 베이스라인 구축"
+        },
+        {
+          "type": "paragraph",
+          "text": "지하철 이용자들에게 정확하고 실용적인 정보를 제공하기 위해 '오.지.통' 시스템의 베이스라인을 구축."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "데이터 수집:"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "데이터 전처리:"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "데이터 추출 및 선택:"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "데이터 주입"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "프롬프트 주입"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "페르소나 주입"
+        },
+        {
+          "type": "paragraph",
+          "text": "성과"
+        },
+        {
+          "type": "paragraph",
+          "text": "이와 같은 흐름을 통해 '오.지.통' 시스템의 베이스라인을 구축하여, 지하철 이용자들에게 정확하고 실용적인 정보를 제공"
+        },
+        {
+          "type": "heading_3",
+          "text": "2) knowledge Generation - 크롤링 방식 비교 실험"
+        },
+        {
+          "type": "paragraph",
+          "text": "다양한 뉴스 기사 추출 크롤링 방식에 대한 실험 결과 정리표"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "실험 결과 요약"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "실험 절차"
+        },
+        {
+          "type": "numbered_list_item",
+          "text": "newspaper3k로 일차 크롤링:"
+        },
+        {
+          "type": "numbered_list_item",
+          "text": "Selenium으로 보조 크롤링:"
+        },
+        {
+          "type": "paragraph",
+          "text": "성과"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "newspaper3k: 뉴스 기사 추출에 특화된 기능으로 가장 빠르고 효율적인 방식."
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "Selenium: HTML 구조가 복잡한 경우 사용, 동적 페이지 처리에 강점 있으나 속도 느림."
+        },
+        {
+          "type": "paragraph",
+          "text": "성과"
+        },
+        {
+          "type": "paragraph",
+          "text": "newspaper3k로 전체 기사 중 85%를 신속하고 효율적으로 추출했으며, Selenium으로 나머지 15%의 기사를 성공적으로 크롤링했습니다. 이러한 접근 방식은 시간(평균 추출 시간: 2초/기사 vs. 10초/기사)과 노력을 절약하면서도 높은 품질의 데이터를 확보할 수 있었습니다."
+        },
+        {
+          "type": "heading_3",
+          "text": "3) 관련 주제 필터링"
+        },
+        {
+          "type": "numbered_list_item",
+          "text": "의미 분석을 위한 모델 준비"
+        },
+        {
+          "type": "numbered_list_item",
+          "text": "종속성과 엔터티 분석"
+        },
+        {
+          "type": "numbered_list_item",
+          "text": "BERT 임베딩 생성"
+        },
+        {
+          "type": "numbered_list_item",
+          "text": "주제 필터링 조건 정의"
+        },
+        {
+          "type": "paragraph",
+          "text": "실험 과정"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "100개의 뉴스 기사 레이블 작업:"
+        },
+        {
+          "type": "paragraph",
+          "text": "관련 주제 필터링 결과"
+        },
+        {
+          "type": "paragraph",
+          "text": "100개의 레이블 작업된 기사를 사용하여 관련 주제를 필터링한 결과:"
+        },
+        {
+          "type": "heading_3",
+          "text": "성능 지표 계산"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "Recall: 0.871 (87.1%)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "Precision: 0.805 (80.5%)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "F1-score: 0.837 (83.7%)"
+        },
+        {
+          "type": "heading_3",
+          "text": "4) 페르소나 부여 실험 결과"
+        },
+        {
+          "type": "paragraph",
+          "text": "'오.지.통'의 페르소나 설정"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "실험 절차"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "성과"
+        },
+        {
+          "type": "paragraph",
+          "text": "페르소나를 부여하여 GPT의 블로그 글 생성 정확성을 높이고, 허위 정보 작성 빈도를 효과적으로 줄임."
+        },
+        {
+          "type": "heading_3",
+          "text": "7.🏷️ 그 외"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "프로젝트 전반 내용 잡기 위해 Rag 논문 리뷰 진행"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "중간 발표 (7주차), 최종 발표 (15주차)"
+        },
+        {
+          "type": "bulleted_list_item",
+          "text": "총 14회의 주간 보고 발표에서 팀의 진행 상황과 본인의 프로젝트 진행 상황 공유"
+        },
+        {
+          "type": "paragraph",
+          "text": "이하 내용은 느낀점을 기술하므로 조금 편안한 말투로 작성하겠습니다."
+        },
+        {
+          "type": "heading_3",
+          "text": "8. 힘들었던 점/ 신경 쓴 구현"
+        },
+        {
+          "type": "paragraph",
+          "text": "<실제 데이터, null 값은 생각보다 많다.>"
+        },
+        {
+          "type": "paragraph",
+          "text": "뉴스 기사를 처리하면서 HTML의 구조가 달라서 크롤링이 제대로 되지 않거나, 모든 사이트가 통일되어 있지 않은 부분에서 수작업으로 html 구조를 뜯어서 넣거나, 예외 처리를 하는 부분의 시간을 많이 들였다. 예외 처리가 발생하지 않으면 너무 좋겠지만, 이렇게 만일에 상황에 대비하는 작업도 중요하다는 것을 알 수 있었다."
+        },
+        {
+          "type": "paragraph",
+          "text": "<데이터 라벨링, 맞는지 확인이 어렵다.>"
+        },
+        {
+          "type": "paragraph",
+          "text": "관련 주제 필터링을 하면서 데이터를 일일이 라벨링 작업을 해야 하는 번거로움이 있었다. 관련된 뉴스 기사인지 판단하는 것이 지극히 내 개인적인 주관이 들어가는 것 같아 기준이 모호하다는 생각을 하긴 했다. 최대한 라벨링을 하면서 키워드가 들어가 있는지, 횟수나 기준을 세워가며 라벨링을 진행하면서 근거 있는 기준의 중요성을 알게 되었다."
+        },
+        {
+          "type": "heading_3",
+          "text": "9. 기술적인 부분 이외의 힘들었던 점"
+        },
+        {
+          "type": "paragraph",
+          "text": "<기획 & 디자인>"
+        },
+        {
+          "type": "paragraph",
+          "text": "기획과 디자인을 다른 프로젝트를 하면서 늘거나, 대학 시절 많이 만들었던 PPT 덕분에 잘하게 된 것은 사실이다. 하지만, 이번 프로젝트에서 데이터 분석가만 4명이 있는 터라, 기획과 디자인을 좀 많이 해야 한다는 다소 아쉬움이 남는다."
+        },
+        {
+          "type": "paragraph",
+          "text": "<일정 관리>"
+        },
+        {
+          "type": "paragraph",
+          "text": "아무래도 팀장으로 역할하고 있으니, 내야 될 서류도 많았고 학교에서 제출해야 하는 부분, 지원금 관리부터 프로젝트 이외 것들을 감당해야 하는 것에 시간을 많이 빼앗긴다는 생각을 많이 하게 되었다. 팀원들이 오롯이 프로젝트에 집중하기 위해서, 그런 부수적인 것들을 처리하는 게 팀장의 역할이라 생각해서 진행하는 것이 약간 번거로웠지만, 그래서 빠르게 프로젝트가 진행될 수 있었던 것 같다."
+        },
+        {
+          "type": "heading_3",
+          "text": "10. 🎉 수상"
+        }
+      ]
+    },
     {
       "id": "253d3416-0518-8021-a23c-ec4e0367f6be",
       "title": "제목 없음",
@@ -518,6 +3108,6 @@
       ]
     }
   ],
-  "collection_timestamp": "2025-08-19T20:41:45.111492",
+  "collection_timestamp": "2025-08-20T18:29:58.252183",
   "source": "real_api"
 }

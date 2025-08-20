@@ -22,7 +22,7 @@ class QueryWriterAgent(BaseAgent):
             description="개인화된 정보를 바탕으로 RAG 검색 쿼리를 생성하는 에이전트"
         )
         self.required_inputs = ["current_progress", "personal_info", "research_context"]
-        self.output_keys = ["rag_query", "search_scope", "research_priorities"]
+        self.output_keys = ["primary_query", "secondary_query", "third_query", "search_scope", "research_priorities"]
         self.timeout = 60
         self.retry_attempts = 2
         self.priority = 3
@@ -50,6 +50,12 @@ class QueryWriterAgent(BaseAgent):
                 "current_progress": state.current_progress
             }
             
+            # 그룹 요약 정보가 있다면 활용
+            group_summaries = getattr(state, 'group_summaries', {})
+            if group_summaries:
+                self.log_execution(f"그룹 요약 정보 활용: {list(group_summaries.keys())}")
+                personalized_info["group_summaries"] = group_summaries
+            
             # 사용자 쿼리 (있는 경우)
             user_query = getattr(state, 'user_query', '')
             
@@ -65,7 +71,9 @@ class QueryWriterAgent(BaseAgent):
                 rag_query_data = self._generate_basic_rag_queries(personalized_info, user_query)
             
             # 결과 구조화: rag_query는 단일 문장 문자열로 정규화
-            rag_query = self._extract_rag_query(rag_query_data)
+            primary_query = self._extract_rag_query(rag_query_data, "primary_queries")
+            secondary_query = self._extract_rag_query(rag_query_data, "secondary_queries")
+            third_query = self._extract_rag_query(rag_query_data, "third_queries") # Assuming third_queries exists
             search_scope = self._extract_search_scope(rag_query_data)
             research_priorities = self._extract_research_priorities(rag_query_data)
             
@@ -73,20 +81,25 @@ class QueryWriterAgent(BaseAgent):
             result = AgentResult(
                 success=True,
                 output={
-                    "rag_query": rag_query,
+                    "primary_query": primary_query,
+                    "secondary_query": secondary_query,
+                    "third_query": third_query,
                     "search_scope": search_scope,
                     "research_priorities": research_priorities
                 },
                 metadata={
                     "query_generation_method": "llm_based",
                     "personalization_level": "high",
+                    "group_summaries_used": bool(group_summaries),
                     "llm_response": rag_query_data
                 }
             )
             
             # 상태 업데이트
             updated_state = self.update_workflow_status(state, "query_writing")
-            updated_state.rag_query = rag_query
+            updated_state.primary_query = primary_query
+            updated_state.secondary_query = secondary_query
+            updated_state.third_query = third_query
             updated_state.search_scope = search_scope
             updated_state.research_priorities = research_priorities
             
@@ -107,30 +120,48 @@ class QueryWriterAgent(BaseAgent):
             
             # 폴백 쿼리로 상태 업데이트
             updated_state = self.update_workflow_status(state, "query_writing")
-            updated_state.rag_query = fallback_query["rag_query"]
+            updated_state.primary_query = fallback_query["primary_query"]
+            updated_state.secondary_query = fallback_query["secondary_query"]
+            updated_state.third_query = fallback_query["third_query"]
             updated_state.search_scope = fallback_query["search_scope"]
             updated_state.research_priorities = fallback_query["research_priorities"]
             
             self.log_execution("기본 쿼리 사용으로 계속 진행")
             return updated_state
     
-    def _extract_rag_query(self, rag_query_data: Dict[str, Any]) -> str:
-        """LLM 응답에서 단일 문장 RAG 쿼리를 추출합니다."""
+    def _extract_rag_query(self, rag_query_data: Dict[str, Any], key_name: str) -> str:
+        """LLM 응답에서 특정 타입의 RAG 쿼리를 추출합니다."""
         try:
             if isinstance(rag_query_data, str):
                 return rag_query_data.strip()
-            # dict 형태일 때 우선순위: primary_queries[0] -> keywords 기반 문장
-            primary = rag_query_data.get("primary_queries", []) if isinstance(rag_query_data, dict) else []
-            if isinstance(primary, list) and primary:
-                return str(primary[0]).strip()
+            
+            # dict 형태일 때 해당 키의 첫 번째 값 추출
+            queries = rag_query_data.get(key_name, []) if isinstance(rag_query_data, dict) else []
+            if isinstance(queries, list) and queries:
+                return str(queries[0]).strip()
+            
+            # 키워드 기반으로 기본 쿼리 생성
             keywords = rag_query_data.get("keywords", []) if isinstance(rag_query_data, dict) else []
             if isinstance(keywords, list) and keywords:
-                head = " ".join([str(k) for k in keywords[:2]])
-                return f"{head} 최신 연구 동향과 주요 논문"
+                if key_name == "primary_queries":
+                    return f"{' '.join([str(k) for k in keywords[:3]])} 최신 연구 동향과 주요 논문, 최적화 기법"
+                elif key_name == "secondary_queries":
+                    return f"{' '.join([str(k) for k in keywords[:3]])} 응용 사례, 구현 방법론, 성능 분석"
+                elif key_name == "third_queries":
+                    return f"{' '.join([str(k) for k in keywords[:3]])} 기술 동향, 미래 전망, 산업 적용"
+            
         except Exception:
             pass
-        # 폴백
-        return "AI 최신 연구 동향과 주요 논문"
+        
+        # 기본값 반환
+        if key_name == "primary_queries":
+            return "AI 최신 연구 동향과 주요 논문"
+        elif key_name == "secondary_queries":
+            return "AI 응용 사례와 구현 방법"
+        elif key_name == "third_queries":
+            return "AI 기술 동향과 미래 전망"
+        
+        return "AI 연구 동향과 주요 논문"
     
     def _extract_search_scope(self, rag_query_data: Dict[str, Any]) -> Dict[str, Any]:
         """LLM 응답에서 검색 범위를 추출합니다."""
@@ -173,14 +204,19 @@ class QueryWriterAgent(BaseAgent):
         
         keywords = personal_info.get("research_keywords", ["AI", "머신러닝"])
         interests = research_context.get("research_interests", ["AI 연구"])
+        projects = research_context.get("current_projects", ["AI 연구 프로젝트"])
         
+        # 더 구체적인 쿼리 생성
         return {
             "primary_queries": [
-                f"{' '.join(keywords[:2])} 최신 연구 동향",
-                f"{interests[0] if interests else 'AI'} 관련 논문"
+                f"{' '.join(keywords[:3])} 최신 연구 동향과 주요 논문, 최적화 기법",
+                f"{interests[0] if interests else 'AI'} 관련 최신 연구 성과와 동향"
             ],
             "secondary_queries": [
-                f"{keyword} 응용 사례" for keyword in keywords[:2]
+                f"{keyword} 응용 사례, 구현 방법론, 성능 분석" for keyword in keywords[:3]
+            ],
+            "third_queries": [
+                f"{keyword} 기술 동향, 미래 전망, 산업 적용" for keyword in keywords[:3]
             ],
             "keywords": keywords,
             "search_scope": {
@@ -219,7 +255,9 @@ class QueryWriterAgent(BaseAgent):
             )
             # fallback_data는 단일 문장일 수 있음
             return {
-                "rag_query": self._extract_rag_query(fallback_data),
+                "primary_query": self._extract_rag_query(fallback_data, "primary_queries"),
+                "secondary_query": self._extract_rag_query(fallback_data, "secondary_queries"),
+                "third_query": self._extract_rag_query(fallback_data, "third_queries"),
                 "search_scope": self._extract_search_scope({}),
                 "research_priorities": self._extract_research_priorities({})
             }
@@ -228,7 +266,9 @@ class QueryWriterAgent(BaseAgent):
             self.log_execution(f"폴백 LLM 쿼리 생성 실패: {str(e)}", "WARNING")
             # 하드코딩된 기본 쿼리
             return {
-                "rag_query": "AI 연구 동향 2024와 머신러닝 최신 기법 관련 최신 논문과 리뷰",
+                "primary_query": "AI 연구 동향 2024와 머신러닝 최신 기법 관련 최신 논문과 리뷰",
+                "secondary_query": "AI 응용 사례와 구현 방법론 관련 연구 자료",
+                "third_query": "AI 기술 동향과 미래 전망 분석 보고서",
                 "search_scope": {
                     "time_range": "2023-2024",
                     "sources": ["arxiv.org", "ieee.org"],

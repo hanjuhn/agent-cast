@@ -1,0 +1,37 @@
+{
+  "channel": "소셜",
+  "timestamp": "2025-08-20T18:25:12.237482Z",
+  "message_count": 3,
+  "messages": [
+    {
+      "id": "1755681778.218929",
+      "channel_id": "C09AUJ9MUKC",
+      "user_id": "U09BMD0UBNU",
+      "text": "<@U09BMD0UBNU> 님이 채널에 참여함",
+      "timestamp": "2025-08-20T18:22:58.218929Z",
+      "thread_ts": null,
+      "reply_count": 0,
+      "reactions": []
+    },
+    {
+      "id": "1755681774.575739",
+      "channel_id": "C09AUJ9MUKC",
+      "user_id": "U09AUJ97SRG",
+      "text": "<@U09BMD0UBNU>",
+      "timestamp": "2025-08-20T18:22:54.575739Z",
+      "thread_ts": null,
+      "reply_count": 0,
+      "reactions": []
+    },
+    {
+      "id": "1755518849.866329",
+      "channel_id": "C09AUJ9MUKC",
+      "user_id": "U09AUJ97SRG",
+      "text": "<@U09AUJ97SRG> 님이 채널에 참여함",
+      "timestamp": "2025-08-18T21:07:29.866329Z",
+      "thread_ts": null,
+      "reply_count": 0,
+      "reactions": []
+    }
+  ]
+}

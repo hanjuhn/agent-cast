@@ -80,7 +80,9 @@ async def test_query_writer_agent(personalize_state):
         updated_state = await agent.process(personalize_state)
         
         print("✅ QueryWriterAgent 실행 성공")
-        print(f"RAG 쿼리: {updated_state.rag_query}")
+        print(f"Primary 쿼리: {updated_state.primary_query}")
+        print(f"Secondary 쿼리: {updated_state.secondary_query}")
+        print(f"Third 쿼리: {updated_state.third_query}")
         print(f"검색 범위: {updated_state.search_scope}")
         print(f"연구 우선순위: {updated_state.research_priorities}")
         
@@ -114,13 +116,84 @@ async def test_full_pipeline():
         print("\n=== 최종 결과 요약 ===")
         print(f"워크플로우 단계: {final_state.workflow_status['current_step']}")
         print(f"완료된 단계: {final_state.workflow_status['completed_steps']}")
-        rq = final_state.rag_query
-        print(f"주요 검색 쿼리: {rq if isinstance(rq, str) else rq.get('primary_queries', [])[:1]}")
+        print(f"Primary 쿼리: {final_state.primary_query}")
+        print(f"Secondary 쿼리: {final_state.secondary_query}")
+        print(f"Third 쿼리: {final_state.third_query}")
         print(f"연구 키워드: {final_state.personal_info.get('research_keywords', [])[:3]}")
+        
+        # 결과를 JSON 파일로 저장
+        await save_test_results_to_json(final_state)
         
     except Exception as e:
         print(f"\n❌ 파이프라인 테스트 실패: {e}")
         raise
+
+
+async def save_test_results_to_json(final_state):
+    """테스트 결과를 새로운 3단계 쿼리 구조로 JSON 파일에 저장합니다."""
+    import json
+    from datetime import datetime
+    
+    # output/queries 디렉토리 생성
+    output_dir = Path("output/queries")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # 새로운 구조로 데이터 구성
+    result_data = {
+        "metadata": {
+            "timestamp": datetime.now().isoformat(),
+            "user_query": getattr(final_state, 'user_query', 'AI 연구 동향에 대해 알려주세요'),
+            "is_fallback": False,
+            "generation_method": "llm_generated",
+            "test_type": "test_query_agents"
+        },
+        "personalized_info_summary": {
+            "research_keywords": final_state.personal_info.get('research_keywords', [])[:5],
+            "research_interests": final_state.research_context.get('research_interests', [])[:3],
+            "current_projects": final_state.research_context.get('current_projects', [])[:3]
+        },
+        "generated_queries": {
+            "primary_query": final_state.primary_query,
+            "secondary_query": final_state.secondary_query,
+            "third_query": final_state.third_query
+        },
+        "search_scope": final_state.search_scope,
+        "research_priorities": final_state.research_priorities,
+        "workflow_status": final_state.workflow_status
+    }
+    
+    # 파일명 생성 (타임스탬프 포함)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"TEST_3stage_queries_{timestamp}.json"
+    filepath = output_dir / filename
+    
+    # JSON 파일로 저장
+    try:
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(result_data, f, ensure_ascii=False, indent=2)
+        
+        print(f"\n✅ 테스트 결과가 저장되었습니다: {filepath}")
+        
+        # latest_rag_queries.json은 덮어쓰지 않음 (실제 워크플로우와 충돌 방지)
+        # latest_filepath = output_dir / "latest_rag_queries.json"
+        # with open(latest_filepath, 'w', encoding='utf-8') as f:
+        #     json.dump(result_data, f, ensure_ascii=False, indent=2)
+        # 
+        # print(f"✅ latest_rag_queries.json도 업데이트되었습니다")
+        
+        # 쿼리 품질 확인
+        print(f"\n🔍 생성된 쿼리 품질 확인:")
+        print(f"Primary: {final_state.primary_query}")
+        print(f"Secondary: {final_state.secondary_query}")
+        print(f"Third: {final_state.third_query}")
+        
+        # 개인화 정보 확인
+        print(f"\n🔍 개인화 정보 확인:")
+        print(f"키워드: {final_state.personal_info.get('research_keywords', [])[:5]}")
+        print(f"프로젝트: {final_state.research_context.get('current_projects', [])[:3]}")
+        
+    except Exception as e:
+        print(f"⚠️ JSON 파일 저장 실패: {e}")
 
 
 if __name__ == "__main__":

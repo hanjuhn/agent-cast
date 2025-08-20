@@ -96,6 +96,11 @@ class LLMClient:
         Returns:
             분석된 개인화 정보
         """
+        # 데이터를 토큰 제한 내에서 요약/압축
+        compressed_slack = self._compress_slack_data(slack_data)
+        compressed_notion = self._compress_notion_data(notion_data)
+        compressed_gmail = self._compress_gmail_data(gmail_data)
+        
         system_prompt = """당신은 사용자의 개인화된 정보를 분석하는 AI 어시스턴트입니다.
 Slack, Notion, Gmail 데이터를 종합하여 사용자의 연구 방향과 관심사를 파악하세요.
 
@@ -120,14 +125,14 @@ Slack, Notion, Gmail 데이터를 종합하여 사용자의 연구 방향과 관
 
         user_prompt = f"""다음 데이터를 분석해주세요:
 
-=== Slack 데이터 ===
-{slack_data}
+=== Slack 데이터 (요약) ===
+{compressed_slack}
 
-=== Notion 데이터 ===
-{notion_data}
+=== Notion 데이터 (요약) ===
+{compressed_notion}
 
-=== Gmail 데이터 ===
-{gmail_data}
+=== Gmail 데이터 (요약) ===
+{compressed_gmail}
 
 위 데이터를 종합하여 사용자의 연구 컨텍스트를 분석하고 JSON 형식으로 결과를 반환해주세요."""
 
@@ -149,6 +154,103 @@ Slack, Notion, Gmail 데이터를 종합하여 사용자의 연구 방향과 관
         except Exception as e:
             print(f"개인화 데이터 분석 실패: {e}")
             return self._get_default_analysis()
+    
+    def _compress_slack_data(self, slack_data: Dict[str, Any]) -> str:
+        """Slack 데이터를 압축하여 요약합니다."""
+        if not slack_data or slack_data.get("connection_status") is False:
+            return "연결 실패 또는 데이터 없음"
+        
+        workspace = slack_data.get("workspace_info", {})
+        channels = slack_data.get("channels", [])
+        recent_activity = slack_data.get("recent_activity", {})
+        all_messages = slack_data.get("all_channel_messages", {})
+        ai_messages = slack_data.get("ai_research_messages", [])
+        
+        # 핵심 정보만 추출
+        summary = f"""워크스페이스: {workspace.get('workspace_name', 'Unknown')}
+채널 수: {len(channels)}
+총 메시지 수: {slack_data.get('total_message_count', 0)}
+
+주요 채널: {', '.join([ch.get('name', '') for ch in channels[:5]])}
+
+최근 활동 (1주일):
+- 총 메시지: {recent_activity.get('total_messages', 0)}
+- 활성 채널: {recent_activity.get('active_channels', 0)}
+- 트렌딩 토픽: {', '.join(recent_activity.get('trending_topics', [])[:3])}
+
+AI 연구 관련 메시지: {len(ai_messages)}개
+- 주요 내용: {', '.join([msg.get('text', '')[:50] for msg in ai_messages[:3]])}"""
+        
+        return summary
+    
+    def _compress_notion_data(self, notion_data: Dict[str, Any]) -> str:
+        """Notion 데이터를 압축하여 요약합니다."""
+        if not notion_data or notion_data.get("connection_status") is False:
+            return "연결 실패 또는 데이터 없음"
+        
+        workspace = notion_data.get("workspace_info", {})
+        databases = notion_data.get("databases", [])
+        pages = notion_data.get("all_pages", [])
+        recent_changes = notion_data.get("recent_changes", [])
+        
+        # 데이터베이스 요약
+        db_summary = []
+        for db in databases[:3]:  # 상위 3개만
+            entries_count = len(db.get('entries', []))
+            db_summary.append(f"{db.get('title', 'Unknown')}: {entries_count}개 항목")
+        
+        # 페이지 요약
+        page_summary = []
+        for page in pages[:5]:  # 상위 5개만
+            content_count = len(page.get('content', []))
+            page_summary.append(f"{page.get('title', 'Unknown')}: {content_count}개 블록")
+        
+        summary = f"""워크스페이스: {workspace.get('workspace_name', 'Unknown')}
+데이터베이스: {len(databases)}개
+총 데이터베이스 항목: {notion_data.get('total_database_entries', 0)}개
+페이지: {len(pages)}개
+
+주요 데이터베이스:
+{chr(10).join(db_summary)}
+
+주요 페이지:
+{chr(10).join(page_summary)}
+
+최근 변경사항: {len(recent_changes)}개"""
+        
+        return summary
+    
+    def _compress_gmail_data(self, gmail_data: Dict[str, Any]) -> str:
+        """Gmail 데이터를 압축하여 요약합니다."""
+        if not gmail_data or gmail_data.get("connection_status") is False:
+            return "연결 실패 또는 데이터 없음"
+        
+        profile = gmail_data.get("profile_info", {})
+        labels = gmail_data.get("labels", [])
+        all_messages = gmail_data.get("all_messages", [])
+        ai_messages = gmail_data.get("ai_research_messages", [])
+        conference_messages = gmail_data.get("conference_messages", [])
+        
+        # 라벨 요약
+        label_summary = []
+        for label in labels[:5]:  # 상위 5개만
+            label_summary.append(f"{label.get('name', 'Unknown')}: {label.get('messagesTotal', 0)}개")
+        
+        summary = f"""프로필: {profile.get('name', 'Unknown')} ({profile.get('email_address', 'Unknown')})
+총 메시지: {profile.get('messages_total', 0)}개
+라벨: {len(labels)}개
+최근 메시지: {len(all_messages)}개
+
+주요 라벨:
+{chr(10).join(label_summary)}
+
+AI 연구 관련: {len(ai_messages)}개
+컨퍼런스 관련: {len(conference_messages)}개
+
+AI 연구 메시지 샘플:
+{chr(10).join([f"- {msg.get('snippet', '')[:100]}..." for msg in ai_messages[:2]])}"""
+        
+        return summary
     
     async def generate_rag_queries(
         self,

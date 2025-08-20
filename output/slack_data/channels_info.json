@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-08-19T20:42:19.758476Z",
+  "timestamp": "2025-08-20T18:25:12.235877Z",
   "workspace": {
     "workspace_id": "T09AUJ94P98",
     "workspace_name": "비타민 14기 생성조",
@@ -16,7 +16,7 @@
       "name": "slack-전체",
       "is_private": false,
       "is_archived": false,
-      "member_count": 1,
+      "member_count": 2,
       "topic": "",
       "purpose": "공지와 회사 뉴스, 향후 이벤트 또는 칭찬받아야 하는 팀원에 대한 업데이트를 공유하세요. ⭐",
       "created": "2025-08-18T21:07:29Z",
@@ -27,7 +27,7 @@
       "name": "소셜",
       "is_private": false,
       "is_archived": false,
-      "member_count": 1,
+      "member_count": 2,
       "topic": "",
       "purpose": "다른 채널은 업무용입니다. 이 채널은 즐기기 위한 채널입니다. 팀원들과 친해지고 자신의 재미있는 면모를 보여주세요. 🎈",
       "created": "2025-08-18T21:07:29Z",
@@ -38,21 +38,10 @@
       "name": "새-채널",
       "is_private": false,
       "is_archived": false,
-      "member_count": 1,
+      "member_count": 0,
       "topic": "",
       "purpose": "이 채널은 모두 #새-채널에 관한 것입니다. 미팅, 문서 공유, 의사 결정 모두 팀과 함께 진행하세요.",
       "created": "2025-08-18T21:08:07Z",
-      "creator": "U09AUJ97SRG"
-    },
-    {
-      "id": "C09AWB0TN30",
-      "name": "aws-잡담",
-      "is_private": false,
-      "is_archived": false,
-      "member_count": 2,
-      "topic": "",
-      "purpose": "",
-      "created": "2025-08-18T21:18:03Z",
       "creator": "U09AUJ97SRG"
     }
   ]

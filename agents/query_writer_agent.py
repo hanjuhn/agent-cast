@@ -64,7 +64,7 @@ class QueryWriterAgent(BaseAgent):
                 self.log_execution("LLM 클라이언트 없음, 기본 쿼리 생성 방식 사용", "WARNING")
                 rag_query_data = self._generate_basic_rag_queries(personalized_info, user_query)
             
-            # 결과 구조화
+            # 결과 구조화: rag_query는 단일 문장 문자열로 정규화
             rag_query = self._extract_rag_query(rag_query_data)
             search_scope = self._extract_search_scope(rag_query_data)
             research_priorities = self._extract_research_priorities(rag_query_data)
@@ -114,19 +114,27 @@ class QueryWriterAgent(BaseAgent):
             self.log_execution("기본 쿼리 사용으로 계속 진행")
             return updated_state
     
-    def _extract_rag_query(self, rag_query_data: Dict[str, Any]) -> Dict[str, Any]:
-        """LLM 응답에서 RAG 쿼리 정보를 추출합니다."""
-        return {
-            "primary_queries": rag_query_data.get("primary_queries", []),
-            "secondary_queries": rag_query_data.get("secondary_queries", []),
-            "keywords": rag_query_data.get("keywords", []),
-            "research_area": " ".join(rag_query_data.get("keywords", [])[:3]),
-            "expected_results": rag_query_data.get("expected_results", [])
-        }
+    def _extract_rag_query(self, rag_query_data: Dict[str, Any]) -> str:
+        """LLM 응답에서 단일 문장 RAG 쿼리를 추출합니다."""
+        try:
+            if isinstance(rag_query_data, str):
+                return rag_query_data.strip()
+            # dict 형태일 때 우선순위: primary_queries[0] -> keywords 기반 문장
+            primary = rag_query_data.get("primary_queries", []) if isinstance(rag_query_data, dict) else []
+            if isinstance(primary, list) and primary:
+                return str(primary[0]).strip()
+            keywords = rag_query_data.get("keywords", []) if isinstance(rag_query_data, dict) else []
+            if isinstance(keywords, list) and keywords:
+                head = " ".join([str(k) for k in keywords[:2]])
+                return f"{head} 최신 연구 동향과 주요 논문"
+        except Exception:
+            pass
+        # 폴백
+        return "AI 최신 연구 동향과 주요 논문"
     
     def _extract_search_scope(self, rag_query_data: Dict[str, Any]) -> Dict[str, Any]:
         """LLM 응답에서 검색 범위를 추출합니다."""
-        search_scope = rag_query_data.get("search_scope", {})
+        search_scope = rag_query_data.get("search_scope", {}) if isinstance(rag_query_data, dict) else {}
         return {
             "time_range": search_scope.get("time_range", "2023-2024"),
             "sources": search_scope.get("sources", ["arxiv.org", "ieee.org"]),
@@ -137,7 +145,7 @@ class QueryWriterAgent(BaseAgent):
     
     def _extract_research_priorities(self, rag_query_data: Dict[str, Any]) -> List[Dict[str, Any]]:
         """LLM 응답에서 연구 우선순위를 추출합니다."""
-        priorities = rag_query_data.get("research_priorities", [])
+        priorities = rag_query_data.get("research_priorities", []) if isinstance(rag_query_data, dict) else []
         
         # 기본 구조 보장
         formatted_priorities = []
@@ -209,24 +217,18 @@ class QueryWriterAgent(BaseAgent):
                 },
                 user_query=user_query or "AI 연구 동향에 대한 정보"
             )
-            
+            # fallback_data는 단일 문장일 수 있음
             return {
                 "rag_query": self._extract_rag_query(fallback_data),
-                "search_scope": self._extract_search_scope(fallback_data),
-                "research_priorities": self._extract_research_priorities(fallback_data)
+                "search_scope": self._extract_search_scope({}),
+                "research_priorities": self._extract_research_priorities({})
             }
             
         except Exception as e:
             self.log_execution(f"폴백 LLM 쿼리 생성 실패: {str(e)}", "WARNING")
             # 하드코딩된 기본 쿼리
             return {
-                "rag_query": {
-                    "primary_queries": ["AI 연구 동향 2024", "머신러닝 최신 기법"],
-                    "secondary_queries": ["AI 최적화 알고리즘", "데이터 품질 향상"],
-                    "keywords": ["AI", "머신러닝", "최적화"],
-                    "research_area": "AI 기반 시스템 최적화",
-                    "expected_results": ["논문", "기술 동향"]
-                },
+                "rag_query": "AI 연구 동향 2024와 머신러닝 최신 기법 관련 최신 논문과 리뷰",
                 "search_scope": {
                     "time_range": "2023-2024",
                     "sources": ["arxiv.org", "ieee.org"],

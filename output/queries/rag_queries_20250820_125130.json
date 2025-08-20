@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "timestamp": "2025-08-20T12:51:30.471464",
+    "user_query": "AI 연구 동향에 대해 알려주세요",
+    "is_fallback": false,
+    "generation_method": "llm_generated"
+  },
+  "personalized_info_summary": {
+    "research_keywords": [
+      "LLM",
+      "AI",
+      "MCP",
+      "Multi-AI Agent"
+    ],
+    "research_interests": [
+      "LLM 기술",
+      "생성형 AI",
+      "AI Agent",
+      "MCP",
+      "Multi-AI Agent 아키텍처"
+    ],
+    "current_projects": [
+      "Naver Cloud AI DevDay"
+    ]
+  },
+  "generated_queries": "LLM 기술, 생성형 AI, AI Agent, MCP, Multi-AI Agent 아키텍처에 대한 최신 AI 연구 동향과 논문"
+}

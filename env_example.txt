@@ -1,3 +1,6 @@
+# OpenAI API (리팩토링된 에이전트에서 GPT-4 사용)
+OPENAI_API_KEY=sk-your_openai_api_key_here
+
 # 노션 MCP
 NOTION_INTEGRATION_TOKEN=secret_your_integration_token_here
 NOTION_WORKSPACE_ID=your_workspace_id_here
@@ -5,6 +8,7 @@ NOTION_WORKSPACE_ID=your_workspace_id_here
 # 슬랙 MCP
 SLACK_BOT_TOKEN=xoxb-your-bot-token-here
 SLACK_WORKSPACE_ID=T1234567890
+SLACK_APP_TOKEN=xapp-your-app-token-here
 
 # Gmail MCP
 GMAIL_CREDENTIALS_FILE=credentials.json

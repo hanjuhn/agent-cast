@@ -6,7 +6,10 @@ from dataclasses import dataclass
 from langgraph.graph import StateGraph
 from langgraph.graph.message import add_messages
 
-from ..state import WorkflowState
+try:
+    from state import WorkflowState
+except ImportError:
+    from ..state import WorkflowState
 
 
 @dataclass

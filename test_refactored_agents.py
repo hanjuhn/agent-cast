@@ -114,7 +114,8 @@ async def test_full_pipeline():
         print("\n=== 최종 결과 요약 ===")
         print(f"워크플로우 단계: {final_state.workflow_status['current_step']}")
         print(f"완료된 단계: {final_state.workflow_status['completed_steps']}")
-        print(f"주요 검색 쿼리: {final_state.rag_query.get('primary_queries', [])[:2]}")
+        rq = final_state.rag_query
+        print(f"주요 검색 쿼리: {rq if isinstance(rq, str) else rq.get('primary_queries', [])[:1]}")
         print(f"연구 키워드: {final_state.personal_info.get('research_keywords', [])[:3]}")
         
     except Exception as e:

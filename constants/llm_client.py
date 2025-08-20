@@ -154,7 +154,7 @@ Slack, Notion, Gmail 데이터를 종합하여 사용자의 연구 방향과 관
         self,
         personalized_info: Dict[str, Any],
         user_query: str = ""
-    ) -> Dict[str, Any]:
+    ) -> Any:
         """
         개인화된 정보를 바탕으로 RAG 검색 쿼리를 생성합니다.
         
@@ -163,43 +163,26 @@ Slack, Notion, Gmail 데이터를 종합하여 사용자의 연구 방향과 관
             user_query: 사용자 쿼리 (선택사항)
             
         Returns:
-            생성된 RAG 쿼리 정보
+            생성된 RAG 단일 문장 쿼리 (str)
         """
-        system_prompt = """당신은 RAG 검색 쿼리를 생성하는 전문가입니다.
-사용자의 개인화된 정보를 바탕으로 최적의 검색 쿼리를 생성하세요.
+        system_prompt = """당신은 정보검색 전문가입니다.
+개인화된 정보를 바탕으로, 사용자가 바로 검색에 사용할 수 있는 한국어 단일 문장 검색 쿼리를 만들어주세요.
 
-결과를 다음 JSON 형식으로 반환하세요:
-{
-    "primary_queries": ["주요 검색 쿼리 1", "주요 검색 쿼리 2"],
-    "secondary_queries": ["보조 검색 쿼리 1", "보조 검색 쿼리 2"],
-    "keywords": ["키워드1", "키워드2"],
-    "search_scope": {
-        "time_range": "검색 시간 범위",
-        "sources": ["소스1", "소스2"],
-        "languages": ["언어1", "언어2"],
-        "document_types": ["문서 타입1", "문서 타입2"]
-    },
-    "research_priorities": [
-        {
-            "topic": "연구 주제",
-            "priority": "high/medium/low",
-            "rationale": "우선순위 근거"
-        }
-    ],
-    "expected_results": ["예상 결과 타입 1", "예상 결과 타입 2"]
-}
+요구사항:
+- 문장 하나만 출력하세요. 앞뒤 여백 외 불필요한 텍스트/따옴표/코드블록/JSON을 넣지 마세요.
+- 20~100자 사이의 간결한 문장으로 작성하세요.
+- 핵심 주제, 시점(최신성), 문서유형(논문/리뷰 등)을 자연스럽게 포함하세요.
+예: "동적 배칭을 활용한 대규모 언어모델 효율 학습 최신 논문과 리뷰"
+"""
 
-개인화된 정보에 기반하여 사용자가 정말 관심있어 할 만한 최신 연구와 기술 동향을 찾을 수 있는 쿼리를 생성하세요."""
+        user_prompt = f"""다음 정보를 바탕으로 단 하나의 한국어 검색 문장을 생성하세요:
 
-        user_prompt = f"""다음 개인화된 정보를 바탕으로 RAG 검색 쿼리를 생성해주세요:
-
-=== 개인화된 정보 ===
+[개인화된 정보]
 {personalized_info}
 
-=== 사용자 쿼리 ===
+[사용자 요청]
 {user_query or "최신 AI 연구 동향에 대한 정보를 찾고 싶습니다."}
-
-위 정보를 종합하여 사용자에게 가장 관련성 높은 검색 쿼리를 JSON 형식으로 생성해주세요."""
+"""
 
         try:
             response = await self.generate_response(
@@ -207,26 +190,22 @@ Slack, Notion, Gmail 데이터를 종합하여 사용자의 연구 방향과 관
                 system_prompt=system_prompt,
                 temperature=0.5
             )
-            
-            # JSON 파싱 시도
-            try:
-                queries = json.loads(response)
-            except json.JSONDecodeError:
-                queries = self._extract_queries_from_text(response, personalized_info)
-            
-            # 쿼리 결과를 파일로 저장
-            await self._save_queries_to_file(queries, personalized_info, user_query)
-            
-            return queries
+            # 단일 문장 추출
+            single_query = self._extract_single_query(response, personalized_info, user_query)
+
+            # 파일 저장
+            await self._save_queries_to_file(single_query, personalized_info, user_query)
+
+            return single_query
                 
         except Exception as e:
             print(f"RAG 쿼리 생성 실패: {e}")
-            fallback_queries = self._get_default_queries()
-            
+            fallback_query = self._get_default_single_query(personalized_info, user_query)
+
             # 폴백 쿼리도 저장
-            await self._save_queries_to_file(fallback_queries, personalized_info, user_query, is_fallback=True)
-            
-            return fallback_queries
+            await self._save_queries_to_file(fallback_query, personalized_info, user_query, is_fallback=True)
+
+            return fallback_query
     
     def _extract_info_from_text(self, text: str) -> Dict[str, Any]:
         """텍스트에서 정보를 추출하여 기본 구조로 변환합니다."""
@@ -272,6 +251,49 @@ Slack, Notion, Gmail 데이터를 종합하여 사용자의 연구 방향과 관
             ],
                         "expected_results": ["논문", "기술 동향"]
         }
+
+    def _extract_single_query(self, text: str, personalized_info: Dict[str, Any], user_query: str) -> str:
+        """응답 텍스트에서 단일 문장 쿼리를 추출합니다. JSON일 경우에도 첫 쿼리를 선택합니다."""
+        try:
+            data = json.loads(text)
+            if isinstance(data, dict):
+                # 우선순위: explicit 'query' -> primary_queries[0] -> keywords 기반 생성
+                query = data.get("query")
+                if not query:
+                    primary = data.get("primary_queries") or []
+                    if isinstance(primary, list) and primary:
+                        query = str(primary[0])
+                if not query:
+                    kws = data.get("keywords") or []
+                    if isinstance(kws, list) and kws:
+                        head = " ".join([str(k) for k in kws[:2]])
+                        query = f"{head} 최신 연구 동향과 주요 논문"
+                if query:
+                    return query.strip()
+        except Exception:
+            pass
+
+        # JSON이 아니거나 적합한 키가 없을 때: 응답에서 한 줄만 추출
+        line = text.strip().splitlines()[0].strip().strip('"').strip("'")
+        if line:
+            return line
+
+        # 최종 폴백
+        return self._get_default_single_query(personalized_info, user_query)
+
+    def _get_default_single_query(self, personalized_info: Dict[str, Any], user_query: str) -> str:
+        """개인화 정보를 반영한 기본 단일 문장 쿼리 생성."""
+        personal = personalized_info.get("personal_info", {}) if isinstance(personalized_info, dict) else {}
+        context = personalized_info.get("research_context", {}) if isinstance(personalized_info, dict) else {}
+        keywords = personal.get("research_keywords", [])
+        interests = context.get("research_interests", [])
+        base = (user_query or "최신 AI 연구 동향").strip()
+        core = (interests[0] if interests else (keywords[0] if keywords else "AI")).strip()
+        if core in base:
+            topic = base
+        else:
+            topic = f"{core} {base}"
+        return f"{topic} 관련 최신 논문과 리뷰"
     
     async def _save_queries_to_file(
         self, 

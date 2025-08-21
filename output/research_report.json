@@ -1,0 +1,67 @@
+{
+  "title": "상위 5개 기사 기승전결 분석 보고서",
+  "generated_date": "2025-08-21",
+  "structure": "기승전결 (起承転結)",
+  "articles": [
+    {
+      "rank": 1,
+      "title": "[GN⁺] GPT-OSS vs. Qwen3 및 GPT-2 이후 LLM 아키텍처 발전 상세 비교",
+      "date": "2025-08-17",
+      "source": "파이토치 한국 사용자 모임",
+      "kishotenketsu": {
+        "ki": "분석 중 오류 발생: 'ResearcherAgent' object has no attribute 'client'",
+        "sho": "분석을 완료하지 못했습니다.",
+        "ten": "분석을 완료하지 못했습니다.",
+        "ketsu": "분석을 완료하지 못했습니다."
+      }
+    },
+    {
+      "rank": 2,
+      "title": "all-smi: 현존하는 대부분의 GPU 및 NPU의 하드웨어 모니터링 CLI 도구",
+      "date": "2025-08-16",
+      "source": "파이토치 한국 사용자 모임",
+      "kishotenketsu": {
+        "ki": "분석 중 오류 발생: 'ResearcherAgent' object has no attribute 'client'",
+        "sho": "분석을 완료하지 못했습니다.",
+        "ten": "분석을 완료하지 못했습니다.",
+        "ketsu": "분석을 완료하지 못했습니다."
+      }
+    },
+    {
+      "rank": 3,
+      "title": "DINOv3: 자기 지도 학습(SSL)을 활용한 초대규모의 범용 비전 백본(Vision Backbone) 모델(feat. Meta AI)",
+      "date": "2025-08-16",
+      "source": "파이토치 한국 사용자 모임",
+      "kishotenketsu": {
+        "ki": "분석 중 오류 발생: 'ResearcherAgent' object has no attribute 'client'",
+        "sho": "분석을 완료하지 못했습니다.",
+        "ten": "분석을 완료하지 못했습니다.",
+        "ketsu": "분석을 완료하지 못했습니다."
+      }
+    },
+    {
+      "rank": 4,
+      "title": "AI-powered stuffed animals are coming for your kids",
+      "date": "2025-08-16",
+      "source": "TechCrunch",
+      "kishotenketsu": {
+        "ki": "분석 중 오류 발생: 'ResearcherAgent' object has no attribute 'client'",
+        "sho": "분석을 완료하지 못했습니다.",
+        "ten": "분석을 완료하지 못했습니다.",
+        "ketsu": "분석을 완료하지 못했습니다."
+      }
+    },
+    {
+      "rank": 5,
+      "title": "Anthropic says some Claude models can now end ‘harmful or abusive’ conversations ",
+      "date": "2025-08-16",
+      "source": "TechCrunch",
+      "kishotenketsu": {
+        "ki": "분석 중 오류 발생: 'ResearcherAgent' object has no attribute 'client'",
+        "sho": "분석을 완료하지 못했습니다.",
+        "ten": "분석을 완료하지 못했습니다.",
+        "ketsu": "분석을 완료하지 못했습니다."
+      }
+    }
+  ]
+}

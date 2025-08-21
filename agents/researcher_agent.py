@@ -1,366 +1,154 @@
-"""Researcher Agent for RAG-based information retrieval and analysis."""
+"""Researcher Agent for analyzing articles and generating Kishotenketsu-structured reports."""
 
-import asyncio
+import json
+import os
+from datetime import datetime
 from typing import Any, Dict, List
-from ..constants import AGENT_NAMES, RESEARCHER_SYSTEM_PROMPT
-from .base_agent import BaseAgent, AgentResult
-from ..state import WorkflowState
+from openai import OpenAI
 
-
-class ResearcherAgent(BaseAgent):
-    """RAG 시스템을 통해 정보를 검색하고 분석하는 에이전트."""
+class ResearcherAgent:
+    """기사를 분석하고 기승전결 구조의 보고서를 생성하는 에이전트."""
     
     def __init__(self):
-        super().__init__(
-            name=AGENT_NAMES["RESEARCHER"],
-            description="RAG 시스템을 통해 정보를 검색하고 분석하는 에이전트"
-        )
-        self.required_inputs = ["rag_query", "vector_db"]
-        self.output_keys = ["research_results", "search_strategy", "rag_metrics"]
-        self.timeout = 120
-        self.retry_attempts = 2
-        self.priority = 4
-        
-        # 검색 설정
-        self.search_config = {
-            "top_k": 10,
-            "similarity_threshold": 0.7,
-            "max_results": 20
-        }
-    
-    async def process(self, state: WorkflowState) -> WorkflowState:
-        """RAG 기반 정보 검색 및 분석을 수행합니다."""
-        self.log_execution("RAG 기반 정보 검색 및 분석 시작")
-        
+        self.report_template = """
+주어진 기사를 분석하여 기승전결(起承轉結) 구조로 보고서를 작성해주세요:
+
+기사 제목: {title}
+날짜: {date}
+출처: {source}
+내용: {content}
+
+다음 구조로 작성해주세요:
+- 기(起): 주제의 시작, 핵심 개념 소개
+- 승(承): 주제의 전개, 세부 내용 설명
+- 전(轉): 전환점, 다른 관점이나 도전 과제
+- 結(結): 결론, 시사점과 전망
+
+추가 지침:
+- 전문적이고 객관적인 톤 유지
+- 핵심 용어나 개념 설명 포함
+- 실제 예시나 데이터 인용
+- 미래 전망 및 시사점 제시
+"""
+        # OpenAI 클라이언트 초기화
         try:
-            # 입력 검증
-            if not self.validate_inputs(state):
-                raise ValueError("필수 입력이 누락되었습니다: rag_query, vector_db")
+            self.client = OpenAI()
+        except Exception as e:
+            print(f"OpenAI 클라이언트 초기화 실패: {str(e)}")
+    
+    def process(self, json_path: str) -> Dict[str, Any]:
+        """주어진 JSON 파일에서 상위 5개 기사를 읽어서 기승전결 구조의 보고서를 생성합니다."""
+        try:
+            # JSON 파일 읽기
+            if not os.path.exists(json_path):
+                raise ValueError(f"JSON 파일을 찾을 수 없습니다: {json_path}")
             
-            # RAG 검색 수행
-            search_results = await self._perform_rag_search(state.rag_query, state.vector_db)
+            with open(json_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
             
-            # 검색 결과 분석
-            research_results = self._analyze_search_results(search_results)
+            # 상위 5개 기사 선택 (날짜순)
+            top_articles = sorted(data, key=lambda x: x.get('date', ''), reverse=True)[:5]
             
-            # 검색 전략 생성
-            search_strategy = self._generate_search_strategy(state.rag_query, search_results)
+            # 보고서 생성
+            report = {
+                "title": "상위 5개 기사 기승전결 분석 보고서",
+                "generated_date": datetime.now().strftime("%Y-%m-%d"),
+                "structure": "기승전결 (起承転結)",
+                "articles": []
+            }
             
-            # RAG 메트릭 계산
-            rag_metrics = self._calculate_rag_metrics(search_results, state.rag_query)
-            
-            # 결과 생성
-            result = AgentResult(
-                success=True,
-                output={
-                    "research_results": research_results,
-                    "search_strategy": search_strategy,
-                    "rag_metrics": rag_metrics
-                },
-                metadata={
-                    "search_method": "vector_similarity",
-                    "total_results": len(search_results),
-                    "query_complexity": "medium"
+            for idx, article in enumerate(top_articles, 1):
+                article_report = {
+                    "rank": idx,
+                    "title": article.get('title', '제목 없음'),
+                    "date": article.get('date', '날짜 없음'),
+                    "source": article.get('source', '출처 없음'),
+                    "kishotenketsu": self._analyze_article_kishotenketsu(article)
                 }
-            )
+                report["articles"].append(article_report)
             
-            # 상태 업데이트
-            updated_state = self.update_workflow_status(state, "research")
-            updated_state.research_results = research_results
-            updated_state.search_strategy = search_strategy
-            updated_state.rag_metrics = rag_metrics
-            
-            self.log_execution("RAG 기반 정보 검색 및 분석 완료")
-            return updated_state
+            return report
             
         except Exception as e:
-            self.log_execution(f"RAG 기반 정보 검색 및 분석 실패: {str(e)}", "ERROR")
+            print(f"보고서 생성 중 오류 발생: {str(e)}")
+            return {
+                "title": "보고서 생성 실패",
+                "error": str(e)
+            }
+    
+    def _analyze_article_kishotenketsu(self, article: Dict[str, Any]) -> Dict[str, str]:
+        """기사를 기승전결 구조로 분석합니다."""
+        content = article.get('content', '')
+        if not content:
+            return {
+                "ki": "내용이 없습니다.",
+                "sho": "내용이 없습니다.",
+                "ten": "내용이 없습니다.",
+                "ketsu": "내용이 없습니다."
+            }
             
-            # 폴백 데이터 사용
-            fallback_data = self._get_fallback_data()
-            
-            result = AgentResult(
-                success=False,
-                output=fallback_data,
-                error_message=str(e)
+        title = article.get('title', '')
+        date = article.get('date', '')
+        source = article.get('source', '')
+        
+        try:
+            # OpenAI API를 사용하여 기승전결 분석
+            response = self.client.chat.completions.create(
+                model="gpt-4",  # 또는 다른 적절한 모델
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "전문 기술 분석가로서 기사를 기승전결 구조로 분석해주세요."
+                    },
+                    {
+                        "role": "user",
+                        "content": self.report_template.format(
+                            title=title,
+                            date=date,
+                            source=source,
+                            content=content
+                        )
+                    }
+                ],
+                temperature=0.7
             )
             
-            # 폴백 데이터로 상태 업데이트
-            updated_state = self.update_workflow_status(state, "research")
-            updated_state.research_results = fallback_data["research_results"]
-            updated_state.search_strategy = fallback_data["search_strategy"]
-            updated_state.rag_metrics = fallback_data["rag_metrics"]
+            # 응답을 구조화된 형식으로 변환
+            result = response.choices[0].message.content
             
-            self.log_execution("폴백 데이터 사용으로 계속 진행")
-            return updated_state
-    
-    async def _perform_rag_search(self, rag_query: Any, vector_db: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """RAG 검색을 수행합니다."""
-        # 실제 구현에서는 벡터 DB에서 유사도 검색을 수행합니다
-        # 현재는 시뮬레이션된 검색 결과를 반환합니다
-        
-        await asyncio.sleep(2)  # 검색 시간 시뮬레이션
-        
-        # 시뮬레이션된 검색 결과
-        search_results = [
-            {
-                "chunk_id": "arxiv_001_title",
-                "content": "Efficient Large Language Model Training with Dynamic Batching",
-                "similarity_score": 0.95,
-                "source": "arxiv.org",
-                "metadata": {
-                    "type": "research_paper",
-                    "authors": ["Zhang, L.", "Wang, Y.", "Chen, X."],
-                    "published_date": "2024-08-01",
-                    "category": "cs.AI"
-                },
-                "relevance": "high"
-            },
-            {
-                "chunk_id": "techcrunch_001_abstract",
-                "content": "OpenAI has announced the release of GPT-4o Mini, a more efficient version...",
-                "similarity_score": 0.88,
-                "source": "techcrunch.com",
-                "metadata": {
-                    "type": "news_article",
-                    "authors": ["TechCrunch Staff"],
-                    "published_date": "2024-08-15",
-                    "category": "AI News"
-                },
-                "relevance": "medium"
-            },
-            {
-                "chunk_id": "aitimes_001_abstract",
-                "content": "한국과학기술원(KIST) 연구진이 머신러닝 모델의 성능을 크게 향상시키는...",
-                "similarity_score": 0.92,
-                "source": "aitimes.kr",
-                "metadata": {
-                    "type": "research_news",
-                    "authors": ["김연구원", "이박사"],
-                    "published_date": "2024-08-14",
-                    "category": "AI Research"
-                },
-                "relevance": "high"
-            }
-        ]
-        
-        # 유사도 점수별 정렬
-        search_results.sort(key=lambda x: x["similarity_score"], reverse=True)
-        
-        return search_results[:self.search_config["top_k"]]
-    
-    def _analyze_search_results(self, search_results: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """검색 결과를 분석합니다."""
-        if not search_results:
-            return {"error": "No search results available"}
-        
-        # 소스별 분석
-        source_analysis = {}
-        for result in search_results:
-            source = result["source"]
-            if source not in source_analysis:
-                source_analysis[source] = {
-                    "count": 0,
-                    "avg_similarity": 0.0,
-                    "relevance_distribution": {"high": 0, "medium": 0, "low": 0}
-                }
-            
-            source_analysis[source]["count"] += 1
-            source_analysis[source]["avg_similarity"] += result["similarity_score"]
-            source_analysis[source]["relevance_distribution"][result["relevance"]] += 1
-        
-        # 평균 유사도 계산
-        for source in source_analysis:
-            source_analysis[source]["avg_similarity"] /= source_analysis[source]["count"]
-        
-        # 전체 통계
-        total_results = len(search_results)
-        avg_similarity = sum(r["similarity_score"] for r in search_results) / total_results
-        
-        # 키워드 추출 및 분석
-        keywords = self._extract_keywords(search_results)
-        
-        return {
-            "summary": {
-                "total_results": total_results,
-                "average_similarity": avg_similarity,
-                "high_relevance_count": len([r for r in search_results if r["relevance"] == "high"]),
-                "medium_relevance_count": len([r for r in search_results if r["relevance"] == "medium"]),
-                "low_relevance_count": len([r for r in search_results if r["relevance"] == "low"])
-            },
-            "source_analysis": source_analysis,
-            "keywords": keywords,
-            "trends": self._identify_trends(search_results),
-            "recommendations": self._generate_recommendations(search_results)
-        }
-    
-    def _extract_keywords(self, search_results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """검색 결과에서 키워드를 추출합니다."""
-        # 간단한 키워드 추출 (실제로는 NLP 라이브러리 사용)
-        all_text = " ".join([r["content"] for r in search_results])
-        words = all_text.lower().split()
-        
-        # 일반적인 단어 제거
-        stop_words = {"the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for", "of", "with", "by"}
-        filtered_words = [word for word in words if word not in stop_words and len(word) > 3]
-        
-        # 단어 빈도 계산
-        word_freq = {}
-        for word in filtered_words:
-            word_freq[word] = word_freq.get(word, 0) + 1
-        
-        # 상위 키워드 추출
-        top_keywords = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)[:10]
-        
-        return [
-            {"keyword": word, "frequency": freq, "relevance": "high" if freq > 2 else "medium"}
-            for word, freq in top_keywords
-        ]
-    
-    def _identify_trends(self, search_results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """검색 결과에서 트렌드를 식별합니다."""
-        trends = []
-        
-        # 최신 논문 트렌드
-        recent_papers = [r for r in search_results if r["metadata"]["type"] == "research_paper"]
-        if recent_papers:
-            trends.append({
-                "type": "research_trend",
-                "description": "최신 AI 연구 논문에서 동적 배칭과 효율성 최적화가 주요 주제",
-                "evidence": [r["content"] for r in recent_papers[:3]],
-                "confidence": 0.85
-            })
-        
-        # 뉴스 트렌드
-        news_articles = [r for r in search_results if r["metadata"]["type"] == "news_article"]
-        if news_articles:
-            trends.append({
-                "type": "news_trend",
-                "description": "AI 모델의 효율성과 성능 향상이 주요 뉴스 주제",
-                "evidence": [r["content"] for r in news_articles[:2]],
-                "confidence": 0.78
-            })
-        
-        return trends
-    
-    def _generate_recommendations(self, search_results: List[Dict[str, Any]]) -> List[str]:
-        """검색 결과를 바탕으로 권장사항을 생성합니다."""
-        recommendations = []
-        
-        # 고유성 기반 권장사항
-        unique_sources = set(r["source"] for r in search_results)
-        if len(unique_sources) < 3:
-            recommendations.append("더 다양한 소스에서 정보를 수집하여 검색 범위를 확장하세요.")
-        
-        # 품질 기반 권장사항
-        high_quality_results = [r for r in search_results if r["similarity_score"] >= 0.9]
-        if len(high_quality_results) < 5:
-            recommendations.append("검색 쿼리를 더 구체적으로 만들어 관련성 높은 결과를 얻으세요.")
-        
-        # 최신성 기반 권장사항
-        recent_results = [r for r in search_results if "2024" in str(r["metadata"].get("published_date", ""))]
-        if len(recent_results) < 3:
-            recommendations.append("최신 정보를 더 많이 포함하도록 검색 범위를 조정하세요.")
-        
-        return recommendations
-    
-    def _generate_search_strategy(self, rag_query: Any, search_results: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """검색 전략을 생성합니다."""
-        normalized = self._normalize_rag_query(rag_query)
-        return {
-            "query_optimization": {
-                "primary_queries": normalized.get("primary_queries", []),
-                "secondary_queries": normalized.get("secondary_queries", []),
-                "keywords": normalized.get("keywords", [])
-            },
-            "search_parameters": {
-                "top_k": self.search_config["top_k"],
-                "similarity_threshold": self.search_config["similarity_threshold"],
-                "max_results": self.search_config["max_results"]
-            },
-            "filtering_strategy": {
-                "source_filter": "all",
-                "date_filter": "recent",
-                "type_filter": "all"
-            },
-            "ranking_strategy": {
-                "primary_factor": "similarity_score",
-                "secondary_factor": "relevance",
-                "boost_factors": ["recency", "source_authority"]
-            }
-        }
-    
-    def _calculate_rag_metrics(self, search_results: List[Dict[str, Any]], rag_query: Any) -> Dict[str, Any]:
-        """RAG 메트릭을 계산합니다."""
-        if not search_results:
-            return {"error": "No search results available"}
-        
-        # 정확도 메트릭
-        high_relevance_count = len([r for r in search_results if r["relevance"] == "high"])
-        precision = high_relevance_count / len(search_results) if search_results else 0
-        
-        # 다양성 메트릭
-        unique_sources = len(set(r["source"] for r in search_results))
-        diversity_score = unique_sources / len(search_results) if search_results else 0
-        
-        # 최신성 메트릭
-        recent_count = len([r for r in search_results if "2024" in str(r["metadata"].get("published_date", ""))])
-        recency_score = recent_count / len(search_results) if search_results else 0
-        
-        normalized = self._normalize_rag_query(rag_query)
-        return {
-            "precision": precision,
-            "diversity_score": diversity_score,
-            "recency_score": recency_score,
-            "overall_quality": (precision + diversity_score + recency_score) / 3,
-            "query_coverage": len(normalized.get("primary_queries", [])) / max(len(search_results), 1),
-            "source_distribution": {
-                "research_papers": len([r for r in search_results if r["metadata"]["type"] == "research_paper"]),
-                "news_articles": len([r for r in search_results if r["metadata"]["type"] == "news_article"]),
-                "other": len([r for r in search_results if r["metadata"]["type"] not in ["research_paper", "news_article"]])
-            }
-        }
-
-    def _normalize_rag_query(self, rag_query: Any) -> Dict[str, Any]:
-        """문자열/딕셔너리 형태의 rag_query를 내부 표준 딕셔너리로 정규화합니다."""
-        if isinstance(rag_query, str):
+            # 여기서는 응답을 간단히 4개 섹션으로 나누어 반환합니다
+            parts = result.split("\n\n")
             return {
-                "primary_queries": [rag_query],
-                "secondary_queries": [],
-                "keywords": []
+                "ki": parts[0] if len(parts) > 0 else "분석 실패",
+                "sho": parts[1] if len(parts) > 1 else "분석 실패",
+                "ten": parts[2] if len(parts) > 2 else "분석 실패",
+                "ketsu": parts[3] if len(parts) > 3 else "분석 실패"
             }
-        if isinstance(rag_query, dict):
-            return rag_query
-        return {"primary_queries": [], "secondary_queries": [], "keywords": []}
+        except Exception as e:
+            return {
+                "ki": f"분석 중 오류 발생: {str(e)}",
+                "sho": "분석을 완료하지 못했습니다.",
+                "ten": "분석을 완료하지 못했습니다.",
+                "ketsu": "분석을 완료하지 못했습니다."
+            }
+
+
+if __name__ == "__main__":
+    # 입력 파일과 출력 파일 경로 설정
+    input_json = "output/combined_search_results.json"
+    output_dir = "output"
+    output_file = os.path.join(output_dir, "research_report.json")
     
-    def _get_fallback_data(self) -> Dict[str, Any]:
-        """폴백 데이터를 반환합니다."""
-        return {
-            "research_results": {
-                "summary": {
-                    "total_results": 0,
-                    "average_similarity": 0.0,
-                    "high_relevance_count": 0,
-                    "medium_relevance_count": 0,
-                    "low_relevance_count": 0
-                },
-                "source_analysis": {},
-                "keywords": [],
-                "trends": [],
-                "recommendations": ["검색을 다시 시도하거나 쿼리를 수정하세요."]
-            },
-            "search_strategy": {
-                "query_optimization": {"primary_queries": [], "secondary_queries": [], "keywords": []},
-                "search_parameters": self.search_config,
-                "filtering_strategy": {"source_filter": "all", "date_filter": "recent", "type_filter": "all"},
-                "ranking_strategy": {"primary_factor": "similarity_score", "secondary_factor": "relevance", "boost_factors": []}
-            },
-            "rag_metrics": {
-                "precision": 0.0,
-                "diversity_score": 0.0,
-                "recency_score": 0.0,
-                "overall_quality": 0.0,
-                "query_coverage": 0.0,
-                "source_distribution": {"research_papers": 0, "news_articles": 0, "other": 0}
-            }
-        }
+    # 출력 디렉토리가 없으면 생성
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    
+    # 에이전트 생성 및 실행
+    agent = ResearcherAgent()
+    report = agent.process(input_json)
+    
+    # 결과를 파일로 저장
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(report, f, ensure_ascii=False, indent=2)
+    
+    print(f"보고서가 생성되었습니다: {output_file}")

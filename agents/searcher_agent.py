@@ -1,36 +1,299 @@
 """Searcher Agent for web crawling and information collection."""
 
-import asyncio
-from typing import Any, Dict, List
-from ..constants import AGENT_NAMES, SEARCHER_SYSTEM_PROMPT
-from .base_agent import BaseAgent, AgentResult
+import time
+import json
+import re
+import requests
+import os
+from datetime import datetime, timedelta, timezone
+from urllib.parse import urljoin
+from dotenv import load_dotenv
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, TimeoutException
+from selenium.webdriver.support.ui import WebDriverWait, Select
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
+
+from bs4 import BeautifulSoup
+
+from .base_agent import BaseAgent
 from ..state import WorkflowState
 
+# --- 환경 변수 로드 ---
+load_dotenv()  # .env 파일에서 환경 변수 로드
+
+class WebSearcher:
+    def __init__(self, perplexity_api_key: str = None):
+        self.driver = None
+        # API 키는 환경 변수에서 안전하게 로드합니다.
+        self.perplexity_api_key = perplexity_api_key or os.environ.get('PERPLEXITY_API_KEY')
+        if not self.perplexity_api_key:
+            print("⚠️ PERPLEXITY_API_KEY 환경 변수가 설정되지 않았습니다.")
+        self.setup_driver()
+    
+    def setup_driver(self):
+        """WebDriver 설정"""
+        print("WebDriver 설정을 시작합니다...")
+        chrome_options = Options()
+        # chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--start-maximized")
+        chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+        chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        chrome_options.add_experimental_option('useAutomationExtension', False)
+        
+        service = Service(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(service=service, options=chrome_options)
+        print("WebDriver 설정이 완료되었습니다.")
+    
+    def close_driver(self):
+        """WebDriver 종료"""
+        if self.driver:
+            self.driver.quit()
+            print("WebDriver를 종료합니다.")
+    
+    def crawl_pytorch_kr(self):
+        """파이토치 한국 사용자 모임 크롤링"""
+        print("\n=== 파이토치 한국 사용자 모임 크롤링 시작 ===")
+        
+        URL = "https://discuss.pytorch.kr/c/news"
+        self.driver.get(URL)
+        print(f"'{URL}' 페이지로 이동합니다.")
+        time.sleep(3)
+
+        one_week_ago = datetime.now() - timedelta(days=7)
+        post_info = {}
+
+        print("\n최신 게시글 수집을 시작합니다 (스크롤 다운)...")
+        while True:
+            topic_list_items = self.driver.find_elements(By.CSS_SELECTOR, "tbody.topic-list-body tr.topic-list-item")
+            
+            if not topic_list_items:
+                print("게시글을 찾을 수 없습니다.")
+                break
+
+            last_post_date = None
+            
+            for item in topic_list_items:
+                try:
+                    date_span = item.find_element(By.CSS_SELECTOR, "span.relative-date")
+                    post_timestamp_ms = int(date_span.get_attribute("data-time"))
+                    post_date = datetime.fromtimestamp(post_timestamp_ms / 1000)
+                    
+                    last_post_date = post_date
+                    
+                    if post_date >= one_week_ago:
+                        link_element = item.find_element(By.CSS_SELECTOR, "a.title")
+                        link = link_element.get_attribute("href")
+                        if link not in post_info:
+                            post_info[link] = post_date
+                    
+                except (StaleElementReferenceException, NoSuchElementException):
+                    continue
+            
+            # 마지막 게시글이 1주일 이전이면 중단
+            if last_post_date and last_post_date < one_week_ago:
+                print(f"마지막 게시글 날짜: {last_post_date.strftime('%Y-%m-%d')} - 1주일 이전이므로 수집을 중단합니다.")
+                break
+            
+            # 페이지 하단으로 스크롤
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(2)
+            
+            # 새로운 게시글이 로드될 때까지 대기
+            try:
+                WebDriverWait(self.driver, 10).until(
+                    lambda driver: len(driver.find_elements(By.CSS_SELECTOR, "tbody.topic-list-body tr.topic-list-item")) > len(topic_list_items)
+                )
+            except TimeoutException:
+                print("새로운 게시글이 로드되지 않아 스크롤을 중단합니다.")
+                break
+
+        print(f"총 {len(post_info)}개의 최신 게시글을 찾았습니다.")
+        
+        # 게시글 내용 수집
+        posts_data = []
+        for link, post_date in post_info.items():
+            try:
+                self.driver.get(link)
+                time.sleep(2)
+                
+                # 제목 추출
+                title_element = self.driver.find_element(By.CSS_SELECTOR, "h1.fancy-title")
+                title = title_element.text.strip()
+                
+                # 내용 추출
+                content_element = self.driver.find_element(By.CSS_SELECTOR, "div.cooked")
+                content = content_element.text.strip()
+                
+                # 작성자 추출
+                try:
+                    author_element = self.driver.find_element(By.CSS_SELECTOR, "span.username")
+                    author = author_element.text.strip()
+                except NoSuchElementException:
+                    author = "Unknown"
+                
+                post_data = {
+                    "title": title,
+                    "content": content,
+                    "author": author,
+                    "url": link,
+                    "date": post_date.isoformat(),
+                    "source": "pytorch_kr"
+                }
+                posts_data.append(post_data)
+                print(f"✅ '{title}' 수집 완료")
+                
+            except Exception as e:
+                print(f"⚠️ 게시글 수집 중 오류 발생: {e}")
+                continue
+        
+        return posts_data
+
+    def crawl_aitimes_kr(self):
+        """AI타임스 크롤링"""
+        print("\n=== AI타임스 크롤링 시작 ===")
+        
+        URL = "https://www.aitimes.kr/news/articleList.html?page=1&total=0&box_idxno=&view_type=sm"
+        self.driver.get(URL)
+        print(f"'{URL}' 페이지로 이동합니다.")
+        time.sleep(3)
+
+        one_week_ago = datetime.now() - timedelta(days=7)
+        posts_data = []
+
+        # 최신 기사 수집
+        article_elements = self.driver.find_elements(By.CSS_SELECTOR, "div.list-titles")
+        
+        for article in article_elements[:20]:  # 최신 20개 기사만 수집
+            try:
+                # 제목과 링크 추출
+                title_element = article.find_element(By.CSS_SELECTOR, "a")
+                title = title_element.text.strip()
+                link = title_element.get_attribute("href")
+                
+                # 기사 페이지로 이동
+                self.driver.get(link)
+                time.sleep(2)
+                
+                # 날짜 추출
+                try:
+                    date_element = self.driver.find_element(By.CSS_SELECTOR, "div.view-date")
+                    date_text = date_element.text.strip()
+                    # 날짜 파싱 (예: "2024.01.15 14:30")
+                    post_date = datetime.strptime(date_text, "%Y.%m.%d %H:%M")
+                except:
+                    post_date = datetime.now()
+                
+                # 1주일 이전 기사는 건너뛰기
+                if post_date < one_week_ago:
+                    continue
+                
+                # 내용 추출
+                try:
+                    content_element = self.driver.find_element(By.CSS_SELECTOR, "div.article-content")
+                    content = content_element.text.strip()
+                except NoSuchElementException:
+                    content = "내용을 추출할 수 없습니다."
+                
+                post_data = {
+                    "title": title,
+                    "content": content,
+                    "author": "AI타임스",
+                    "url": link,
+                    "date": post_date.isoformat(),
+                    "source": "aitimes_kr"
+                }
+                posts_data.append(post_data)
+                print(f"✅ '{title}' 수집 완료")
+                
+            except Exception as e:
+                print(f"⚠️ 기사 수집 중 오류 발생: {e}")
+                continue
+        
+        return posts_data
+
+    def search_perplexity(self, query: str, max_results: int = 10):
+        """Perplexity API를 사용한 검색"""
+        if not self.perplexity_api_key:
+            print("❌ Perplexity API 키가 설정되지 않았습니다.")
+            return []
+        
+        print(f"\n=== Perplexity 검색 시작: '{query}' ===")
+        
+        url = "https://api.perplexity.ai/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {self.perplexity_api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        data = {
+            "model": "llama-3.1-sonar-small-128k-online",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": f"최신 AI 트렌드와 관련된 정보를 검색해주세요: {query}"
+                }
+            ],
+            "max_tokens": 1000,
+            "temperature": 0.1
+        }
+        
+        try:
+            response = requests.post(url, headers=headers, json=data)
+            response.raise_for_status()
+            
+            result = response.json()
+            content = result['choices'][0]['message']['content']
+            
+            # 검색 결과를 구조화된 형태로 변환
+            search_result = {
+                "title": f"Perplexity 검색 결과: {query}",
+                "content": content,
+                "author": "Perplexity AI",
+                "url": "https://www.perplexity.ai",
+                "date": datetime.now().isoformat(),
+                "source": "perplexity"
+            }
+            
+            print("✅ Perplexity 검색 완료")
+            return [search_result]
+            
+        except Exception as e:
+            print(f"❌ Perplexity 검색 중 오류 발생: {e}")
+            return []
+
+def save_search_results(data, filename=None):
+    """검색 결과를 JSON 파일로 저장합니다."""
+    if filename is None:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"search_results_{timestamp}.json"
+    
+    try:
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+        print(f"✅ 검색 결과가 '{filename}'에 성공적으로 저장되었습니다.")
+        return filename
+    except Exception as e:
+        print(f"❌ 파일 저장 중 오류 발생: {e}")
+        return None
 
 class SearcherAgent(BaseAgent):
-    """웹 크롤링을 통해 최신 AI 연구 정보를 수집하는 에이전트."""
+    """웹 크롤링 및 정보 수집 에이전트"""
     
-    def __init__(self):
+    def __init__(self, perplexity_api_key: str = None):
         super().__init__(
-            name=AGENT_NAMES["SEARCHER"],
+            name="searcher",
             description="웹 크롤링을 통해 최신 AI 연구 정보를 수집하는 에이전트"
         )
-        self.required_inputs = ["workflow_status"]
-        self.output_keys = ["crawled_data", "search_sources", "data_chunks"]
-        self.timeout = 180
-        self.retry_attempts = 3
-        self.priority = 2
-        
-        # 검색 대상 소스들
-        self.search_sources = [
-            "arxiv.org",
-            "techcrunch.com",
-            "aitimes.kr",
-            "pytorch.kr",
-            "ai.kr",
-            "openai.com/blog",
-            "google.ai/blog"
-        ]
+        self.required_inputs = ["search_query"]
+        self.output_keys = ["search_results", "search_metadata"]
+        self.web_searcher = WebSearcher(perplexity_api_key)
     
     async def process(self, state: WorkflowState) -> WorkflowState:
         """웹 크롤링을 통한 정보 수집을 수행합니다."""
@@ -39,244 +302,105 @@ class SearcherAgent(BaseAgent):
         try:
             # 입력 검증
             if not self.validate_inputs(state):
-                raise ValueError("필수 입력이 누락되었습니다: workflow_status")
+                raise ValueError("필수 입력이 누락되었습니다.")
+            
+            # 검색 쿼리 가져오기
+            search_query = getattr(state, 'search_query', '최신 AI 트렌드')
             
             # 웹 크롤링 수행
-            crawled_data = await self._perform_web_crawling()
-            search_sources = self._get_search_sources_info()
-            data_chunks = self._chunk_crawled_data(crawled_data)
+            pytorch_posts = self.web_searcher.crawl_pytorch_kr()
+            aitimes_posts = self.web_searcher.crawl_aitimes_kr()
+            perplexity_results = self.web_searcher.search_perplexity(search_query)
             
-            # 결과 생성
-            result = AgentResult(
-                success=True,
-                output={
-                    "crawled_data": crawled_data,
-                    "search_sources": search_sources,
-                    "data_chunks": data_chunks
-                },
-                metadata={
-                    "crawling_method": "simulated",
-                    "sources_accessed": len(search_sources),
-                    "total_chunks": len(data_chunks)
+            # 모든 결과 합치기
+            all_results = pytorch_posts + aitimes_posts + perplexity_results
+            
+            # 결과 저장
+            output_filename = f"AgentCast/output/searcher/search_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            save_search_results(all_results, output_filename)
+            
+            # 워크플로우 상태 업데이트
+            new_state = WorkflowState(
+                **{k: v for k, v in state.__dict__.items()},
+                search_results=all_results,
+                search_metadata={
+                    "total_results": len(all_results),
+                    "pytorch_posts": len(pytorch_posts),
+                    "aitimes_posts": len(aitimes_posts),
+                    "perplexity_results": len(perplexity_results),
+                    "output_file": output_filename
                 }
             )
             
-            # 상태 업데이트
-            updated_state = self.update_workflow_status(state, "search")
-            updated_state.crawled_data = crawled_data
-            updated_state.search_sources = search_sources
-            updated_state.data_chunks = data_chunks
+            # 워크플로우 상태 업데이트
+            new_state = self.update_workflow_status(new_state, "searcher_completed")
             
-            self.log_execution("웹 크롤링 정보 수집 완료")
-            return updated_state
+            self.log_execution(f"웹 크롤링 정보 수집 완료: {len(all_results)}개 결과")
+            return new_state
             
         except Exception as e:
-            self.log_execution(f"웹 크롤링 정보 수집 실패: {str(e)}", "ERROR")
-            
-            # 폴백 데이터 사용
-            fallback_data = self._get_fallback_data()
-            
-            result = AgentResult(
-                success=False,
-                output=fallback_data,
-                error_message=str(e)
-            )
-            
-            # 폴백 데이터로 상태 업데이트
-            updated_state = self.update_workflow_status(state, "search")
-            updated_state.crawled_data = fallback_data["crawled_data"]
-            updated_state.search_sources = fallback_data["search_sources"]
-            updated_state.data_chunks = fallback_data["data_chunks"]
-            
-            self.log_execution("폴백 데이터 사용으로 계속 진행")
-            return updated_state
+            self.log_execution(f"웹 크롤링 정보 수집 중 오류 발생: {str(e)}", "ERROR")
+            raise
+        finally:
+            # WebDriver 종료
+            self.web_searcher.close_driver()
+
+def main():
+    """
+    메인 실행 함수
+    """
+    print("🚀 웹 크롤링 파이프라인 시작")
+    print("=" * 50)
     
-    async def _perform_web_crawling(self) -> List[Dict[str, Any]]:
-        """웹 크롤링을 수행합니다."""
-        # 실제 구현에서는 여기에 실제 웹 크롤링 로직이 들어갑니다
-        # 현재는 시뮬레이션된 데이터를 반환합니다
-        
-        await asyncio.sleep(1)  # 크롤링 시간 시뮬레이션
-        
-        return [
-            {
-                "source": "arxiv.org",
-                "title": "Efficient Large Language Model Training with Dynamic Batching",
-                "authors": ["Zhang, L.", "Wang, Y.", "Chen, X."],
-                "abstract": "We propose a novel dynamic batching strategy for training large language models...",
-                "url": "https://arxiv.org/abs/2408.00123",
-                "published_date": "2024-08-01",
-                "category": "cs.AI",
-                "relevance_score": 0.95
-            },
-            {
-                "source": "techcrunch.com",
-                "title": "OpenAI Releases GPT-4o Mini: Smaller, Faster, More Efficient",
-                "authors": ["TechCrunch Staff"],
-                "abstract": "OpenAI has announced the release of GPT-4o Mini, a more efficient version...",
-                "url": "https://techcrunch.com/2024/08/15/openai-gpt4o-mini",
-                "published_date": "2024-08-15",
-                "category": "AI News",
-                "relevance_score": 0.88
-            },
-            {
-                "source": "aitimes.kr",
-                "title": "한국 AI 연구진, 새로운 최적화 알고리즘 개발",
-                "authors": ["김연구원", "이박사"],
-                "abstract": "한국과학기술원(KIST) 연구진이 머신러닝 모델의 성능을 크게 향상시키는...",
-                "url": "https://aitimes.kr/news/articleView.html?idxno=12345",
-                "published_date": "2024-08-14",
-                "category": "AI Research",
-                "relevance_score": 0.92
-            },
-            {
-                "source": "pytorch.kr",
-                "title": "PyTorch 2.2 성능 최적화 가이드",
-                "authors": ["PyTorch Korea Community"],
-                "abstract": "PyTorch 2.2에서 제공하는 새로운 최적화 기능들을 활용하여 모델 성능을...",
-                "url": "https://pytorch.kr/tutorials/optimization/",
-                "published_date": "2024-08-10",
-                "category": "Tutorial",
-                "relevance_score": 0.85
-            }
-        ]
+    # 1. WebSearcher 초기화
+    print("\n1️⃣ WebSearcher 초기화 중...")
+    searcher = WebSearcher()
     
-    def _get_search_sources_info(self) -> List[Dict[str, Any]]:
-        """검색 소스 정보를 반환합니다."""
-        return [
-            {
-                "name": "arXiv",
-                "url": "arxiv.org",
-                "type": "research_papers",
-                "access_method": "api",
-                "rate_limit": "1000 requests/hour",
-                "last_accessed": "2024-08-16T10:00:00Z"
-            },
-            {
-                "name": "TechCrunch",
-                "url": "techcrunch.com",
-                "type": "tech_news",
-                "access_method": "web_scraping",
-                "rate_limit": "10 requests/minute",
-                "last_accessed": "2024-08-16T10:05:00Z"
-            },
-            {
-                "name": "AI Times Korea",
-                "url": "aitimes.kr",
-                "type": "ai_news",
-                "access_method": "web_scraping",
-                "rate_limit": "20 requests/minute",
-                "last_accessed": "2024-08-16T10:10:00Z"
-            },
-            {
-                "name": "PyTorch Korea",
-                "url": "pytorch.kr",
-                "type": "community",
-                "access_method": "web_scraping",
-                "rate_limit": "30 requests/minute",
-                "last_accessed": "2024-08-16T10:15:00Z"
-            }
-        ]
-    
-    def _chunk_crawled_data(self, crawled_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """크롤링된 데이터를 청킹합니다."""
-        chunks = []
+    try:
+        # 2. 파이토치 한국 사용자 모임 크롤링
+        print("\n2️⃣ 파이토치 한국 사용자 모임 크롤링 중...")
+        pytorch_posts = searcher.crawl_pytorch_kr()
         
-        for item in crawled_data:
-            # 제목과 초록을 분리하여 청킹
-            title_chunk = {
-                "chunk_id": f"{item['source']}_{item['title'][:20]}_title",
-                "content": item["title"],
-                "metadata": {
-                    "source": item["source"],
-                    "type": "title",
-                    "url": item["url"],
-                    "published_date": item["published_date"],
-                    "relevance_score": item["relevance_score"]
-                },
-                "chunk_size": len(item["title"])
-            }
-            chunks.append(title_chunk)
+        # 3. AI타임스 크롤링
+        print("\n3️⃣ AI타임스 크롤링 중...")
+        aitimes_posts = searcher.crawl_aitimes_kr()
+        
+        # 4. Perplexity 검색
+        print("\n4️⃣ Perplexity 검색 중...")
+        perplexity_results = searcher.search_perplexity("최신 AI 트렌드")
+        
+        # 5. 결과 합치기
+        print("\n5️⃣ 결과 합치기 중...")
+        all_results = pytorch_posts + aitimes_posts + perplexity_results
+        
+        # 6. 결과 저장
+        print("\n6️⃣ 결과 저장 중...")
+        saved_filename = save_search_results(all_results)
+        
+        if saved_filename:
+            print(f"\n✅ 웹 크롤링 파이프라인 완료!")
+            print(f"📊 총 수집된 결과: {len(all_results)}개")
+            print(f"   - 파이토치: {len(pytorch_posts)}개")
+            print(f"   - AI타임스: {len(aitimes_posts)}개")
+            print(f"   - Perplexity: {len(perplexity_results)}개")
+            print(f"💾 저장된 파일: {saved_filename}")
             
-            # 초록을 적절한 크기로 청킹
-            abstract = item["abstract"]
-            if len(abstract) > 200:
-                # 긴 초록을 여러 청크로 분할
-                words = abstract.split()
-                chunk_size = 50
-                for i in range(0, len(words), chunk_size):
-                    chunk_words = words[i:i + chunk_size]
-                    chunk_text = " ".join(chunk_words)
-                    
-                    abstract_chunk = {
-                        "chunk_id": f"{item['source']}_{item['title'][:20]}_abstract_{i//chunk_size}",
-                        "content": chunk_text,
-                        "metadata": {
-                            "source": item["source"],
-                            "type": "abstract",
-                            "url": item["url"],
-                            "published_date": item["published_date"],
-                            "relevance_score": item["relevance_score"],
-                            "chunk_part": i // chunk_size + 1
-                        },
-                        "chunk_size": len(chunk_text)
-                    }
-                    chunks.append(abstract_chunk)
-            else:
-                # 짧은 초록은 하나의 청크로
-                abstract_chunk = {
-                    "chunk_id": f"{item['source']}_{item['title'][:20]}_abstract",
-                    "content": abstract,
-                    "metadata": {
-                        "source": item["source"],
-                        "type": "abstract",
-                        "url": item["url"],
-                        "published_date": item["published_date"],
-                        "relevance_score": item["relevance_score"]
-                    },
-                    "chunk_size": len(abstract)
-                }
-                chunks.append(abstract_chunk)
-        
-        return chunks
-    
-    def _get_fallback_data(self) -> Dict[str, Any]:
-        """폴백 데이터를 반환합니다."""
-        return {
-            "crawled_data": [
-                {
-                    "source": "fallback",
-                    "title": "AI Research Information (Fallback)",
-                    "authors": ["System"],
-                    "abstract": "Fallback data for AI research information collection.",
-                    "url": "https://example.com",
-                    "published_date": "2024-08-16",
-                    "category": "fallback",
-                    "relevance_score": 0.5
-                }
-            ],
-            "search_sources": [
-                {
-                    "name": "Fallback Source",
-                    "url": "example.com",
-                    "type": "fallback",
-                    "access_method": "fallback",
-                    "rate_limit": "unlimited",
-                    "last_accessed": "2024-08-16T10:00:00Z"
-                }
-            ],
-            "data_chunks": [
-                {
-                    "chunk_id": "fallback_chunk",
-                    "content": "Fallback data for AI research information collection.",
-                    "metadata": {
-                        "source": "fallback",
-                        "type": "fallback",
-                        "url": "https://example.com",
-                        "published_date": "2024-08-16",
-                        "relevance_score": 0.5
-                    },
-                    "chunk_size": 50
-                }
-            ]
-        }
+            # 샘플 결과 출력
+            if all_results:
+                print(f"\n📋 샘플 결과 (첫 번째 항목):")
+                sample = all_results[0]
+                print(f"제목: {sample.get('title', 'N/A')}")
+                print(f"출처: {sample.get('source', 'N/A')}")
+                print(f"날짜: {sample.get('date', 'N/A')}")
+                print(f"내용 길이: {len(sample.get('content', ''))}자")
+        else:
+            print("❌ 결과 저장 실패")
+            
+    except Exception as e:
+        print(f"❌ 웹 크롤링 중 오류 발생: {e}")
+    finally:
+        # WebDriver 종료
+        searcher.close_driver()
+
+if __name__ == "__main__":
+    main()

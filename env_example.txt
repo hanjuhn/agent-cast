@@ -8,9 +8,9 @@ NOTION_WORKSPACE_ID=your_workspace_id_here
 # 슬랙 MCP
 SLACK_BOT_TOKEN=xoxb-your-bot-token-here
 SLACK_WORKSPACE_ID=T1234567890
-SLACK_APP_TOKEN=xapp-your-app-token-here
 
-# Gmail MCP
-GMAIL_CREDENTIALS_FILE=credentials.json
-GMAIL_TOKEN_FILE=token.json
+# Google API (Gmail, Docs 공통)
+CREDENTIALS_FILE=credentials.json
 GMAIL_USER_ID=me
+GMAIL_TOKEN_FILE=gmail_token.json
+DOCS_TOKEN_FILE=docs_token.json

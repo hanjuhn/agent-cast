@@ -55,9 +55,9 @@ class DocsMCP(BaseMCP):
         return self._is_connected and self.health_check()
         
         # 토큰 파일 경로 설정
-        self.token_path = os.getenv('DOCS_TOKEN_FILE', 'token.json')
-        self.credentials_path = os.getenv('DOCS_CREDENTIALS_FILE', 'credentials.json')
-    
+        self.token_path = os.getenv('DOCS_TOKEN_FILE', 'docs_token.json')  # docs용 별도 토큰
+        self.credentials_path = os.getenv('CREDENTIALS_FILE', 'credentials.json')  # 공통 credentials
+
     def authenticate(self) -> bool:
         """Google Docs API 인증을 수행합니다."""
         try:
@@ -158,7 +158,7 @@ from mcp.docs_mcp import DocsMCP
 
 def main():
     # 마크다운 파일 읽기
-    with open('output/research_report.md', 'r', encoding='utf-8') as f:
+    with open('output/docs/research_report.md', 'r', encoding='utf-8') as f:
         content = f.read()
     
     # DocsMCP 인스턴스 생성

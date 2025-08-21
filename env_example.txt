@@ -1,0 +1,33 @@
+# OpenAI API
+OPENAI_API_KEY=sk-proj-your-openai-api-key-here
+
+# Anthropic API
+ANTHROPIC_API_KEY=sk-ant-api03-your-anthropic-api-key-here
+
+# Google API
+GOOGLE_API_KEY=AIza-your-google-api-key-here
+GOOGLE_CLIENT_ID=your-google-client-id-here
+GOOGLE_CLIENT_SECRET=your-google-client-secret-here
+GOOGLE_OAUTH_CLIENT_ID=your-google-oauth-client-id-here
+GOOGLE_OAUTH_CLIENT_SECRET=your-google-oauth-client-secret-here
+
+# Perplexity API
+PERPLEXITY_API_KEY=pplx-your-perplexity-api-key-here
+
+# 노션 MCP
+NOTION_INTEGRATION_TOKEN=secret-your-notion-integration-token-here
+NOTION_WORKSPACE_ID=your-notion-workspace-id-here
+
+# 슬랙 MCP
+SLACK_BOT_TOKEN=xoxb-your-slack-bot-token-here
+SLACK_WORKSPACE_ID=your-slack-workspace-id-here
+
+# Google API (Gmail, Docs 공통)
+CREDENTIALS_FILE=credentials.json
+GMAIL_USER_ID=me
+GMAIL_TOKEN_FILE=gmail_token.json
+DOCS_TOKEN_FILE=docs_token.json
+
+# 기타 설정
+DEBUG=false
+LOG_LEVEL=INFO

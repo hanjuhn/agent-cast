@@ -13,22 +13,50 @@ import pickle
 from .base_mcp import BaseMCP
 
 # Google Docs API를 위한 권한 범위 설정
-SCOPES = ['https://www.googleapis.com/auth/documents',
-          'https://www.googleapis.com/auth/drive.file']
+SCOPES = [
+    'https://www.googleapis.com/auth/documents.readonly',
+    'https://www.googleapis.com/auth/documents',
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/drive.file'
+]
 
 class DocsMCP(BaseMCP):
     """Google Docs MCP for handling document creation and updates."""
     
-    def __init__(self):
+    def __init__(self, config: dict = None):
         """Initialize the Google Docs MCP."""
-        super().__init__()
+        super().__init__(server_type='docs', config=config or {})
         self.service = None
         self.drive_service = None
         self.credentials = None
+        self._is_connected = False
+        # 토큰 파일 경로 설정
+        self.token_path = os.getenv('DOCS_TOKEN_FILE', 'token.json')
+        self.credentials_path = os.getenv('DOCS_CREDENTIALS_FILE', 'credentials.json')
+
+    def connect(self) -> bool:
+        """MCP 연결을 수행합니다."""
+        return self.authenticate()
+    
+    def disconnect(self) -> bool:
+        """MCP 연결을 해제합니다."""
+        self.service = None
+        self.drive_service = None
+        self.credentials = None
+        self._is_connected = False
+        return True
+    
+    def health_check(self) -> bool:
+        """MCP 상태를 확인합니다."""
+        return self.service is not None and self.drive_service is not None
+    
+    def is_connected(self) -> bool:
+        """MCP 연결 상태를 반환합니다."""
+        return self._is_connected and self.health_check()
         
         # 토큰 파일 경로 설정
-        self.token_path = os.getenv('DOCS_TOKEN_FILE', 'token_docs.json')
-        self.credentials_path = os.getenv('DOCS_CREDENTIALS_FILE', 'credentials_docs.json')
+        self.token_path = os.getenv('DOCS_TOKEN_FILE', 'token.json')
+        self.credentials_path = os.getenv('DOCS_CREDENTIALS_FILE', 'credentials.json')
     
     def authenticate(self) -> bool:
         """Google Docs API 인증을 수행합니다."""
@@ -125,3 +153,28 @@ class DocsMCP(BaseMCP):
                 'success': False,
                 'error': str(e)
             }
+
+from mcp.docs_mcp import DocsMCP
+
+def main():
+    # 마크다운 파일 읽기
+    with open('output/research_report.md', 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # DocsMCP 인스턴스 생성
+    docs_mcp = DocsMCP()
+    
+    # 구글 독스에 업로드
+    result = docs_mcp.upload_report(
+        title="AI 기술 동향 심층 분석 보고서",
+        content=content
+    )
+    
+    if result['success']:
+        print(f"문서가 성공적으로 업로드되었습니다.")
+        print(f"문서 URL: {result['url']}")
+    else:
+        print(f"업로드 실패: {result['error']}")
+
+if __name__ == "__main__":
+    main()

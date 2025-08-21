@@ -1,0 +1,39 @@
+[
+  {
+    "query": "AI 최적화 방법과 MoE 아키텍처, Gemma 3에 대한 최신 연구 동향과 논문",
+    "documents": [
+      {
+        "rank": 1,
+        "content": "Question answering over Scholarly Knowledge Graphs (SKGs) remains a challenging task due to the complexity of scholarly content and the intricate structure of these graphs. Large Language Model (LLM) approaches could be used to translate natural language questions (NLQs) into SPARQL queries; however, these LLM-based approaches struggle with SPARQL query generation due to limited exposure to SKG-specific content and the underlying schema. We identified two main types of errors in the LLM-generated SPARQL queries: (i) structural inconsistencies, such as missing or redundant triples in the queries, and (ii) semantic inaccuracies, where incorrect entities or properties are shown in the queries despite a correct query structure. To address these issues, we propose FIRESPARQL, a modular framework that supports fine-tuned LLMs as a core component, with optional context provided via retrieval-augmented generation (RAG) and a SPARQL query correction layer. We evaluate the framework on the SciQA Benchmark using various configurations (zero-shot, zero-shot with RAG, one-shot, fine-tuning, and fine-tuning with RAG) and compare the performance with baseline and state-of-the-art approaches. We measure query accuracy using BLEU and ROUGE metrics, and query result accuracy using relaxed exact match(RelaxedEM), with respect to the gold standards containing the NLQs, SPARQL queries, and the results of the queries. Experimental results demonstrate that fine-tuning achieves the highest overall performance, reaching 0.90 ROUGE-L for query accuracy and 0.85 RelaxedEM for result accuracy on the test set.\n        △",
+        "score": 0.027820567274419897
+      },
+      {
+        "rank": 2,
+        "content": "This technical report details a novel approach to combining reasoning and retrieval augmented generation (RAG) within a single, lean language model architecture. While existing RAG systems typically rely on large-scale models and external APIs, our work addresses the increasing demand for performant and privacy-preserving solutions deployable in resource-constrained or secure environments. Building on recent developments in test-time scaling and small-scale reasoning models, we develop a retrieval augmented conversational agent capable of interpreting complex, domain-specific queries using a lightweight backbone model. Our system integrates a dense retriever with fine-tuned Qwen2.5-Instruct models, using synthetic query generation and reasoning traces derived from frontier models (e.g., DeepSeek-R1) over a curated corpus, in this case, the NHS A-to-Z condition pages. We explore the impact of summarisation-based document compression, synthetic data design, and reasoning-aware fine-tuning on model performance. Evaluation against both non-reasoning and general-purpose lean models demonstrates that our domain-specific fine-tuning approach yields substantial gains in answer accuracy and consistency, approaching frontier-level performance while remaining feasible for local deployment. All implementation details and code are publicly released to support reproducibility and adaptation across domains.\n        △",
+        "score": 0.02365884846228101
+      },
+      {
+        "rank": 3,
+        "content": "지푸는 12일(현지시간) 전문가 혼합(MoE) 구조를 적용한 차세대 비전 언어 모델(VLM) ‘GLM-4.5V’을 오픈 소스로 공개했다.\nGLM-4.5V는 'GLM-4.5 에어(Air)' 모델을 토대로 설계됐다. 총 1060억개의 매개변수와 120억개의 활성 매개변수를 갖춘 경량 모델로, 소형 GPU 환경에서도 원활히 구동된다.\n복잡한 장면 이해, 다중 이미지 분석, 공간 인식 등에서 최첨단 성능을 발휘하며, 제품 결함 식별, 지리 단서 분석, 다중 이미지 맥락 추론과 같은 고난도 과제도 수행 가능하다. 특히 3D 합성곱 기반 비전 인코더와 3D 회전 위치 인코딩(3D-RoPE)을 통해 긴 동영상을 자동 구간 분할하고 세밀한 사건을 인식할 수 있어, 스토리보드 제작, 스포츠 분석, 감시 영상 검토, 강의 요약 등 다양한 분야에 활용할 수 있다고 전했다.\n또 데스크톱과 앱 인터페이스를 읽고 버튼과 아이콘을 식별해 RPA(로보틱 프로세스 자동화)와 접근성 도구를 지원하며, 차트나 인포그래픽, 다이어그램 분석을 통해 PDF나 파워포인트 자료에서 핵심 결론과 구조화된 데이터를 추출할 수 있다.\n최대 6만4000토큰의 멀티모달 컨텍스트를 처리할 수 있어, 이미지가 많은 장문 문서나 복수 이미지 프롬프트도 한번에 분석하고 요약한다.\n‘싱킹 모드(Thinking Mode)’도 제공, 사용자가 추론 깊이를 조절할 수 있다. 복잡한 논리 추론이나 다단계 분석이 필요한 경우 ‘ON’으로 설정하면 단계별 추론을, 단순 조회나 빠른 답변이 필요한 경우 ‘OFF’로 설정해 속도를 우선할 수 있다.\n공개된 벤치마크에서 GLM-4.5V는 MMBench, AI2D, MMStar, MathVista 등 41~42개 멀티모달 평가에서 최첨단(SOTA) 성능을 기록했다.\nSTEM 질의응답, 차트 이해, GUI 조작, 영상 이해 등에서 '큐원 2.5 VL', '키미 VL', '젬마 3' 등을 능가했다.\nGLM-4.5V의 모델과 코드는허깅페이스와깃허브를 통해 다운로드할 수 있다.\n박찬 기자 cpark@aitimes.com",
+        "score": 0.013581647449965739
+      },
+      {
+        "rank": 4,
+        "content": "구글이 대표 초경량 인공지능(AI) 모델 '젬마(Gemma)'의 최신 버전을 오픈 소스로 공개했다.\n구글 딥마인드는 14일(현지시간) 2억7000만 매개변수 규모의 ‘젬마 3 270M’을 공개했다.\n인터넷 연결 없이도 모바일 기기나 브라우저, 라즈베리 파이 등 다양한 환경에서 활용할 수 있다. 내부 테스트에서 '픽셀 9 프로' SoC에서도 원활히 작동하는 것이 확인됐다.\n텍스트와 이미지 입력을 처리하고 텍스트 출력을 생성하는 멀티모달 모델로, 12만8000 토큰의 컨텍스트 창과 140개 이상의 언어를 지원한다.\n1억7000만개의 임베딩 매개변수와 1억개의 트랜스포머 블록 매개변수를 결합, 25만6000개의 어휘를 지원해 희귀 토큰까지 처리할 수 있다.\n초기 설정만으로도 명령 수행 작업에서 강력한 성능을 발휘하며, 기업과 개발자가 빠르게 미세조정을 진행할 수 있도록 설계됐다는 설명이다.\n또 INT4 양자화(Quantization) 지원으로 배터리 소모를 최소화, 모바일 환경에서 실용적이다. 픽셀 9 프로로 테스트한 결로가, 25개의 대화 수행 시 배터리 0.75%만 소모됐다.\n사전 훈련(pre-trained) 모델과 명령 조정(instruction-tuned) 모델 두가지로 제공된다.\n기업은 물론, 창작 분야에서도 유용하다고 전했다.\n구글은 데모 영상에서 ‘베드타임스토리 제너레이터(Bedtime Story Generator)’ 앱을 통해 사용자가 설정한 캐릭터와 배경, 플롯, 테마, 길이 등에 따라 오프라인에서 즉시 이야기를 생성하는 모습을 시연했다.\n클라우드에 의존하지 않고도 빠르고 직관적인 상호작용형 애플리케이션을 구현할 수 있다는 것을 보여준다.\n또 'IF이벨(IFEval)' 벤치마크에서 명령 조정된 젬마 3 270M은 51.2%의 성적을 기록했다.\n이는 허깅페이스의 ‘스몰LM2(SmolLM2) 135M’ 인스트럭트나 알리바바 ‘큐원 2.5 0.5B 인스트럭트’ 같은 동급 소형 모델보다 높은 성능을 보이며, 일부 수십억 매개변수 규모 모델과도 비슷한 수준이다.\n다만, 며칠 전 출시된 경쟁사 리퀴드 AI의 'LFM2-350M' 모델은 비교 대상에 포함되지 않았다. 이 모델은 젬마 3 270M보다 매개변수가 다소 많지만, IF이벨에서 65.12%의 높은 점수를 기록한 바 있다.\n이번 모델은허깅페이스에 제공되며, 상업적 사용과 수정, 배포가 가능하다.\n박찬 기자 cpark@aitimes.com",
+        "score": 0.003091550554405802
+      },
+      {
+        "rank": 5,
+        "content": "앨런 AI 연구소(Ai2)가 기존 시각-언어-행동(VLA) 기반 로봇 모델과 달리, 카메라와 센서로 인식한 3D 환경을 토대로 로봇의 동작 경로를 사전에 설계한 뒤 실행하는 새로운 ‘행동 추론 모델(ARM)’을 공개했다.\nAi2는 13일(현지시간) 로봇이 실제 행동에 나서기 전에 사고 과정을 거칠 수 있도록 설계된 오픈 소스 모델 ‘몰모액트 7B(MolmoAct 7B)’를 공개했다.\nAI 모델이 이미지를 보거나 영상을 분석해 결론을 도출하는 '공간 추론(spatial reasoning)'은 새로운 개념은 아니다. 예를 들어 사용자가 오픈AI의 '챗GPT'에 책상 조립 방법을 묻고 사진이나 영상을 업로드하면, AI는 이를 분석해 구체적인 조립 방법을 답할 수 있다.\n로봇용 AI 파운데이션 모델도 “싱크대에 컵을 옮겨라”와 같은 지시를 받아, 카메라와 센서로 수집한 정보와 명령을 결합해 행동으로 옮긴다.\n그러나, 몰모액트는 ‘ARM(Action Reasoning Model)’이라 부르는 새로운 범주의 첫 AI 모델이다.\nARM은 고수준의 자연어 명령을 해석한 뒤, 이를 실제 물리적 행동 계획으로 세분화해 실행한다. 기존 시중 로봇 모델이 ‘비전-언어-행동(VLA)’ 방식으로 동작하는 것과 달리, ARM은 로봇이 시각적으로 인지한 환경을 반영해 지시를 여러 경유 지점(waypoints)과 세부 동작으로 나눠서 처리한다.\n3D 공간을 이해하기 위한 ‘공간 기반 인식 토큰(spatially grounded perception tokens)’을 활용하는 것을 차별점으로 꼽았다. 이는 기존 VLA의 텍스트 토큰과 달리, 공간 정보를 포함하고 있다.\n따라서 공간적 이해를 통해 기하학적 구조를 인코딩할 수 있다는 것이다. 사물 간 거리 추정, 행동 경로 설정 등에서 구체적인 동작 예측이 가능하다는 설명이다.\n란제이 크리슈나 Ai2 컴퓨터 비전 팀 리더는 \"대부분 로봇 모델은 공간적으로 사고하거나 추론하지 않는 VLA이지만, 몰모액트는 이런 기능을 갖추고 있어 아키텍처 측면에서 성능이 뛰어나고 일반화도 쉽다\"라고 말했다.\n몰모액트 7B는 샘플 1800만개를 'H100' GPU 256개로 학습했으며, 사전 학습은 하루 만에 완료됐다. 이후 미세조정은 H100 64개를 사용해 2시간 만에 끝냈다.\nAi2는 이처럼 로봇 팔부터 휴머노이드까지 최소한의 미세조정만이 필요하다고 밝혔다. 반면, 엔비디아의 'GR00T-N2-2B'는 6억개 샘플을 H100 1024개로 학습했고, 피지컬 인텔리전스의 '파이-제로(pi-zero)'는 9억개 샘플과 비공개 수량의 칩을 사용한 것으로 알려져 있다.\n주방과 침실 등 생활 환경에서 수집한 공개 데이터셋을 학습했다. 이는 베개 정리나 세탁물 정리처럼 목표 지향적 행동을 매핑하는 데 활용됐다.\n또 사용자는 실행 전 모델의 예상 동작 궤적을 카메라 영상 위에 시각화된 형태로 미리 확인할 수 있으며, 이를 자연어 명령이나 터치스크린 스케치로 수정할 수도 있다. 이를 통해 가정, 병원, 물류창고 등 다양한 환경에서 로봇을 세밀하게 제어할 수 있다는 설명이다.\n시뮬레이션 벤치마크 ‘SimPLER’에서 72.1%의 성공률을 기록했다. 이는 구글과 마이크로소프트, 엔비디아, 피지컬 인텔리전스 등의 모델 성능을 능가하는 수준이다.\nAi2는몰모액트 모델과학습 데이터를 허깅페이스에 공개했다. 누구나 미세조정하거나, 바로 사용해 볼 수 있다.\n박찬 기자 cpark@aitimes.com",
+        "score": 0.002782831325867738
+      }
+    ],
+    "scores": [
+      0.027820567274419897,
+      0.02365884846228101,
+      0.013581647449965739,
+      0.003091550554405802,
+      0.002782831325867738
+    ]
+  }
+]

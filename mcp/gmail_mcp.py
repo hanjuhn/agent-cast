@@ -28,8 +28,8 @@ class GmailMCP(BaseMCP):
         self.user_id = config.get("user_id", "me")
         self.labels = config.get("labels", [])
         self.filters = config.get("filters", [])
-        self.credentials_file = config.get("credentials_file", "credentials.json")
-        self.token_file = config.get("token_file", "token.json")
+        self.credentials_file = config.get("credentials_file", os.getenv('CREDENTIALS_FILE', 'credentials.json'))  # 공통 credentials
+        self.token_file = config.get("token_file", os.getenv('GMAIL_TOKEN_FILE', 'gmail_token.json'))  # gmail용 별도 토큰
         
         # 연결 상태
         self._connected = False

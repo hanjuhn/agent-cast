@@ -81,6 +81,8 @@ Thumbs.db
 # Credentials
 credentials.json
 token.json
+gmail_token.json
+docs_token.json
 
 # Project specific
 outputs/

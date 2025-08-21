@@ -78,7 +78,17 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
+# Credentials
 credentials.json
 token.json
 gmail_token.json
 docs_token.json
+
+# Project specific
+outputs/
+crawled_data/
+search_results.json
+*.parquet
+*.pickle
+*.sqlite
+*.sqlite.lock

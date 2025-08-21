@@ -100,7 +100,6 @@ venv.bak/
 dmypy.json
 
 # Project specific
-HippoRAG/
 outputs/
 crawled_data/
 search_results.json

@@ -80,3 +80,5 @@ Thumbs.db
 
 credentials.json
 token.json
+gmail_token.json
+docs_token.json

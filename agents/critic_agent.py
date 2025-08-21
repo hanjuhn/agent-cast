@@ -1,434 +1,351 @@
-"""Critic Agent for reviewing and evaluating research results."""
+import os
+import json
+import bert_score
+import rouge_scorer
+from datetime import datetime
+from openai import OpenAI
+from dotenv import load_dotenv
 
-from typing import Any, Dict, List
-from ..constants import AGENT_NAMES, CRITIC_SYSTEM_PROMPT, QUALITY_THRESHOLDS
-from .base_agent import BaseAgent, AgentResult
+from .base_agent import BaseAgent
 from ..state import WorkflowState
 
+# --- 환경 변수 로드 ---
+load_dotenv()  # .env 파일에서 환경 변수 로드
+
+class ResearchCriticAgent:
+    """
+    리서치 결과물을 평가하고 개선을 위한 경쟁적 피드백을 제공하는 전문 비평가 에이전트.
+    LEGO 프레임워크의 Critic-Explainer 경쟁 구조를 참고하여 리서치 품질 향상을 도모합니다.
+    """
+    def __init__(self, model="gpt-4o"):
+        """
+        에이전트를 초기화하고 OpenAI 클라이언트를 설정합니다.
+        """
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY 환경 변수가 설정되지 않았습니다. .env 파일을 확인하세요.")
+        
+        self.client = OpenAI(api_key=api_key)
+        self.model = model
+        
+        # Critic 역할 프롬프트
+        self.role_prompt = """
+        당신은 ResearchCritic입니다. 리서처 에이전트가 생성한 리서치 결과물을 평가하고 
+        개선을 위한 다각적이고 구체적인 피드백을 제공하는 전문가입니다.
+
+        당신의 역할:
+        1. 리서치 결과물을 객관적이고 엄격하게 평가
+        2. Factual Feedback: 사실적 정확성과 출처 신뢰성 검토
+        3. Logical Feedback: 논리적 완결성과 구조적 일관성 검토
+        4. Relevance Feedback: 사용자 요구사항과의 관련성 검토
+        5. 구체적이고 실행 가능한 개선 제안 제공
+        6. 허위 정보나 부정확한 인용 식별 및 지적
+
+        평가 기준:
+        - 사실적 정확성과 출처 신뢰성
+        - 논리적 완결성과 구조적 일관성
+        - 사용자 요구사항과의 관련성
+        - 정보의 깊이와 포괄성
+        - 인용과 참조의 적절성
+        """
+
+    def _calculate_quantitative_metrics(self, generated_text: str, reference_texts: list[str]) -> dict:
+        """
+        [TOOL] 정량적 평가 지표를 계산하는 내부 메소드.
+        """
+        print("---  cuantitativa de la evaluación se ha iniciado ---")
+        
+        # BERTScore 계산
+        P, R, F1 = bert_score([generated_text], reference_texts, lang="ko", model_type="bert-base-multilingual-cased")
+        bertscore_f1 = F1.mean().item()
+        print(f"BERTScore F1: {bertscore_f1:.4f}")
+
+        # ROUGE Score 계산
+        scorer = rouge_scorer.RougeScorer(['rouge1', 'rougeL'], use_stemmer=True)
+        # 여러 참조 문서에 대한 평균 점수를 계산할 수 있으나, 여기서는 첫 번째 문서를 기준으로 계산
+        scores = scorer.score(reference_texts[0], generated_text)
+        rougeL_fmeasure = scores['rougeL'].fmeasure
+        print(f"ROUGE-L F-measure: {rougeL_fmeasure:.4f}")
+        
+        print("--- Evaluación Cuantitativa Completada ---")
+        return {
+            "bert_score_f1": round(bertscore_f1, 4),
+            "rougeL_fmeasure": round(rougeL_fmeasure, 4)
+        }
+
+    def evaluate_research_output(self, research_output: str, source_documents: list[str], 
+                               user_profile: str) -> dict:
+        """
+        리서치 결과물을 다각도로 평가하고 피드백 생성 (LEGO 프레임워크 스타일)
+        
+        Args:
+            research_output (str): 평가할 리서치 결과물
+            source_documents (list[str]): 참조 문서들
+            user_profile (str): 사용자 프로필
+            
+        Returns:
+            dict: 평가 결과와 피드백
+        """
+        print("--- 리서치 결과물 평가 시작 ---")
+        
+        prompt = f"""
+{self.role_prompt}
+
+**사용자 프로필:**
+{user_profile}
+
+**평가할 리서치 결과물:**
+{research_output}
+
+**참조 문서들:**
+{chr(10).join([f"- {doc[:200]}..." for doc in source_documents])}
+
+**작업:**
+리서치 결과물을 다각적으로 평가하고 구체적인 피드백을 제공하세요.
+
+다음 JSON 형식으로 응답해주세요:
+```json
+{{
+    "overall_score": 0.85,
+    "evaluation_criteria": {{
+        "factual_accuracy": {{
+            "score": 0.9,
+            "feedback": "사실적 정확성이 매우 높습니다. 출처와 인용이 적절하게 처리되었습니다."
+        }},
+        "logical_consistency": {{
+            "score": 0.8,
+            "feedback": "논리적 일관성이 우수합니다. 구조와 흐름이 명확합니다."
+        }},
+        "relevance": {{
+            "score": 0.85,
+            "feedback": "사용자 요구사항과 매우 관련성이 높습니다."
+        }},
+        "completeness": {{
+            "score": 0.75,
+            "feedback": "대부분의 내용을 다루지만, 일부 세부사항이 부족합니다."
+        }},
+        "clarity": {{
+            "score": 0.9,
+            "feedback": "명확하고 이해하기 쉬운 표현을 사용합니다."
+        }}
+    }},
+    "detailed_feedback": "전반적으로 우수한 품질의 리서치 결과입니다. 특히 사실적 정확성과 명확성에서 높은 점수를 받았습니다.",
+    "improvement_suggestions": [
+        "완성도 향상을 위해 일부 세부사항을 추가하세요.",
+        "논리적 일관성을 더욱 강화하세요."
+    ],
+    "critical_issues": [],
+    "recommendations": "이 리서치 결과는 사용자에게 제공할 준비가 되었습니다."
+}}
+```
+
+**중요:** JSON 형식으로만 응답해주세요. 다른 텍스트는 포함하지 마세요.
+        """
+        
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": "당신은 전문적인 리서치 비평가입니다. 정확하고 객관적인 평가를 제공하세요."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.1,
+                max_tokens=2000
+            )
+            
+            evaluation_text = response.choices[0].message.content.strip()
+            
+            # JSON 파싱
+            try:
+                evaluation_result = json.loads(evaluation_text)
+            except json.JSONDecodeError:
+                print("⚠️ JSON 파싱 실패, 기본 평가 결과 사용")
+                evaluation_result = self._get_default_evaluation()
+            
+            # 정량적 지표 계산 (선택적)
+            try:
+                quantitative_metrics = self._calculate_quantitative_metrics(research_output, source_documents)
+                evaluation_result["quantitative_metrics"] = quantitative_metrics
+            except Exception as e:
+                print(f"⚠️ 정량적 지표 계산 실패: {e}")
+                evaluation_result["quantitative_metrics"] = {"error": "계산 실패"}
+            
+            print("--- 리서치 결과물 평가 완료 ---")
+            return evaluation_result
+            
+        except Exception as e:
+            print(f"❌ 평가 중 오류 발생: {e}")
+            return self._get_default_evaluation()
+
+    def _get_default_evaluation(self) -> dict:
+        """기본 평가 결과를 반환합니다."""
+        return {
+            "overall_score": 0.7,
+            "evaluation_criteria": {
+                "factual_accuracy": {
+                    "score": 0.7,
+                    "feedback": "평가를 수행할 수 없어 기본값을 사용합니다."
+                },
+                "logical_consistency": {
+                    "score": 0.7,
+                    "feedback": "평가를 수행할 수 없어 기본값을 사용합니다."
+                },
+                "relevance": {
+                    "score": 0.7,
+                    "feedback": "평가를 수행할 수 없어 기본값을 사용합니다."
+                },
+                "completeness": {
+                    "score": 0.7,
+                    "feedback": "평가를 수행할 수 없어 기본값을 사용합니다."
+                },
+                "clarity": {
+                    "score": 0.7,
+                    "feedback": "평가를 수행할 수 없어 기본값을 사용합니다."
+                }
+            },
+            "detailed_feedback": "평가 중 오류가 발생하여 기본 피드백을 제공합니다.",
+            "improvement_suggestions": ["평가를 다시 시도하세요."],
+            "critical_issues": ["평가 시스템 오류"],
+            "recommendations": "평가를 다시 수행하세요."
+        }
+
+def save_evaluation_results(data, filename=None):
+    """평가 결과를 JSON 파일로 저장합니다."""
+    if filename is None:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"evaluation_results_{timestamp}.json"
+    
+    try:
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+        print(f"✅ 평가 결과가 '{filename}'에 성공적으로 저장되었습니다.")
+        return filename
+    except Exception as e:
+        print(f"❌ 파일 저장 중 오류 발생: {e}")
+        return None
 
 class CriticAgent(BaseAgent):
-    """연구 결과의 품질을 평가하고 검토하는 에이전트."""
+    """리서치 결과 평가 및 피드백 제공 에이전트"""
     
-    def __init__(self):
+    def __init__(self, model="gpt-4o"):
         super().__init__(
-            name=AGENT_NAMES["CRITIC"],
-            description="연구 결과의 품질을 평가하고 검토하는 에이전트"
+            name="critic",
+            description="리서치 결과를 평가하고 피드백을 제공하는 에이전트"
         )
-        self.required_inputs = ["research_results"]
-        self.output_keys = ["critic_feedback", "approval_status", "quality_score"]
-        self.timeout = 60
-        self.retry_attempts = 1
-        self.priority = 5
-        
-        # 품질 평가 기준
-        self.quality_criteria = {
-            "factual_accuracy": 0.3,
-            "source_verification": 0.25,
-            "logical_consistency": 0.2,
-            "data_freshness": 0.15,
-            "completeness": 0.1
-        }
+        self.required_inputs = ["research_result", "source_documents"]
+        self.output_keys = ["evaluation_results", "critic_feedback", "quality_score"]
+        self.critic = ResearchCriticAgent(model)
     
     async def process(self, state: WorkflowState) -> WorkflowState:
-        """연구 결과 품질 평가를 수행합니다."""
-        self.log_execution("연구 결과 품질 평가 시작")
+        """리서치 결과를 평가하고 피드백을 생성합니다."""
+        self.log_execution("리서치 결과 평가 시작")
         
         try:
             # 입력 검증
             if not self.validate_inputs(state):
-                raise ValueError("필수 입력이 누락되었습니다: research_results")
+                raise ValueError("필수 입력이 누락되었습니다.")
             
-            # 연구 결과 분석
-            research_results = state.research_results
+            # 리서치 결과와 참조 문서 가져오기
+            research_result = getattr(state, 'research_result', '')
+            source_documents = getattr(state, 'source_documents', [])
+            user_profile = getattr(state, 'user_profile', '일반 사용자')
             
-            # 품질 점수 계산
-            quality_score = self._calculate_quality_score(research_results)
+            if not research_result:
+                raise ValueError("평가할 리서치 결과가 없습니다.")
             
-            # 비평 피드백 생성
-            critic_feedback = self._generate_critic_feedback(research_results, quality_score)
-            
-            # 승인 상태 결정
-            approval_status = self._determine_approval_status(quality_score)
-            
-            # 결과 생성
-            result = AgentResult(
-                success=True,
-                output={
-                    "critic_feedback": critic_feedback,
-                    "approval_status": approval_status,
-                    "quality_score": quality_score
-                },
-                metadata={
-                    "evaluation_method": "multi_criteria",
-                    "threshold_used": QUALITY_THRESHOLDS["minimum_quality_score"],
-                    "criteria_weights": self.quality_criteria
-                }
+            # 평가 수행
+            evaluation_results = self.critic.evaluate_research_output(
+                research_result, source_documents, user_profile
             )
             
-            # 상태 업데이트
-            updated_state = self.update_workflow_status(state, "critique")
-            updated_state.critic_feedback = critic_feedback
-            updated_state.approval_status = approval_status
-            updated_state.quality_score = quality_score
+            # 결과 저장
+            output_filename = f"AgentCast/output/critic/evaluation_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            save_evaluation_results(evaluation_results, output_filename)
             
-            self.log_execution(f"연구 결과 품질 평가 완료. 품질 점수: {quality_score:.2f}")
-            return updated_state
+            # 워크플로우 상태 업데이트
+            new_state = WorkflowState(
+                **{k: v for k, v in state.__dict__.items()},
+                evaluation_results=evaluation_results,
+                critic_feedback=evaluation_results.get('detailed_feedback', ''),
+                quality_score=evaluation_results.get('overall_score', 0.0)
+            )
+            
+            # 워크플로우 상태 업데이트
+            new_state = self.update_workflow_status(new_state, "critic_completed")
+            
+            self.log_execution(f"리서치 결과 평가 완료: 점수 {evaluation_results.get('overall_score', 0.0)}")
+            return new_state
             
         except Exception as e:
-            self.log_execution(f"연구 결과 품질 평가 실패: {str(e)}", "ERROR")
-            
-            # 폴백 데이터 사용
-            fallback_data = self._get_fallback_data()
-            
-            result = AgentResult(
-                success=False,
-                output=fallback_data,
-                error_message=str(e)
-            )
-            
-            # 폴백 데이터로 상태 업데이트
-            updated_state = self.update_workflow_status(state, "critique")
-            updated_state.critic_feedback = fallback_data["critic_feedback"]
-            updated_state.approval_status = fallback_data["approval_status"]
-            updated_state.quality_score = fallback_data["quality_score"]
-            
-            self.log_execution("폴백 데이터 사용으로 계속 진행")
-            return updated_state
+            self.log_execution(f"리서치 결과 평가 중 오류 발생: {str(e)}", "ERROR")
+            raise
+
+def main():
+    """
+    메인 실행 함수
+    """
+    print("🚀 리서치 비평가 파이프라인 시작")
+    print("=" * 50)
     
-    def _calculate_quality_score(self, research_results: Dict[str, Any]) -> float:
-        """연구 결과의 품질 점수를 계산합니다."""
-        if "error" in research_results:
-            return 0.0
-        
-        # 각 품질 기준별 점수 계산
-        scores = {}
-        
-        # 1. 사실적 정확성 (Factual Accuracy)
-        scores["factual_accuracy"] = self._evaluate_factual_accuracy(research_results)
-        
-        # 2. 출처 검증 (Source Verification)
-        scores["source_verification"] = self._evaluate_source_verification(research_results)
-        
-        # 3. 논리적 일관성 (Logical Consistency)
-        scores["logical_consistency"] = self._evaluate_logical_consistency(research_results)
-        
-        # 4. 데이터 최신성 (Data Freshness)
-        scores["data_freshness"] = self._evaluate_data_freshness(research_results)
-        
-        # 5. 완성도 (Completeness)
-        scores["completeness"] = self._evaluate_completeness(research_results)
-        
-        # 가중 평균으로 최종 품질 점수 계산
-        final_score = sum(
-            scores[criterion] * weight 
-            for criterion, weight in self.quality_criteria.items()
-        )
-        
-        return round(final_score, 3)
+    # 1. ResearchCriticAgent 초기화
+    print("\n1️⃣ ResearchCriticAgent 초기화 중...")
+    critic = ResearchCriticAgent()
     
-    def _evaluate_factual_accuracy(self, research_results: Dict[str, Any]) -> float:
-        """사실적 정확성을 평가합니다."""
-        summary = research_results.get("summary", {})
-        
-        # 고품질 결과의 비율
-        high_relevance_count = summary.get("high_relevance_count", 0)
-        total_results = summary.get("total_results", 1)
-        
-        if total_results == 0:
-            return 0.0
-        
-        # 평균 유사도 점수
-        avg_similarity = summary.get("average_similarity", 0.0)
-        
-        # 고품질 결과 비율과 평균 유사도의 가중 평균
-        high_quality_ratio = high_relevance_count / total_results
-        factual_accuracy = (high_quality_ratio * 0.7) + (avg_similarity * 0.3)
-        
-        return min(factual_accuracy, 1.0)
+    # 2. 샘플 데이터 준비
+    print("\n2️⃣ 샘플 데이터 준비 중...")
+    sample_research_output = """
+    최신 AI 트렌드 분석
     
-    def _evaluate_source_verification(self, research_results: Dict[str, Any]) -> float:
-        """출처 검증을 평가합니다."""
-        source_analysis = research_results.get("source_analysis", {})
-        
-        if not source_analysis:
-            return 0.5  # 중간 점수
-        
-        # 신뢰할 수 있는 소스의 비율
-        trusted_sources = ["arxiv.org", "ieee.org", "acm.org", "scholar.google.com"]
-        trusted_count = 0
-        total_sources = len(source_analysis)
-        
-        for source in source_analysis:
-            if source in trusted_sources:
-                trusted_count += 1
-        
-        trusted_ratio = trusted_count / total_sources if total_sources > 0 else 0
-        
-        # 소스 다양성 점수
-        diversity_score = min(len(source_analysis) / 5, 1.0)  # 최대 5개 소스까지
-        
-        # 출처 검증 점수 계산
-        source_verification = (trusted_ratio * 0.6) + (diversity_score * 0.4)
-        
-        return min(source_verification, 1.0)
+    인공지능 분야에서 가장 주목받는 트렌드는 다음과 같습니다:
     
-    def _evaluate_logical_consistency(self, research_results: Dict[str, Any]) -> float:
-        """논리적 일관성을 평가합니다."""
-        trends = research_results.get("trends", [])
-        keywords = research_results.get("keywords", [])
-        
-        # 트렌드 일관성
-        trend_consistency = 0.0
-        if trends:
-            # 트렌드 간의 일관성 확인
-            trend_descriptions = [trend.get("description", "") for trend in trends]
-            consistency_score = self._calculate_text_consistency(trend_descriptions)
-            trend_consistency = consistency_score * 0.6
-        
-        # 키워드 일관성
-        keyword_consistency = 0.0
-        if keywords:
-            # 고품질 키워드의 비율
-            high_relevance_keywords = [k for k in keywords if k.get("relevance") == "high"]
-            keyword_consistency = len(high_relevance_keywords) / len(keywords) * 0.4
-        
-        logical_consistency = trend_consistency + keyword_consistency
-        return min(logical_consistency, 1.0)
+    1. 대규모 언어 모델 (LLM)의 발전
+    - GPT-4, Claude 등의 모델이 지속적으로 개선되고 있습니다.
+    - 멀티모달 기능이 강화되어 텍스트, 이미지, 음성을 통합 처리합니다.
     
-    def _evaluate_data_freshness(self, research_results: Dict[str, Any]) -> float:
-        """데이터 최신성을 평가합니다."""
-        summary = research_results.get("summary", {})
-        
-        # 최신 결과의 비율 (2024년)
-        recent_results = summary.get("recent_results", 0)
-        total_results = summary.get("total_results", 1)
-        
-        if total_results == 0:
-            return 0.5
-        
-        # 최신성 점수 계산
-        recency_ratio = recent_results / total_results
-        
-        # 2024년 데이터가 70% 이상이면 높은 점수
-        if recency_ratio >= 0.7:
-            return 1.0
-        elif recency_ratio >= 0.5:
-            return 0.8
-        elif recency_ratio >= 0.3:
-            return 0.6
-        else:
-            return 0.4
+    2. 생성형 AI의 확산
+    - DALL-E, Midjourney 등의 이미지 생성 AI가 널리 사용됩니다.
+    - 비즈니스 응용 사례가 증가하고 있습니다.
     
-    def _evaluate_completeness(self, research_results: Dict[str, Any]) -> float:
-        """완성도를 평가합니다."""
-        summary = research_results.get("summary", {})
-        source_analysis = research_results.get("source_analysis", {})
-        trends = research_results.get("trends", [])
-        recommendations = research_results.get("recommendations", [])
-        
-        # 필수 구성 요소 확인
-        required_components = [
-            summary.get("total_results", 0) > 0,
-            len(source_analysis) > 0,
-            len(trends) > 0,
-            len(recommendations) > 0
-        ]
-        
-        # 완성도 점수 계산
-        completeness_score = sum(required_components) / len(required_components)
-        
-        # 결과 수량 보너스
-        total_results = summary.get("total_results", 0)
-        if total_results >= 10:
-            completeness_score += 0.1
-        elif total_results >= 5:
-            completeness_score += 0.05
-        
-        return min(completeness_score, 1.0)
+    3. AI 규제 및 윤리
+    - AI의 안전성과 윤리에 대한 논의가 활발합니다.
+    - 각국에서 AI 규제 법안을 도입하고 있습니다.
+    """
     
-    def _calculate_text_consistency(self, texts: List[str]) -> float:
-        """텍스트 간의 일관성을 계산합니다."""
-        if len(texts) < 2:
-            return 1.0
-        
-        # 간단한 키워드 기반 일관성 계산
-        all_keywords = set()
-        for text in texts:
-            words = text.lower().split()
-            keywords = [w for w in words if len(w) > 4]
-            all_keywords.update(keywords)
-        
-        # 공통 키워드 비율
-        common_keywords = 0
-        for i in range(len(texts)):
-            for j in range(i + 1, len(texts)):
-                words1 = set(texts[i].lower().split())
-                words2 = set(texts[j].lower().split())
-                common = len(words1.intersection(words2))
-                total = len(words1.union(words2))
-                if total > 0:
-                    common_keywords += common / total
-        
-        if len(texts) < 2:
-            return 1.0
-        
-        consistency = common_keywords / (len(texts) * (len(texts) - 1) / 2)
-        return min(consistency, 1.0)
+    sample_source_documents = [
+        "OpenAI의 최신 연구 보고서에 따르면 GPT-4는 다양한 작업에서 인간 수준의 성능을 보여줍니다.",
+        "Google의 연구팀은 멀티모달 AI 모델의 발전에 대한 새로운 접근법을 제시했습니다.",
+        "EU의 AI 규제 법안은 AI 시스템의 투명성과 책임성을 강조합니다."
+    ]
     
-    def _generate_critic_feedback(self, research_results: Dict[str, Any], quality_score: float) -> Dict[str, Any]:
-        """비평 피드백을 생성합니다."""
-        feedback = {
-            "overall_assessment": self._get_overall_assessment(quality_score),
-            "strengths": self._identify_strengths(research_results),
-            "weaknesses": self._identify_weaknesses(research_results, quality_score),
-            "improvement_suggestions": self._generate_improvement_suggestions(research_results, quality_score),
-            "detailed_evaluation": {}
-        }
-        
-        # 각 품질 기준별 상세 평가
-        if "error" not in research_results:
-            feedback["detailed_evaluation"] = {
-                "factual_accuracy": {
-                    "score": self._evaluate_factual_accuracy(research_results),
-                    "comment": "사실적 정확성 평가"
-                },
-                "source_verification": {
-                    "score": self._evaluate_source_verification(research_results),
-                    "comment": "출처 검증 평가"
-                },
-                "logical_consistency": {
-                    "score": self._evaluate_logical_consistency(research_results),
-                    "comment": "논리적 일관성 평가"
-                },
-                "data_freshness": {
-                    "score": self._evaluate_data_freshness(research_results),
-                    "comment": "데이터 최신성 평가"
-                },
-                "completeness": {
-                    "score": self._evaluate_completeness(research_results),
-                    "comment": "완성도 평가"
-                }
-            }
-        
-        return feedback
+    sample_user_profile = "AI 기술에 관심이 있는 일반 사용자"
     
-    def _get_overall_assessment(self, quality_score: float) -> str:
-        """전체 품질에 대한 평가를 반환합니다."""
-        if quality_score >= 0.9:
-            return "우수한 품질의 연구 결과입니다."
-        elif quality_score >= 0.8:
-            return "양호한 품질의 연구 결과입니다."
-        elif quality_score >= 0.7:
-            return "적절한 품질의 연구 결과입니다."
-        elif quality_score >= 0.6:
-            return "개선이 필요한 연구 결과입니다."
-        else:
-            return "상당한 개선이 필요한 연구 결과입니다."
+    # 3. 평가 수행
+    print("\n3️⃣ 리서치 결과 평가 중...")
+    evaluation_result = critic.evaluate_research_output(
+        sample_research_output, sample_source_documents, sample_user_profile
+    )
     
-    def _identify_strengths(self, research_results: Dict[str, Any]) -> List[str]:
-        """연구 결과의 강점을 식별합니다."""
-        strengths = []
-        
-        if "error" in research_results:
-            return ["에러 상황에서도 기본 구조를 유지함"]
-        
-        summary = research_results.get("summary", {})
-        source_analysis = research_results.get("source_analysis", {})
-        
-        # 결과 수량
-        total_results = summary.get("total_results", 0)
-        if total_results >= 10:
-            strengths.append("충분한 수의 검색 결과 확보")
-        
-        # 고품질 결과
-        high_relevance_count = summary.get("high_relevance_count", 0)
-        if high_relevance_count >= 5:
-            strengths.append("높은 관련성을 가진 결과 다수 포함")
-        
-        # 소스 다양성
-        if len(source_analysis) >= 3:
-            strengths.append("다양한 소스에서 정보 수집")
-        
-        # 트렌드 분석
-        trends = research_results.get("trends", [])
-        if len(trends) >= 2:
-            strengths.append("트렌드 분석을 통한 인사이트 제공")
-        
-        return strengths
+    # 4. 결과 저장
+    print("\n4️⃣ 결과 저장 중...")
+    saved_filename = save_evaluation_results(evaluation_result)
     
-    def _identify_weaknesses(self, research_results: Dict[str, Any], quality_score: float) -> List[str]:
-        """연구 결과의 약점을 식별합니다."""
-        weaknesses = []
+    if saved_filename:
+        print(f"\n✅ 리서치 비평가 파이프라인 완료!")
+        print(f"📊 전체 점수: {evaluation_result.get('overall_score', 0.0)}")
+        print(f"💾 저장된 파일: {saved_filename}")
         
-        if "error" in research_results:
-            return ["데이터 처리 중 오류 발생", "검색 결과 부족"]
+        # 평가 결과 요약 출력
+        print(f"\n📋 평가 결과 요약:")
+        criteria = evaluation_result.get('evaluation_criteria', {})
+        for criterion, result in criteria.items():
+            print(f"   - {criterion}: {result.get('score', 0.0)}")
         
-        summary = research_results.get("summary", {})
-        source_analysis = research_results.get("source_analysis", {})
-        
-        # 결과 수량
-        total_results = summary.get("total_results", 0)
-        if total_results < 5:
-            weaknesses.append("검색 결과 수가 부족함")
-        
-        # 고품질 결과
-        high_relevance_count = summary.get("high_relevance_count", 0)
-        if high_relevance_count < 3:
-            weaknesses.append("높은 관련성을 가진 결과가 부족함")
-        
-        # 소스 다양성
-        if len(source_analysis) < 2:
-            weaknesses.append("소스 다양성이 부족함")
-        
-        # 품질 점수
-        if quality_score < QUALITY_THRESHOLDS["minimum_quality_score"]:
-            weaknesses.append("전체적인 품질이 기준치에 미달함")
-        
-        return weaknesses
-    
-    def _generate_improvement_suggestions(self, research_results: Dict[str, Any], quality_score: float) -> List[str]:
-        """개선 제안을 생성합니다."""
-        suggestions = []
-        
-        if "error" in research_results:
-            return ["검색 쿼리를 수정하여 재시도하세요", "데이터 소스 연결을 확인하세요"]
-        
-        summary = research_results.get("summary", {})
-        source_analysis = research_results.get("source_analysis", {})
-        
-        # 결과 수량 개선
-        total_results = summary.get("total_results", 0)
-        if total_results < 10:
-            suggestions.append("검색 범위를 확장하여 더 많은 결과를 수집하세요")
-        
-        # 소스 다양성 개선
-        if len(source_analysis) < 3:
-            suggestions.append("더 다양한 소스에서 정보를 수집하세요")
-        
-        # 품질 개선
-        if quality_score < QUALITY_THRESHOLDS["excellent_quality_score"]:
-            suggestions.append("검색 쿼리를 더 구체적으로 만들어 관련성을 높이세요")
-            suggestions.append("최신 정보를 우선적으로 포함하도록 검색 범위를 조정하세요")
-        
-        return suggestions
-    
-    def _determine_approval_status(self, quality_score: float) -> str:
-        """승인 상태를 결정합니다."""
-        if quality_score >= QUALITY_THRESHOLDS["minimum_quality_score"]:
-            return "approved"
-        else:
-            return "rejected"
-    
-    def _get_fallback_data(self) -> Dict[str, Any]:
-        """폴백 데이터를 반환합니다."""
-        return {
-            "critic_feedback": {
-                "overall_assessment": "평가를 수행할 수 없습니다.",
-                "strengths": [],
-                "weaknesses": ["데이터 부족으로 인한 평가 불가"],
-                "improvement_suggestions": ["데이터를 다시 수집하여 재시도하세요"],
-                "detailed_evaluation": {}
-            },
-            "approval_status": "rejected",
-            "quality_score": 0.0
-        }
+        print(f"\n💡 개선 제안:")
+        suggestions = evaluation_result.get('improvement_suggestions', [])
+        for i, suggestion in enumerate(suggestions, 1):
+            print(f"   {i}. {suggestion}")
+    else:
+        print("❌ 결과 저장 실패")
+
+if __name__ == "__main__":
+    main()

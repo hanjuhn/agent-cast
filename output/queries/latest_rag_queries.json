@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "timestamp": "2025-08-20T21:59:13.722057",
+    "user_query": "AI 연구 동향에 대해 알려주세요",
+    "is_fallback": false,
+    "generation_method": "llm_generated",
+    "test_type": "test_query_agents"
+  },
+  "personalized_info_summary": {
+    "research_keywords": [
+      "LLM",
+      "MoE",
+      "Gemma 3",
+      "메모리 구현",
+      "데이터 분석"
+    ],
+    "research_interests": [
+      "AI 최적화 방법",
+      "MoE 아키텍처",
+      "Gemma 3"
+    ],
+    "current_projects": [
+      "LLM 최적화 방법 연구",
+      "MoE 아키텍처 연구",
+      "Gemma 3 논문 리뷰"
+    ]
+  },
+  "generated_queries": {
+    "primary_query": "AI 최적화 방법과 MoE 아키텍처, Gemma 3에 대한 최신 연구 동향과 논문",
+    "secondary_query": "AI 최적화 방법과 MoE 아키텍처, Gemma 3에 대한 최신 연구 동향과 논문",
+    "third_query": "AI 최적화 방법과 MoE 아키텍처, Gemma 3에 대한 최신 연구 동향과 논문"
+  },
+  "search_scope": {
+    "time_range": "2023-2024",
+    "sources": [
+      "arxiv.org",
+      "ieee.org"
+    ],
+    "languages": [
+      "en",
+      "ko"
+    ],
+    "document_types": [
+      "research_paper"
+    ],
+    "priority_sources": [
+      "arxiv.org"
+    ]
+  },
+  "research_priorities": [],
+  "workflow_status": {
+    "current_step": "query_writing",
+    "completed_steps": 2,
+    "total_steps": 8,
+    "status": "running",
+    "errors": [],
+    "warnings": []
+  }
+}

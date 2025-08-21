@@ -7,31 +7,31 @@ AI 연구 동향을 자동으로 분석하고 팟캐스트를 생성하는 멀�
 ```bash
 # 1. 저장소 클론
 git clone <repository-url>
-cd agent-cast
+cd AgentCast
 
 # 2. 의존성 설치
 pip install -r requirements.txt
 
 # 3. 환경 변수 설정
-cp .env.example .env
+cp env_example.txt .env
 # .env 파일에 API 키 입력
 
 # 4. 워크플로우 실행
-python -m agent-cast.run_workflow "AI 연구 동향에 대한 팟캐스트를 만들어주세요"
+python -m AgentCast.run_workflow "AI 연구 동향에 대한 팟캐스트를 만들어주세요"
 ```
 
 ## 🏗️ 시스템 구조
 
 ### 📁 프로젝트 구조
 ```
-agent-cast/
+AgentCast/
 ├── __init__.py                    - 메인 패키지 초기화
 ├── state.py                       - 상태 관리 시스템
 ├── orchestrator_graph.py          - LangGraph 워크플로우 정의
 ├── run_workflow.py                - 워크플로우 실행 엔진
 ├── mcp_config.yaml                - MCP 서버 설정
 ├── test_mcp_integration.py        - MCP 통합 테스트
-├── README_WORKFLOW.md             - 이 파일
+├── README.md                      - 이 파일
 ├── agents/                        - 🤖 에이전트 클래스들
 │   ├── base_agent.py             - 기본 에이전트 클래스
 │   ├── orchestrator_agent.py     - 워크플로우 조율자
@@ -42,7 +42,9 @@ agent-cast/
 │   ├── researcher_agent.py       - RAG 검색 및 분석
 │   ├── critic_agent.py           - 품질 검토
 │   ├── script_writer_agent.py    - 팟캐스트 스크립트 작성
-│   └── tts_agent.py              - 음성 변환
+│   ├── tts_agent.py              - 음성 변환
+│   ├── summarizer_agent.py       - 텍스트 요약
+│   └── reporter_agent.py         - 인터랙티브 리포트 생성
 ├── constants/                     - ⚙️ 시스템 상수
 │   ├── agents.py                 - 에이전트 설정
 │   ├── mcp.py                    - MCP 관련 상수
@@ -50,48 +52,67 @@ agent-cast/
 │   ├── ai_models.py              - AI 모델 설정
 │   ├── prompts.py                - AI 프롬프트
 │   └── configuration.py          - 시스템 설정
-└── integrations/                  - 🔌 MCP 서비스 통합
-    ├── base_mcp_integration.py   - 기본 MCP 통합
-    ├── mcp_manager.py            - MCP 서비스 관리자
-    ├── slack_mcp_integration.py  - Slack 통합
-    ├── notion_mcp_integration.py - Notion 통합
-    └── gmail_mcp_integration.py  - Gmail 통합
+├── mcp/                           - 🔌 MCP 서비스 연결
+│   ├── base_mcp.py               - 기본 MCP 클래스
+│   ├── mcp_manager.py            - MCP 서비스 관리자
+│   ├── slack_mcp.py              - Slack 연결
+│   ├── notion_mcp.py             - Notion 연결
+│   └── gmail_mcp.py              - Gmail 연결
+└── output/                        - 📁 출력 파일들
+    ├── searcher/                 - 검색 결과
+    ├── summarizer/               - 요약 결과
+    ├── critic/                   - 평가 결과
+    ├── script_writer/            - 대본 파일
+    ├── tts/                      - 오디오 파일
+    └── reporter/                 - 리포트 파일
 ```
 
 ### 🔄 워크플로우 흐름
 ```
-사용자 쿼리 → Orchestrator → Personalize → Searcher → QueryWriter → 
-DBConstructor → Researcher → Critic → ScriptWriter → TTS → 🎵 오디오
+사용자 쿼리 → Orchestrator → Personalize → Searcher → Summarizer → 
+QueryWriter → DBConstructor → Researcher → Critic → ScriptWriter → 
+TTS → 🎵 오디오 + Reporter → 📊 인터랙티브 리포트
 ```
 
 ## 🤖 에이전트 설명
 
-| 에이전트 | 역할 | 주요 기능 |
-|---------|------|-----------|
-| **Orchestrator** | 🎭 워크플로우 조율 | 전체 프로세스 관리 및 단계별 진행 |
-| **Personalize** | 👤 사용자 맞춤화 | Slack/Notion/Gmail에서 개인 정보 수집 |
-| **Searcher** | 🌐 웹 크롤링 | TechCrunch, AI Times, arXiv 등에서 정보 수집 |
-| **QueryWriter** | 🔍 쿼리 생성 | RAG 검색을 위한 최적화된 쿼리 생성 |
-| **DBConstructor** | 🗄️ 벡터 DB 구축 | 수집된 데이터를 벡터화하여 저장 |
-| **Researcher** | 📚 RAG 검색 | 벡터 DB에서 관련 정보 검색 및 분석 |
-| **Critic** | ✅ 품질 검토 | 연구 결과의 정확성 및 신뢰성 평가 |
-| **ScriptWriter** | 📝 스크립트 작성 | 연구 결과를 팟캐스트 대본으로 변환 |
-| **TTS** | 🎵 음성 변환 | 텍스트를 자연스러운 음성으로 변환 |
+| 에이전트 | 역할 | 주요 기능 | 사용 모델 |
+|---------|------|-----------|-----------|
+| **Orchestrator** | 🎭 워크플로우 조율 | 전체 프로세스 관리 및 단계별 진행 | - |
+| **Personalize** | 👤 사용자 맞춤화 | Slack/Notion/Gmail에서 개인 정보 수집 | - |
+| **Searcher** | 🌐 웹 크롤링 | TechCrunch, AI Times, arXiv 등에서 정보 수집 | Perplexity API |
+| **Summarizer** | 📝 텍스트 요약 | 수집된 정보를 KoT5 모델로 요약 | KoT5 |
+| **QueryWriter** | 🔍 쿼리 생성 | RAG 검색을 위한 최적화된 쿼리 생성 | - |
+| **DBConstructor** | 🗄️ 벡터 DB 구축 | 수집된 데이터를 벡터화하여 저장 | - |
+| **Researcher** | 📚 RAG 검색 | 벡터 DB에서 관련 정보 검색 및 분석 | - |
+| **Critic** | ✅ 품질 검토 | 연구 결과의 정확성 및 신뢰성 평가 | GPT-4o |
+| **ScriptWriter** | 📝 스크립트 작성 | 연구 결과를 팟캐스트 대본으로 변환 | Claude Sonnet 4 |
+| **TTS** | 🎵 음성 변환 | 텍스트를 자연스러운 음성으로 변환 | Gemini TTS |
+| **Reporter** | 📊 리포트 생성 | 인터랙티브 HTML 리포트 생성 | Claude Sonnet 4 |
 
 ## ⚙️ 설정
 
 ### 환경 변수 (`.env`)
 ```env
-# OpenAI API
-OPENAI_API_KEY=your_api_key_here
+# OpenAI API (CriticAgent)
+OPENAI_API_KEY=sk-your_openai_api_key_here
 
-# Slack
+# Anthropic API (ScriptWriterAgent, ReporterAgent)
+ANTHROPIC_API_KEY=sk-ant-your_anthropic_api_key_here
+
+# Google API (TTSAgent)
+GOOGLE_API_KEY=your_google_api_key_here
+
+# Perplexity API (SearcherAgent)
+PERPLEXITY_API_KEY=your_perplexity_api_key_here
+
+# Slack MCP
 SLACK_BOT_TOKEN=xoxb-your-bot-token
 
-# Notion
+# Notion MCP
 NOTION_INTEGRATION_TOKEN=secret-your-token
 
-# Gmail
+# Gmail MCP
 GMAIL_CREDENTIALS_FILE=path/to/credentials.json
 ```
 
@@ -153,16 +174,16 @@ workflow.add_edge("PREVIOUS_AGENT", "NEW_AGENT")
 
 ### 새로운 MCP 서버 추가
 ```python
-# 1. integrations/ 디렉토리에 새 통합 클래스 생성
-from .base_mcp_integration import BaseMCPIntegration
+# 1. mcp/ 디렉토리에 새 MCP 클래스 생성
+from .base_mcp import BaseMCP
 
-class NewMCPIntegration(BaseMCPIntegration):
+class NewMCP(BaseMCP):
     async def connect(self) -> bool:
         # 연결 로직 구현
         pass
 
-# 2. mcp_manager.py에 통합 추가
-self.integrations["new_service"] = NewMCPIntegration(config)
+# 2. mcp_manager.py에 서비스 추가
+self.integrations["new_service"] = NewMCP(config)
 ```
 
 ## 🧪 테스트

@@ -52,16 +52,56 @@ def create_orchestrator_graph() -> StateGraph:
     personalize = PersonalizeAgent()
     query_writer = QueryWriterAgent()
     searcher = SearcherAgent()
-    if KnowledgeGraphAgent is not None:
+    
+    # KnowledgeGraphAgent 생성 시도
+    try:
         knowledge_graph = KnowledgeGraphAgent()
-    else:
+        print("✅ KnowledgeGraphAgent 생성 성공")
+        
+        # KnowledgeGraphAgent 초기화 시도
+        import asyncio
+        try:
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                # 이미 실행 중인 루프가 있으면 새 태스크로 초기화
+                loop.create_task(knowledge_graph.initialize())
+                print("✅ KnowledgeGraphAgent 초기화 태스크 생성됨")
+            else:
+                # 루프가 실행되지 않았으면 직접 실행
+                loop.run_until_complete(knowledge_graph.initialize())
+                print("✅ KnowledgeGraphAgent 초기화 완료")
+        except Exception as init_error:
+            print(f"⚠️ KnowledgeGraphAgent 초기화 실패: {init_error}")
+            
+    except Exception as e:
+        print(f"❌ KnowledgeGraphAgent 생성 실패: {e}")
         knowledge_graph = None
+    
     kg_search = KGSearchAgent()
     db_constructor = DBConstructorAgent()
     researcher = ResearcherAgent()
     critic = CriticAgent()
     script_writer = ScriptWriterAgent()
     tts = TTSAgent()
+    
+    # KGSearchAgent 초기화 시도
+    try:
+        import asyncio
+        try:
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                # 이미 실행 중인 루프가 있으면 새 태스크로 초기화
+                loop.create_task(kg_search.initialize())
+                print("✅ KGSearchAgent 초기화 태스크 생성됨")
+            else:
+                # 루프가 실행되지 않았으면 직접 실행
+                loop.run_until_complete(kg_search.initialize())
+                print("✅ KGSearchAgent 초기화 완료")
+        except Exception as init_error:
+            print(f"⚠️ KGSearchAgent 초기화 실패: {init_error}")
+            
+    except Exception as e:
+        print(f"❌ KGSearchAgent 초기화 실패: {e}")
     
     # 노드 추가
     workflow.add_node(AGENT_NAMES["ORCHESTRATOR"], orchestrator.process)
@@ -70,12 +110,14 @@ def create_orchestrator_graph() -> StateGraph:
     workflow.add_node(AGENT_NAMES["SEARCHER"], searcher.process)
     if knowledge_graph is not None:
         workflow.add_node(AGENT_NAMES["KNOWLEDGE_GRAPH"], knowledge_graph.process)
+        print("✅ KnowledgeGraphAgent 노드가 워크플로우에 추가됨")
     else:
         # Mock knowledge graph process
         async def mock_kg_process(state: WorkflowState) -> WorkflowState:
             print("⚠️ KnowledgeGraphAgent not available, using mock process")
             return state
         workflow.add_node(AGENT_NAMES["KNOWLEDGE_GRAPH"], mock_kg_process)
+        print("⚠️ Mock KnowledgeGraphAgent 노드가 워크플로우에 추가됨")
     workflow.add_node(AGENT_NAMES["KG_SEARCH"], kg_search.process)
     workflow.add_node(AGENT_NAMES["DB_CONSTRUCTOR"], db_constructor.process)
     workflow.add_node(AGENT_NAMES["RESEARCHER"], researcher.process)

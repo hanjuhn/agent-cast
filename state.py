@@ -144,6 +144,7 @@ class WorkflowState:
     knowledge_graph: Dict[str, Any] = field(default_factory=dict)  # Knowledge Graph Agent 결과
     document_store: Dict[str, Any] = field(default_factory=dict)  # 문서 저장소
     kg_search_results: List[Dict[str, Any]] = field(default_factory=list)  # KG Search Agent 결과
+    kg_stats: Dict[str, Any] = field(default_factory=dict)  # 지식 그래프 통계
     
     # 요약 및 평가
     summarized_results: List[Dict[str, Any]] = field(default_factory=list)

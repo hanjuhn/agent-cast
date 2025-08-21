@@ -81,19 +81,31 @@ class KGSearchAgent(BaseAgent):
             # Search knowledge graph
             search_results = await self._search_knowledge_graph(search_query, query_type)
             
+            # Add knowledge graph statistics
+            kg_stats = {}
+            if hasattr(self.knowledge_graph_agent, 'knowledge_graph'):
+                kg_stats = self.knowledge_graph_agent.get_knowledge_graph_stats()
+            
+            # Enhance search results with knowledge graph insights
+            enhanced_results = await self._enhance_search_results(search_results, query_type)
+            
             # Update state
             state_dict = {k: v for k, v in state.__dict__.items()}
             if 'kg_search_results' in state_dict:
                 del state_dict['kg_search_results']
+            if 'kg_stats' in state_dict:
+                del state_dict['kg_stats']
             
             new_state = WorkflowState(
                 **state_dict,
-                kg_search_results=search_results
+                kg_search_results=enhanced_results,
+                kg_stats=kg_stats
             )
             
             new_state = self.update_workflow_status(new_state, "kg_search_completed")
             
-            logger.info(f"Knowledge graph search completed with {len(search_results)} results")
+            logger.info(f"Knowledge graph search completed with {len(enhanced_results)} enhanced results")
+            logger.info(f"Knowledge graph stats: {kg_stats}")
             return new_state
             
         except Exception as e:

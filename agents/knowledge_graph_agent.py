@@ -22,17 +22,24 @@ def _import_hipporag():
         return HippoRAG
     
     try:
-        if __name__ == '__main__':  # multiprocessing protection
-            from hipporag import HippoRAG as _HippoRAG
-            HippoRAG = _HippoRAG
-            HIPPORAG_AVAILABLE = True
-            print("✅ Local HippoRAG imported successfully")
-            return HippoRAG
-        else:
-            print("⚠️ HippoRAG import skipped due to multiprocessing safety")
-            return None
+        # Set multiprocessing start method to fork for macOS compatibility
+        import multiprocessing
+        if multiprocessing.get_start_method() != 'fork':
+            try:
+                multiprocessing.set_start_method('fork', force=True)
+                print("✅ Multiprocessing start method changed to 'fork'")
+            except Exception as mp_error:
+                print(f"⚠️ Could not change multiprocessing method: {mp_error}")
+        
+        # Try to import HippoRAG
+        from hipporag import HippoRAG as _HippoRAG
+        HippoRAG = _HippoRAG
+        HIPPORAG_AVAILABLE = True
+        print("✅ Local HippoRAG imported successfully")
+        return HippoRAG
     except Exception as e:
         print(f"❌ Failed to import local HippoRAG: {e}")
+        print("⚠️ Using mock implementation instead")
         return None
 
 try:
@@ -79,9 +86,9 @@ class KnowledgeGraphAgent(BaseAgent):
             # Initialize HippoRAG with local configuration
             logger.info("Initializing local HippoRAG...")
             self.hipporag = hipporag_class(
-                model_name="gpt-4o-mini",  # Use a lighter model to avoid issues
-                max_length=2048,
-                temperature=0.1
+                llm_model_name="gpt-4o-mini",  # Use correct parameter name
+                embedding_model_name="text-embedding-3-small",
+                save_dir="outputs/hipporag_workflow"
             )
             
             logger.info("Knowledge Graph Agent initialized successfully with local HippoRAG")
@@ -129,34 +136,65 @@ class KnowledgeGraphAgent(BaseAgent):
             # Get crawled documents from state
             crawled_documents = getattr(state, 'search_results', [])
             if not crawled_documents:
-                logger.warning("No crawled documents found in state")
-                # Return empty knowledge graph
-                state_dict = {k: v for k, v in state.__dict__.items()}
-                if 'knowledge_graph' in state_dict:
-                    del state_dict['knowledge_graph']
-                if 'document_store' in state_dict:
-                    del state_dict['document_store']
+                logger.warning("No crawled documents found in state, trying to use existing data")
                 
-                empty_kg = {
-                    "entities": {},
-                    "relationships": [],
-                    "metadata": {
-                        "created_at": datetime.now().isoformat(),
-                        "document_count": 0,
-                        "entity_count": 0,
-                        "relationship_count": 0,
-                        "status": "empty"
+                # Try to use existing combined_search_results.json if available
+                try:
+                    import json
+                    import os
+                    existing_data_path = "output/combined_search_results.json"
+                    if os.path.exists(existing_data_path):
+                        with open(existing_data_path, 'r', encoding='utf-8') as f:
+                            existing_data = json.load(f)
+                        
+                        # Extract content from existing data
+                        documents_for_kg = []
+                        for item in existing_data[:10]:  # Use first 10 items for testing
+                            if 'content' in item:
+                                documents_for_kg.append({
+                                    'title': item.get('title', 'Unknown'),
+                                    'content': item['content'],
+                                    'source': item.get('source', 'Unknown')
+                                })
+                        
+                        if documents_for_kg:
+                            logger.info(f"Using {len(documents_for_kg)} existing documents for knowledge graph")
+                            crawled_documents = documents_for_kg
+                        else:
+                            logger.warning("No valid content found in existing data")
+                    else:
+                        logger.warning("No existing data file found")
+                except Exception as e:
+                    logger.error(f"Error loading existing data: {e}")
+                
+                if not crawled_documents:
+                    # Return empty knowledge graph if still no documents
+                    state_dict = {k: v for k, v in state.__dict__.items()}
+                    if 'knowledge_graph' in state_dict:
+                        del state_dict['knowledge_graph']
+                    if 'document_store' in state_dict:
+                        del state_dict['document_store']
+                    
+                    empty_kg = {
+                        "entities": {},
+                        "relationships": [],
+                        "metadata": {
+                            "created_at": datetime.now().isoformat(),
+                            "document_count": 0,
+                            "entity_count": 0,
+                            "relationship_count": 0,
+                            "status": "empty"
+                        }
                     }
-                }
-                
-                new_state = WorkflowState(
-                    **state_dict,
-                    knowledge_graph=empty_kg,
-                    document_store={}
-                )
-                
-                new_state = self.update_workflow_status(new_state, "knowledge_graph_completed")
-                return new_state
+                    
+                    new_state = WorkflowState(
+                        **state_dict,
+                        knowledge_graph=empty_kg,
+                        document_store={}
+                    )
+                    
+                    new_state = self.update_workflow_status(new_state, "knowledge_graph_completed")
+                    return new_state
             
             # Process each document and build knowledge graph
             knowledge_graph = await self._build_knowledge_graph(crawled_documents)
@@ -232,12 +270,29 @@ class KnowledgeGraphAgent(BaseAgent):
         content = document.get("content", "")
         title = document.get("title", "")
         
-        # Prepare prompt for knowledge extraction
+        # 긴 문서를 요약하여 토큰 제한 방지
+        def truncate_content(text: str, max_chars: int = 2000) -> str:
+            """긴 텍스트를 지정된 길이로 자르고 요약합니다."""
+            if len(text) <= max_chars:
+                return text
+            
+            # 첫 부분과 마지막 부분을 유지하고 중간을 요약
+            first_part = text[:max_chars//3]
+            last_part = text[-(max_chars//3):]
+            middle_summary = f"...[중간 내용 요약: {len(text) - (max_chars//3)*2}자 생략]..."
+            
+            return first_part + middle_summary + last_part
+        
+        # 문서 내용 요약
+        truncated_content = truncate_content(content, 2000)
+        truncated_title = truncate_content(title, 200)
+        
+        # Prepare prompt for knowledge extraction (요약된 내용 사용)
         prompt = f"""
         Extract entities and relationships from the following document:
         
-        Title: {title}
-        Content: {content}
+        Title: {truncated_title}
+        Content: {truncated_content}
         
         Please identify:
         1. Entities (people, organizations, technologies, concepts)
@@ -266,15 +321,52 @@ class KnowledgeGraphAgent(BaseAgent):
         """
         
         try:
-            # Use HippoRAG to extract knowledge
-            response = await self.hipporag.generate(prompt)
+            # Use HippoRAG to index and extract knowledge
+            # First, index the document content (요약된 내용 사용)
+            doc_content = f"Title: {truncated_title}\nContent: {truncated_content}"
             
-            # Parse response
-            if response and hasattr(response, 'text'):
-                result = json.loads(response.text)
-                entities = result.get("entities", [])
-                relationships = result.get("relationships", [])
-                return entities, relationships
+            # Index the document using HippoRAG
+            self.hipporag.index(docs=[doc_content])
+            
+            # Extract entities using simple NLP approach since HippoRAG doesn't have direct entity extraction
+            # For now, create basic entities from the document
+            entities = []
+            relationships = []
+            
+            # Create a document entity
+            doc_entity = {
+                "id": f"doc_{hash(title)}",
+                "name": title,
+                "type": "document",
+                "description": content[:200] + "..." if len(content) > 200 else content,
+                "confidence": 0.9
+            }
+            entities.append(doc_entity)
+            
+            # Extract key terms as entities (simplified approach)
+            import re
+            key_terms = re.findall(r'\b[A-Z][a-zA-Z]*(?:\s+[A-Z][a-zA-Z]*)*\b', content)
+            for i, term in enumerate(key_terms[:5]):  # Limit to 5 key terms
+                if len(term) > 2:  # Only meaningful terms
+                    term_entity = {
+                        "id": f"term_{hash(term)}",
+                        "name": term,
+                        "type": "concept",
+                        "description": f"Key term from document: {title}",
+                        "confidence": 0.8
+                    }
+                    entities.append(term_entity)
+                    
+                    # Create relationship between document and term
+                    relationship = {
+                        "source": doc_entity["id"],
+                        "target": term_entity["id"],
+                        "relation": "contains",
+                        "confidence": 0.8
+                    }
+                    relationships.append(relationship)
+            
+            return entities, relationships
             
         except Exception as e:
             logger.error(f"Error extracting knowledge: {e}")
@@ -282,22 +374,58 @@ class KnowledgeGraphAgent(BaseAgent):
         return [], []
     
     async def search_knowledge_graph(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
-        """Search knowledge graph using query."""
+        """Search knowledge graph using HippoRAG."""
         try:
-            if not self.retriever:
+            if not self.hipporag:
+                logger.warning("HippoRAG not initialized, trying to initialize...")
                 await self.initialize()
             
-            # Use retriever to search
-            results = await self.retriever.retrieve(
-                query=query,
-                documents=list(self.document_store.values()),
-                top_k=top_k
+            if not self.hipporag:
+                logger.error("HippoRAG still not available after initialization")
+                return []
+            
+            # Use HippoRAG to search
+            logger.info(f"Searching knowledge graph with query: '{query}'")
+            
+            # Convert query to list format for HippoRAG
+            queries = [query]
+            
+            # Search using HippoRAG
+            search_results = self.hipporag.retrieve(
+                queries=queries,
+                num_to_retrieve=top_k
             )
             
-            return results
+            # Process and format results
+            formatted_results = []
+            for result in search_results:
+                if hasattr(result, 'docs') and result.docs:
+                    # Get the first document from each result
+                    doc_content = result.docs[0] if result.docs else ""
+                    
+                    # Get score if available
+                    score = 0.0
+                    if hasattr(result, 'doc_scores') and result.doc_scores is not None:
+                        if len(result.doc_scores) > 0:
+                            score = float(result.doc_scores[0])
+                    
+                    formatted_result = {
+                        "content": doc_content,
+                        "title": f"Knowledge Graph Search: {query}",
+                        "url": "knowledge_graph",
+                        "score": score,
+                        "query": query,
+                        "source": "hipporag"
+                    }
+                    formatted_results.append(formatted_result)
+            
+            logger.info(f"Found {len(formatted_results)} results from knowledge graph search")
+            return formatted_results
             
         except Exception as e:
             logger.error(f"Error searching knowledge graph: {e}")
+            import traceback
+            traceback.print_exc()
             return []
     
     async def get_related_entities(self, entity_id: str, max_depth: int = 2) -> List[Dict[str, Any]]:

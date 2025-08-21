@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "timestamp": "2025-08-22T00:04:35.431883",
+    "user_query": "AI 연구 동향에 대한 팟캐스트를 만들어주세요 - HippoRAG 실제 데이터 처리 테스트",
+    "is_fallback": false,
+    "generation_method": "llm_generated"
+  },
+  "personalized_info_summary": {
+    "research_keywords": [
+      "LLM",
+      "메모리 구현",
+      "데이터 분석",
+      "vllm 서빙"
+    ],
+    "research_interests": [
+      "LLM 최적화",
+      "메모리 구현",
+      "데이터 분석"
+    ],
+    "current_projects": [
+      "카카오의 LLM 오픈소스 공개",
+      "메모리 구현 개발",
+      "vllm 서빙 관련 가이드"
+    ]
+  },
+  "generated_queries": "LLM 최적화와 메모리 구현에 대한 최신 AI 연구 동향과 논문을 포함한 팟캐스트"
+}

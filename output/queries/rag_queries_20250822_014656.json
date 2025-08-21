@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "timestamp": "2025-08-22T01:46:56.961977",
+    "user_query": "AI 연구 동향에 대한 팟캐스트를 만들어주세요 - 토큰 제한 완전 해결 테스트",
+    "is_fallback": false,
+    "generation_method": "llm_generated"
+  },
+  "personalized_info_summary": {
+    "research_keywords": [
+      "LLM",
+      "MoE 아키텍처",
+      "Gemma 3",
+      "메모리 구현",
+      "데이터 분석"
+    ],
+    "research_interests": [
+      "LLM 최적화 방법",
+      "MoE 아키텍처",
+      "Gemma 3",
+      "메모리 구현",
+      "데이터 분석"
+    ],
+    "current_projects": [
+      "LLM 오픈소스 공개",
+      "메모리 구현",
+      "다중 사용자 대응 준비"
+    ]
+  },
+  "generated_queries": "LLM 최적화 방법, MoE 아키텍처, Gemma 3, 메모리 구현에 대한 최신 연구 동향과 데이터 분석 관련 팟캐스트"
+}

@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "timestamp": "2025-08-21T23:49:15.282475",
+    "user_query": "AI 연구 동향에 대한 팟캐스트를 만들어주세요 - KnowledgeGraphAgent 초기화 테스트",
+    "is_fallback": false,
+    "generation_method": "llm_generated"
+  },
+  "personalized_info_summary": {
+    "research_keywords": [
+      "LLM",
+      "MoE 아키텍처",
+      "Gemma 3",
+      "데이터 분석",
+      "메모리 구현"
+    ],
+    "research_interests": [
+      "LLM 최적화",
+      "MoE 아키텍처",
+      "Gemma 3",
+      "데이터 분석",
+      "메모리 구현"
+    ],
+    "current_projects": [
+      "LLM 오픈소스 공개",
+      "메모리 구현 프로젝트",
+      "vllm 서빙 관련 가이드 작성"
+    ]
+  },
+  "generated_queries": "LLM 최적화, MoE 아키텍처, Gemma 3, 데이터 분석, 메모리 구현에 대한 최신 AI 연구 동향 팟캐스트"
+}

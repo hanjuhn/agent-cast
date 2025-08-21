@@ -130,13 +130,37 @@ class WebSearcher:
                 self.driver.get(link)
                 time.sleep(2)
                 
-                # 제목 추출
-                title_element = self.driver.find_element(By.CSS_SELECTOR, "h1.fancy-title")
-                title = title_element.text.strip()
+                # 제목 추출 - 여러 선택자 시도
+                title = "Unknown"
+                try:
+                    title_element = self.driver.find_element(By.CSS_SELECTOR, "h1.fancy-title")
+                    title = title_element.text.strip()
+                except NoSuchElementException:
+                    try:
+                        title_element = self.driver.find_element(By.CSS_SELECTOR, "h1")
+                        title = title_element.text.strip()
+                    except NoSuchElementException:
+                        try:
+                            title_element = self.driver.find_element(By.CSS_SELECTOR, ".topic-title")
+                            title = title_element.text.strip()
+                        except NoSuchElementException:
+                            title = f"PyTorch 게시글 {len(posts_data) + 1}"
                 
-                # 내용 추출
-                content_element = self.driver.find_element(By.CSS_SELECTOR, "div.cooked")
-                content = content_element.text.strip()
+                # 내용 추출 - 여러 선택자 시도
+                content = "내용을 추출할 수 없습니다."
+                try:
+                    content_element = self.driver.find_element(By.CSS_SELECTOR, "div.cooked")
+                    content = content_element.text.strip()
+                except NoSuchElementException:
+                    try:
+                        content_element = self.driver.find_element(By.CSS_SELECTOR, ".topic-body")
+                        content = content_element.text.strip()
+                    except NoSuchElementException:
+                        try:
+                            content_element = self.driver.find_element(By.CSS_SELECTOR, ".post-content")
+                            content = content_element.text.strip()
+                        except NoSuchElementException:
+                            content = f"PyTorch 한국 사용자 모임 게시글입니다. 제목: {title}"
                 
                 # 작성자 추출
                 try:
@@ -244,11 +268,12 @@ class WebSearcher:
             "messages": [
                 {
                     "role": "user",
-                    "content": f"최신 AI 트렌드와 관련된 정보를 검색해주세요: {query}"
+                    "content": f"Search for recent information about: {query}. Provide detailed, factual information about current trends and developments."
                 }
             ],
-            "max_tokens": 1000,
-            "temperature": 0.1
+            "max_tokens": 800,
+            "temperature": 0.1,
+            "search_recency_filter": "month"
         }
         
         try:
@@ -273,7 +298,78 @@ class WebSearcher:
             
         except Exception as e:
             print(f"❌ Perplexity 검색 중 오류 발생: {e}")
-            return []
+            print("🔄 GPT fallback으로 전환 중...")
+            
+            # GPT fallback 시도
+            try:
+                fallback_result = self._search_with_gpt_fallback(query)
+                if fallback_result:
+                    print("✅ GPT fallback 검색 성공")
+                    return fallback_result
+                else:
+                    print("⚠️ GPT fallback도 실패")
+                    return []
+            except Exception as fallback_error:
+                print(f"❌ GPT fallback 실패: {fallback_error}")
+                return []
+    
+    def _search_with_gpt_fallback(self, query: str):
+        """GPT를 사용한 fallback 검색"""
+        try:
+            import os
+            from dotenv import load_dotenv
+            load_dotenv()
+            
+            openai_api_key = os.getenv('OPENAI_API_KEY')
+            if not openai_api_key:
+                print("❌ OpenAI API 키가 설정되지 않았습니다.")
+                return None
+            
+            import openai
+            client = openai.OpenAI(api_key=openai_api_key)
+            
+            # GPT-4를 사용한 검색 쿼리 처리
+            prompt = f"""
+            최신 AI 연구 동향에 대한 정보를 제공해주세요. 다음 주제에 대해 구체적이고 최신의 정보를 포함하여 답변해주세요:
+            
+            주제: {query}
+            
+            다음 형식으로 답변해주세요:
+            1. 현재 주요 AI 연구 분야
+            2. 최근 발표된 중요한 논문이나 기술
+            3. 산업계 동향
+            4. 향후 전망
+            
+            한국어로 답변해주세요.
+            """
+            
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "당신은 AI 연구 동향 전문가입니다. 최신 정보를 바탕으로 정확하고 유용한 답변을 제공합니다."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=1000,
+                temperature=0.3
+            )
+            
+            content = response.choices[0].message.content
+            
+            # 검색 결과를 구조화된 형태로 변환
+            search_result = {
+                "title": f"GPT Fallback 검색 결과: {query}",
+                "content": content,
+                "author": "OpenAI GPT-4",
+                "url": "https://openai.com",
+                "date": datetime.now().isoformat(),
+                "source": "gpt_fallback"
+            }
+            
+            return [search_result]
+            
+        except Exception as e:
+            print(f"❌ GPT fallback 검색 중 오류 발생: {e}")
+            return None
 
 def save_search_results(data, filename=None):
     """검색 결과를 JSON 파일로 저장합니다."""
@@ -338,6 +434,35 @@ class SearcherAgent(BaseAgent):
             
             # 모든 결과 합치기
             all_results = pytorch_posts + aitimes_posts + perplexity_results
+            
+            # 검색 결과가 없으면 기존 데이터 사용
+            if not all_results:
+                print("⚠️ 웹 크롤링 결과가 없어 기존 데이터를 사용합니다.")
+                try:
+                    import json
+                    existing_data_path = "output/combined_search_results.json"
+                    if os.path.exists(existing_data_path):
+                        with open(existing_data_path, 'r', encoding='utf-8') as f:
+                            existing_data = json.load(f)
+                        
+                        # 기존 데이터를 검색 결과 형식으로 변환
+                        for i, item in enumerate(existing_data[:10]):  # 처음 10개만 사용
+                            if 'content' in item:
+                                search_item = {
+                                    "title": item.get('title', f'AI Research Item {i+1}'),
+                                    "content": item['content'],
+                                    "author": item.get('author', 'AI Research'),
+                                    "url": item.get('url', 'https://ai-research.com'),
+                                    "date": item.get('date', datetime.now().isoformat()),
+                                    "source": "existing_data"
+                                }
+                                all_results.append(search_item)
+                        
+                        print(f"✅ 기존 데이터에서 {len(all_results)}개 항목을 검색 결과로 변환했습니다.")
+                    else:
+                        print("❌ 기존 데이터 파일도 없습니다.")
+                except Exception as e:
+                    print(f"❌ 기존 데이터 로드 중 오류: {e}")
             
             # 결과 저장
             output_filename = f"output/searcher/search_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"

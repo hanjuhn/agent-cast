@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "timestamp": "2025-08-22T02:10:56.106023",
-    "user_query": "AI 연구 동향에 대한 팟캐스트를 만들어주세요 - 중복 코드 정리 후 테스트",
+    "timestamp": "2025-08-21T23:27:12.338608",
+    "user_query": "AI 연구 동향에 대한 팟캐스트를 만들어주세요 - HippoRAG 테스트",
     "is_fallback": false,
     "generation_method": "llm_generated"
   },
@@ -10,8 +10,7 @@
       "LLM",
       "MoE",
       "Gemma 3",
-      "데이터 분석",
-      "vllm 서빙"
+      "데이터 분석"
     ],
     "research_interests": [
       "LLM 최적화",
@@ -21,8 +20,8 @@
     ],
     "current_projects": [
       "메모리 구현",
-      "vllm 서빙 가이드 학습"
+      "다중 사용자 대응 준비"
     ]
   },
-  "generated_queries": "LLM 최적화와 MoE 아키텍처에 대한 최신 연구 동향과 데이터 분석 관련 AI 팟캐스트"
+  "generated_queries": "LLM 최적화와 MoE 아키텍처, 그리고 Gemma 3에 대한 최신 AI 연구 동향과 데이터 분석 관련 팟캐스트"
 }

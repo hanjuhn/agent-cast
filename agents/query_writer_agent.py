@@ -7,10 +7,10 @@ try:
     from agents.base_agent import BaseAgent, AgentResult
     from state import WorkflowState
 except ImportError:
-    from ..constants import AGENT_NAMES, QUERY_WRITER_SYSTEM_PROMPT
-    from ..constants.llm_client import get_llm_client
+    from constants import AGENT_NAMES, QUERY_WRITER_SYSTEM_PROMPT
+    from constants.llm_client import get_llm_client
     from .base_agent import BaseAgent, AgentResult
-    from ..state import WorkflowState
+    from state import WorkflowState
 
 
 class QueryWriterAgent(BaseAgent):

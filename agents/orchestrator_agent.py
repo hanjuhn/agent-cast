@@ -1,9 +1,17 @@
 """Orchestrator Agent for coordinating the multi-agent workflow."""
 
 from typing import Any, Dict, List
-from ..constants import AGENT_NAMES, WORKFLOW_STEP_ORDER
-from .base_agent import BaseAgent, AgentResult
-from ..state import WorkflowState
+try:
+    from constants import AGENT_NAMES, WORKFLOW_STEP_ORDER
+    from .base_agent import BaseAgent, AgentResult
+    from state import WorkflowState
+except ImportError:
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from constants import AGENT_NAMES, WORKFLOW_STEP_ORDER
+    from .base_agent import BaseAgent, AgentResult
+    from state import WorkflowState
 
 
 class OrchestratorAgent(BaseAgent):

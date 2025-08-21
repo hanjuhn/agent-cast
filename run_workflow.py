@@ -5,40 +5,48 @@ import sys
 from datetime import datetime
 from typing import Dict, Any
 
-from .state import WorkflowState
-from .constants import WORKFLOW_STEPS, WORKFLOW_STEP_DESCRIPTIONS, WORKFLOW_STEP_ORDER
-from .orchestrator_graph import main_workflow
+try:
+    from state import WorkflowState
+    from constants import WORKFLOW_STEPS, WORKFLOW_STEP_DESCRIPTIONS, WORKFLOW_STEP_ORDER
+    from orchestrator_graph import main_workflow
+except ImportError:
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from state import WorkflowState
+    from constants import WORKFLOW_STEPS, WORKFLOW_STEP_DESCRIPTIONS, WORKFLOW_STEP_ORDER
+    from orchestrator_graph import main_workflow
 
 
 def _get_agent_for_step(step_name: str):
     """단계 이름에 해당하는 에이전트를 동적으로 가져옵니다."""
     try:
         if step_name == "orchestrator":
-            from .agents import OrchestratorAgent
+            from agents import OrchestratorAgent
             return OrchestratorAgent()
         elif step_name == "personalize":
-            from .agents import PersonalizeAgent
+            from agents import PersonalizeAgent
             return PersonalizeAgent()
         elif step_name == "query_writer":
-            from .agents import QueryWriterAgent
+            from agents import QueryWriterAgent
             return QueryWriterAgent()
         elif step_name == "searcher":
-            from .agents import SearcherAgent
+            from agents import SearcherAgent
             return SearcherAgent()
         elif step_name == "db_constructor":
-            from .agents import DBConstructorAgent
+            from agents import DBConstructorAgent
             return DBConstructorAgent()
         elif step_name == "researcher":
-            from .agents import ResearcherAgent
+            from agents import ResearcherAgent
             return ResearcherAgent()
         elif step_name == "critic":
-            from .agents import CriticAgent
+            from agents import CriticAgent
             return CriticAgent()
         elif step_name == "script_writer":
-            from .agents import ScriptWriterAgent
+            from agents import ScriptWriterAgent
             return ScriptWriterAgent()
         elif step_name == "tts":
-            from .agents import TTSAgent
+            from agents import TTSAgent
             return TTSAgent()
         else:
             raise ValueError(f"Unknown step: {step_name}")

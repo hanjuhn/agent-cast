@@ -10,7 +10,13 @@ from dotenv import load_dotenv
 from datetime import datetime
 
 from .base_agent import BaseAgent
-from ..state import WorkflowState
+try:
+    from state import WorkflowState
+except ImportError:
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from state import WorkflowState
 
 # --- 환경 변수 로드 ---
 load_dotenv()  # .env 파일에서 환경 변수 로드
@@ -86,7 +92,6 @@ def main():
     
     # --- 5. 오디오 생성 ---
     audio_segments = []
-    client = genai.Client(api_key=API_KEY)
     
     print("오디오 생성을 시작합니다...")
     for chunk in tqdm(final_chunks):
@@ -173,59 +178,65 @@ class TTSAgent(BaseAgent):
             # 스크립트 분할
             final_chunks = split_script_into_chunks(podcast_script)
             
-            # 오디오 생성
+            # 오디오 생성 (OpenAI TTS 사용)
             audio_segments = []
-            client = genai.Client(api_key=self.api_key)
             
-            for chunk in tqdm(final_chunks, desc="오디오 생성 중"):
-                prompt = f"""TTS the following conversation between Joe and Jane:
-                        {chunk}"""
-                try:
-                    response = client.models.generate_content(
-                      model="gemini-2.5-flash-preview-tts",
-                      contents=prompt,
-                      config=types.GenerateContentConfig(
-                          response_modalities=["AUDIO"],
-                          speech_config=types.SpeechConfig(
-                            multi_speaker_voice_config=types.MultiSpeakerVoiceConfig(
-                                speaker_voice_configs=[
-                                  types.SpeakerVoiceConfig(
-                                      speaker='Joe',
-                                      voice_config=types.VoiceConfig(
-                                        prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name='Kore')
-                                      )
-                                  ),
-                                  types.SpeakerVoiceConfig(
-                                      speaker='Jane',
-                                      voice_config=types.VoiceConfig(
-                                        prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name='Puck')
-                                      )
-                                  ),
-                                ]
-                            )
-                          )
-                      )
-                    )
-                    data = response.candidates[0].content.parts[0].inline_data.data
-                    audio_segments.append(data)
-                except Exception as e:
-                    self.log_execution(f"청크 처리 중 오류 발생: {e}", "WARNING")
-                    continue
+            try:
+                # OpenAI TTS API 사용
+                from openai import OpenAI
+                
+                openai_api_key = os.environ.get('OPENAI_API_KEY')
+                if not openai_api_key:
+                    self.log_execution("OPENAI_API_KEY가 설정되지 않음, 텍스트 파일만 생성", "WARNING")
+                    raise ValueError("OPENAI_API_KEY 없음")
+                
+                client = OpenAI(api_key=openai_api_key)
+                
+                for chunk in tqdm(final_chunks, desc="오디오 생성 중"):
+                    try:
+                        # OpenAI TTS API 호출
+                        response = client.audio.speech.create(
+                            model="tts-1",
+                            voice="alloy",  # 또는 "echo", "fable", "onyx", "nova", "shimmer"
+                            input=chunk
+                        )
+                        
+                        # 오디오 데이터 추가
+                        audio_segments.append(response.content)
+                        
+                    except Exception as e:
+                        self.log_execution(f"청크 처리 중 오류 발생: {e}", "WARNING")
+                        continue
+                        
+            except Exception as e:
+                self.log_execution(f"OpenAI TTS API 실패: {e}", "WARNING")
+                self.log_execution("TTS API 실패로 텍스트 파일만 생성", "INFO")
             
-            # 오디오 병합 및 저장
+            # 오디오 병합 및 저장 (폴백 포함)
             if audio_segments:
+                # 오디오 생성 성공
                 combined_audio_data = b''.join(audio_segments)
-                output_filename = f"AgentCast/output/tts/podcast_audio_{datetime.now().strftime('%Y%m%d_%H%M%S')}.wav"
-                write_wave_file(output_filename, combined_audio_data)
+                output_filename = f"output/tts/podcast_audio_{datetime.now().strftime('%Y%m%d_%H%M%S')}.mp3"
+                
+                # MP3 파일로 저장
+                with open(output_filename, 'wb') as f:
+                    f.write(combined_audio_data)
                 
                 # 워크플로우 상태 업데이트
+                state_dict = {k: v for k, v in state.__dict__.items()}
+                if 'audio_file' in state_dict:
+                    del state_dict['audio_file']
+                if 'audio_metadata' in state_dict:
+                    del state_dict['audio_metadata']
+                
                 new_state = WorkflowState(
-                    **{k: v for k, v in state.__dict__.items()},
+                    **state_dict,
                     audio_file=output_filename,
                     audio_metadata={
                         "chunks_processed": len(final_chunks),
                         "audio_segments": len(audio_segments),
-                        "output_file": output_filename
+                        "output_file": output_filename,
+                        "status": "success"
                     }
                 )
                 
@@ -235,7 +246,38 @@ class TTSAgent(BaseAgent):
                 self.log_execution(f"팟캐스트 오디오 생성 완료: {output_filename}")
                 return new_state
             else:
-                raise ValueError("생성된 오디오가 없습니다.")
+                # 오디오 생성 실패 시 텍스트 파일만 생성
+                self.log_execution("오디오 생성 실패, 텍스트 파일만 생성", "WARNING")
+                
+                # 텍스트 파일로 저장
+                text_output_filename = f"output/tts/podcast_script_for_tts_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+                with open(text_output_filename, 'w', encoding='utf-8') as f:
+                    f.write(podcast_script)
+                
+                # 워크플로우 상태 업데이트
+                state_dict = {k: v for k, v in state.__dict__.items()}
+                if 'audio_file' in state_dict:
+                    del state_dict['audio_file']
+                if 'audio_metadata' in state_dict:
+                    del state_dict['audio_metadata']
+                
+                new_state = WorkflowState(
+                    **state_dict,
+                    audio_file=text_output_filename,
+                    audio_metadata={
+                        "chunks_processed": len(final_chunks),
+                        "audio_segments": 0,
+                        "output_file": text_output_filename,
+                        "status": "text_only",
+                        "note": "TTS API 실패로 텍스트 파일만 생성됨"
+                    }
+                )
+                
+                # 워크플로우 상태 업데이트
+                new_state = self.update_workflow_status(new_state, "tts_completed")
+                
+                self.log_execution(f"텍스트 파일 생성 완료: {text_output_filename}")
+                return new_state
             
         except Exception as e:
             self.log_execution(f"팟캐스트 오디오 생성 중 오류 발생: {str(e)}", "ERROR")

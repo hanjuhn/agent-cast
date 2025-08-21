@@ -10,7 +10,13 @@ from datetime import datetime
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 from .base_agent import BaseAgent
-from ..state import WorkflowState
+try:
+    from state import WorkflowState
+except ImportError:
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from state import WorkflowState
 
 # --- GPU 설정 ---
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")

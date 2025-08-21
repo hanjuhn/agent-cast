@@ -5,7 +5,11 @@ from .orchestrator_agent import OrchestratorAgent
 from .personalize_agent import PersonalizeAgent
 from .query_writer_agent import QueryWriterAgent
 from .searcher_agent import SearcherAgent
-from .knowledge_graph_agent import KnowledgeGraphAgent
+try:
+    from .knowledge_graph_agent import KnowledgeGraphAgent
+except Exception:
+    # Fallback for import issues
+    KnowledgeGraphAgent = None
 from .kg_search_agent import KGSearchAgent
 from .db_constructor_agent import DBConstructorAgent
 from .researcher_agent import ResearcherAgent

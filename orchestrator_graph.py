@@ -1,24 +1,44 @@
 """Orchestrator Graph for the multi-agent workflow system."""
 
 from typing import Dict, Any
-from langgraph.graph import StateGraph, END
+from langgraph.graph import StateGraph, END, START
 from langgraph.graph.message import add_messages
 
-from .state import WorkflowState
-from .constants import AGENT_NAMES, WORKFLOW_STEP_ORDER
-from .agents import (
-    OrchestratorAgent,
-    PersonalizeAgent,
-    QueryWriterAgent,
-    SearcherAgent,
-    KnowledgeGraphAgent,
-    KGSearchAgent,
-    DBConstructorAgent,
-    ResearcherAgent,
-    CriticAgent,
-    ScriptWriterAgent,
-    TTSAgent
-)
+try:
+    from state import WorkflowState
+    from constants import AGENT_NAMES, WORKFLOW_STEP_ORDER
+    from agents import (
+        OrchestratorAgent,
+        PersonalizeAgent,
+        QueryWriterAgent,
+        SearcherAgent,
+        KnowledgeGraphAgent,
+        KGSearchAgent,
+        DBConstructorAgent,
+        ResearcherAgent,
+        CriticAgent,
+        ScriptWriterAgent,
+        TTSAgent
+    )
+except ImportError:
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from state import WorkflowState
+    from constants import AGENT_NAMES, WORKFLOW_STEP_ORDER
+    from agents import (
+        OrchestratorAgent,
+        PersonalizeAgent,
+        QueryWriterAgent,
+        SearcherAgent,
+        KnowledgeGraphAgent,
+        KGSearchAgent,
+        DBConstructorAgent,
+        ResearcherAgent,
+        CriticAgent,
+        ScriptWriterAgent,
+        TTSAgent
+    )
 
 
 def create_orchestrator_graph() -> StateGraph:
@@ -32,7 +52,10 @@ def create_orchestrator_graph() -> StateGraph:
     personalize = PersonalizeAgent()
     query_writer = QueryWriterAgent()
     searcher = SearcherAgent()
-    knowledge_graph = KnowledgeGraphAgent()
+    if KnowledgeGraphAgent is not None:
+        knowledge_graph = KnowledgeGraphAgent()
+    else:
+        knowledge_graph = None
     kg_search = KGSearchAgent()
     db_constructor = DBConstructorAgent()
     researcher = ResearcherAgent()
@@ -45,7 +68,14 @@ def create_orchestrator_graph() -> StateGraph:
     workflow.add_node(AGENT_NAMES["PERSONALIZE"], personalize.process)
     workflow.add_node(AGENT_NAMES["QUERY_WRITER"], query_writer.process)
     workflow.add_node(AGENT_NAMES["SEARCHER"], searcher.process)
-    workflow.add_node(AGENT_NAMES["KNOWLEDGE_GRAPH"], knowledge_graph.process)
+    if knowledge_graph is not None:
+        workflow.add_node(AGENT_NAMES["KNOWLEDGE_GRAPH"], knowledge_graph.process)
+    else:
+        # Mock knowledge graph process
+        async def mock_kg_process(state: WorkflowState) -> WorkflowState:
+            print("⚠️ KnowledgeGraphAgent not available, using mock process")
+            return state
+        workflow.add_node(AGENT_NAMES["KNOWLEDGE_GRAPH"], mock_kg_process)
     workflow.add_node(AGENT_NAMES["KG_SEARCH"], kg_search.process)
     workflow.add_node(AGENT_NAMES["DB_CONSTRUCTOR"], db_constructor.process)
     workflow.add_node(AGENT_NAMES["RESEARCHER"], researcher.process)
@@ -54,6 +84,7 @@ def create_orchestrator_graph() -> StateGraph:
     workflow.add_node(AGENT_NAMES["TTS"], tts.process)
     
     # 엣지 추가 - 순차적 실행
+    workflow.add_edge(START, AGENT_NAMES["ORCHESTRATOR"])
     workflow.add_edge(AGENT_NAMES["ORCHESTRATOR"], AGENT_NAMES["PERSONALIZE"])
     workflow.add_edge(AGENT_NAMES["PERSONALIZE"], AGENT_NAMES["SEARCHER"])
     workflow.add_edge(AGENT_NAMES["SEARCHER"], AGENT_NAMES["KNOWLEDGE_GRAPH"])

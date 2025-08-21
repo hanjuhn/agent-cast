@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "timestamp": "2025-08-21T21:59:38.366377",
+    "user_query": "AI 연구 동향에 대한 팟캐스트를 만들어주세요",
+    "is_fallback": false,
+    "generation_method": "llm_generated"
+  },
+  "personalized_info_summary": {
+    "research_keywords": [
+      "LLM",
+      "MoE 아키텍처",
+      "Gemma 3",
+      "데이터 분석",
+      "다중 사용자 대응"
+    ],
+    "research_interests": [
+      "LLM 최적화",
+      "MoE 아키텍처",
+      "Gemma 3",
+      "데이터 분석",
+      "다중 사용자 대응"
+    ],
+    "current_projects": [
+      "메모리 구현",
+      "vllm 서빙 관련 가이드 제작"
+    ]
+  },
+  "generated_queries": "LLM 최적화, MoE 아키텍처, Gemma 3에 대한 최신 AI 연구 동향과 데이터 분석 방법에 대한 팟캐스트"
+}

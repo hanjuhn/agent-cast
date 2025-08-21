@@ -134,8 +134,16 @@ class WorkflowState:
     
     # 데이터베이스 및 연구
     vector_db_data: List[Dict[str, Any]] = field(default_factory=list)
+    vector_db: Dict[str, Any] = field(default_factory=dict)  # DB Constructor 결과
+    embedding_stats: Dict[str, Any] = field(default_factory=dict)  # 임베딩 통계
+    db_metadata: Dict[str, Any] = field(default_factory=dict)  # DB 메타데이터
     research_results: List[Dict[str, Any]] = field(default_factory=list)
     research_result: str = ""  # 단수형 추가 (ReporterAgent용)
+    
+    # 지식 그래프
+    knowledge_graph: Dict[str, Any] = field(default_factory=dict)  # Knowledge Graph Agent 결과
+    document_store: Dict[str, Any] = field(default_factory=dict)  # 문서 저장소
+    kg_search_results: List[Dict[str, Any]] = field(default_factory=list)  # KG Search Agent 결과
     
     # 요약 및 평가
     summarized_results: List[Dict[str, Any]] = field(default_factory=list)

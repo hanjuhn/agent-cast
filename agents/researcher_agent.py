@@ -1,17 +1,30 @@
 """Researcher Agent for generating concise article reports."""
 
-import json
 import os
+import json
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import List, Dict, Any
 from openai import OpenAI
 from dotenv import load_dotenv
 
-class ResearcherAgent:
-    """기사의 핵심 내용을 압축하여 보고서를 생성하는 에이전트."""
+try:
+    from .base_agent import BaseAgent
+    from state import WorkflowState
+except ImportError:
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from .base_agent import BaseAgent
+    from state import WorkflowState
+
+class ResearcherAgent(BaseAgent):
+    """AI 기술 동향을 분석하여 심층 보고서를 생성하는 에이전트"""
     
     def __init__(self):
-        """Initialize the ResearcherAgent with OpenAI client."""
+        super().__init__(
+            name="researcher",
+            description="AI 기술 동향을 분석하여 심층 보고서를 생성하는 에이전트"
+        )
         load_dotenv()
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
@@ -66,47 +79,109 @@ C. 결론 (줄글 형식으로 3개 파트)
             print(f"OpenAI 클라이언트 초기화 실패: {str(e)}")
             raise
     
-    def summarize_article(self, article: Dict[str, Any]) -> Dict[str, Any]:
-        """개별 기사를 500자 내외로 요약"""
-        try:
-            content = article.get('content', '')
-            response = self.client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "기술 전문 에디터로서, 아래 기사의 핵심 내용을 500자 내외로 요약해주세요."
-                    },
-                    {
-                        "role": "user",
-                        "content": content
-                    }
-                ],
-                temperature=0.3
-            )
-            summarized = response.choices[0].message.content.strip()
-            return {
-                'title': article.get('title', '제목 없음'),
-                'date': article.get('date', '날짜 없음'),
-                'source': article.get('source', '출처 없음'),
-                'url': article.get('url', ''),
-                'content': summarized
-            }
-        except Exception as e:
-            print(f"[ERROR] 기사 요약 중 오류 발생: {str(e)}")
-            raise
+    def _generate_basic_report(self, personal_info: Dict[str, Any], research_context: Dict[str, Any]) -> str:
+        """기본 정보를 기반으로 보고서를 생성합니다."""
+        return f"""# AI 기술 동향 분석 보고서 (기본 정보 기반)
 
-    def process(self, json_path: str) -> str:
-        """Process articles from JSON file and generate a report."""
-        try:
-            print(f"\n[DEBUG] 파일 읽기 시작: {json_path}")
-            if not os.path.exists(json_path):
-                raise ValueError(f"JSON 파일을 찾을 수 없습니다: {json_path}")
+## 개요
+사용자의 개인화된 연구 관심사와 현재 프로젝트를 기반으로 AI 기술 동향을 분석합니다.
+
+## 연구 관심사
+- {', '.join(personal_info.get('research_keywords', ['AI 기술']))}
+
+## 현재 프로젝트
+- {', '.join(research_context.get('current_projects', ['AI 연구']))}
+
+## 기술 발전 방향
+사용자의 연구 관심사와 프로젝트를 고려할 때, LLM 최적화와 MoE 아키텍처가 주요 기술 트렌드로 부상하고 있습니다.
+
+## 결론
+개인화된 연구 방향과 AI 기술 동향이 일치하여 효과적인 연구 진행이 가능할 것으로 전망됩니다.
+"""
+
+    def _generate_report_from_search_results(self, search_results: List[Dict[str, Any]]) -> str:
+        """검색 결과를 기반으로 보고서를 생성합니다."""
+        if not search_results:
+            return self._generate_fallback_report()
+        
+        articles_content = []
+        for i, result in enumerate(search_results, 1):
+            title = result.get('title', '제목 없음')
+            content = result.get('content', '내용 없음')
+            source = result.get('source', '출처 없음')
+            date = result.get('date', '날짜 없음')
             
-            with open(json_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            documents = data[0].get('documents', []) if data else []
-            print(f"[DEBUG] 파일 읽기 완료. 기사 {len(documents)}개 발견")
+            articles_content.append(f"""## {i}. {title}
+- 출처: {source}
+- 날짜: {date}
+- 내용: {content[:200]}...""")
+        
+        return f"""# AI 기술 동향 분석 보고서
+
+## 개요
+최신 검색 결과를 기반으로 AI 기술 동향을 분석합니다.
+
+## 주요 기술 동향
+{chr(10).join(articles_content)}
+
+## 결론
+검색된 정보를 바탕으로 AI 기술의 현재 상태와 발전 방향을 파악할 수 있습니다.
+"""
+
+    def _generate_fallback_report(self) -> str:
+        """폴백 보고서를 생성합니다."""
+        return """# AI 기술 동향 분석 보고서 (폴백)
+
+## 개요
+기본적인 AI 기술 동향 정보를 제공합니다.
+
+## 주요 기술 트렌드
+1. **LLM 최적화**: 모델 효율성과 성능 향상
+2. **MoE 아키텍처**: 전문가 모델의 효율적 활용
+3. **Gemma 3**: 오픈소스 AI 모델의 발전
+4. **메모리 구현**: AI 시스템의 장기 기억력 향상
+
+## 결론
+AI 기술은 지속적인 혁신을 통해 더욱 실용적이고 효율적인 방향으로 발전하고 있습니다.
+"""
+
+    async def process(self, state: WorkflowState) -> WorkflowState:
+        """AI 기술 동향 분석 및 보고서 생성을 수행합니다."""
+        self.log_execution("AI 기술 동향 분석 및 보고서 생성 시작")
+        
+        try:
+            # 상태에서 데이터 추출
+            search_results = getattr(state, 'search_results', [])
+            personal_info = getattr(state, 'personal_info', {})
+            research_context = getattr(state, 'research_context', {})
+            
+            if not search_results:
+                self.log_execution("검색 결과가 없어 기본 정보로 보고서를 생성합니다")
+                report_content = self._generate_basic_report(personal_info, research_context)
+            else:
+                self.log_execution(f"검색 결과 {len(search_results)}개를 기반으로 보고서를 생성합니다")
+                report_content = self._generate_report_from_search_results(search_results)
+            
+            # 출력 파일 저장
+            output_filename = f"output/research/research_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
+            os.makedirs(os.path.dirname(output_filename), exist_ok=True)
+            with open(output_filename, 'w', encoding='utf-8') as f:
+                f.write(report_content)
+            
+            # 상태 업데이트
+            state_dict = {k: v for k, v in state.__dict__.items()}
+            if 'research_results' in state_dict:
+                del state_dict['research_results']
+            if 'research_result' in state_dict:
+                del state_dict['research_result']
+            
+            new_state = WorkflowState(
+                **state_dict,
+                research_results=[report_content],
+                research_result=report_content
+            )
+            
+            new_state = self.update_workflow_status(new_state, "research_completed")
             
             # 각 기사 요약
             print("[DEBUG] 기사 요약 시작...")

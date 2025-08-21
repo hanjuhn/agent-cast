@@ -12,8 +12,20 @@ import anthropic
 from dotenv import load_dotenv
 
 from .base_agent import BaseAgent, AgentResult
-from ..state import WorkflowState
-from ..constants.ai_models import ANTHROPIC_MODELS
+try:
+    from state import WorkflowState
+except ImportError:
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from state import WorkflowState
+try:
+    from constants.ai_models import ANTHROPIC_MODELS
+except ImportError:
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from constants.ai_models import ANTHROPIC_MODELS
 
 # 환경 변수 로드
 load_dotenv()

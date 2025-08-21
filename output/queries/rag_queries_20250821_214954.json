@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "timestamp": "2025-08-21T21:49:54.518334",
+    "user_query": "AI 연구 동향에 대한 팟캐스트를 만들어주세요",
+    "is_fallback": false,
+    "generation_method": "llm_generated"
+  },
+  "personalized_info_summary": {
+    "research_keywords": [
+      "LLM",
+      "데이터 분석",
+      "메모리 구현",
+      "다중 사용자 대응"
+    ],
+    "research_interests": [
+      "LLM 최적화",
+      "데이터 분석",
+      "모델 성능 향상"
+    ],
+    "current_projects": [
+      "메모리 구현",
+      "다중 사용자 대응 준비"
+    ]
+  },
+  "generated_queries": "LLM 최적화와 데이터 분석을 통한 모델 성능 향상에 대한 최신 연구 동향과 AI 팟캐스트"
+}

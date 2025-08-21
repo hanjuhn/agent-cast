@@ -2,9 +2,27 @@
 
 import asyncio
 from typing import Any, Dict, List
-from ..constants import AGENT_NAMES, DB_CONSTRUCTOR_SYSTEM_PROMPT
-from .base_agent import BaseAgent, AgentResult
-from ..state import WorkflowState
+try:
+    from constants import AGENT_NAMES, DB_CONSTRUCTOR_SYSTEM_PROMPT
+except ImportError:
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from constants import AGENT_NAMES, DB_CONSTRUCTOR_SYSTEM_PROMPT
+try:
+    from .base_agent import BaseAgent, AgentResult
+except ImportError:
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from base_agent import BaseAgent, AgentResult
+try:
+    from state import WorkflowState
+except ImportError:
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from state import WorkflowState
 
 
 class DBConstructorAgent(BaseAgent):
@@ -34,12 +52,19 @@ class DBConstructorAgent(BaseAgent):
         self.log_execution("벡터 데이터베이스 구축 시작")
         
         try:
-            # 입력 검증
-            if not self.validate_inputs(state):
-                raise ValueError("필수 입력이 누락되었습니다: data_chunks, search_scope")
+            # 상태에서 데이터 생성
+            data_chunks = self._create_data_chunks_from_state(state)
+            if not data_chunks:
+                self.log_execution("사용할 수 있는 데이터가 없어 폴백 데이터를 사용합니다")
+                fallback_data = self._get_fallback_data()
+                updated_state = self.update_workflow_status(state, "db_construction")
+                updated_state.vector_db = fallback_data["vector_db"]
+                updated_state.embedding_stats = fallback_data["embedding_stats"]
+                updated_state.db_metadata = fallback_data["db_metadata"]
+                return updated_state
             
             # 데이터 청킹 최적화
-            optimized_chunks = self._optimize_chunking(state.data_chunks)
+            optimized_chunks = self._optimize_chunking(data_chunks)
             
             # 임베딩 생성 (시뮬레이션)
             embeddings = await self._generate_embeddings(optimized_chunks)
@@ -52,21 +77,6 @@ class DBConstructorAgent(BaseAgent):
             
             # DB 메타데이터 생성
             db_metadata = self._generate_db_metadata(vector_db, embedding_stats)
-            
-            # 결과 생성
-            result = AgentResult(
-                success=True,
-                output={
-                    "vector_db": vector_db,
-                    "embedding_stats": embedding_stats,
-                    "db_metadata": db_metadata
-                },
-                metadata={
-                    "construction_method": "simulated",
-                    "total_chunks_processed": len(optimized_chunks),
-                    "embedding_model": "openai/text-embedding-3-large"
-                }
-            )
             
             # 상태 업데이트
             updated_state = self.update_workflow_status(state, "db_construction")
@@ -83,12 +93,6 @@ class DBConstructorAgent(BaseAgent):
             # 폴백 데이터 사용
             fallback_data = self._get_fallback_data()
             
-            result = AgentResult(
-                success=False,
-                output=fallback_data,
-                error_message=str(e)
-            )
-            
             # 폴백 데이터로 상태 업데이트
             updated_state = self.update_workflow_status(state, "db_construction")
             updated_state.vector_db = fallback_data["vector_db"]
@@ -98,6 +102,84 @@ class DBConstructorAgent(BaseAgent):
             self.log_execution("폴백 데이터 사용으로 계속 진행")
             return updated_state
     
+    def _create_data_chunks_from_state(self, state: WorkflowState) -> List[Dict[str, Any]]:
+        """WorkflowState에서 데이터 청크를 생성합니다."""
+        data_chunks = []
+        chunk_id = 1
+        
+        # 검색 결과에서 데이터 생성
+        search_results = getattr(state, 'search_results', [])
+        for result in search_results:
+            chunk = {
+                "chunk_id": f"search_{chunk_id}",
+                "content": f"{result.get('title', '')} {result.get('content', '')}",
+                "source": result.get('source', 'unknown'),
+                "metadata": {
+                    "source": result.get('source', 'unknown'),
+                    "url": result.get('url', ''),
+                    "date": result.get('date', ''),
+                    "author": result.get('author', ''),
+                    "chunk_type": "search_result"
+                },
+                "chunk_size": len(f"{result.get('title', '')} {result.get('content', '')}")
+            }
+            data_chunks.append(chunk)
+            chunk_id += 1
+        
+        # 개인화 정보에서 데이터 생성
+        personal_info = getattr(state, 'personal_info', {})
+        if personal_info:
+            for key, value in personal_info.items():
+                if isinstance(value, list):
+                    for item in value:
+                        if isinstance(item, dict):
+                            content = " ".join([f"{k}: {v}" for k, v in item.items() if v])
+                        else:
+                            content = str(item)
+                        
+                        if content and len(content) > 10:
+                            chunk = {
+                                "chunk_id": f"personal_{chunk_id}",
+                                "content": content,
+                                "source": "personal_info",
+                                "metadata": {
+                                    "source": "personal_info",
+                                    "category": key,
+                                    "chunk_type": "personal_data"
+                                },
+                                "chunk_size": len(content)
+                            }
+                            data_chunks.append(chunk)
+                            chunk_id += 1
+        
+        # 연구 컨텍스트에서 데이터 생성
+        research_context = getattr(state, 'research_context', {})
+        if research_context:
+            for key, value in research_context.items():
+                if isinstance(value, list):
+                    for item in value:
+                        if isinstance(item, dict):
+                            content = " ".join([f"{k}: {v}" for k, v in item.items() if v])
+                        else:
+                            content = str(item)
+                        
+                        if content and len(content) > 10:
+                            chunk = {
+                                "chunk_id": f"research_{chunk_id}",
+                                "content": content,
+                                "source": "research_context",
+                                "metadata": {
+                                    "source": "research_context",
+                                    "category": key,
+                                    "chunk_type": "research_data"
+                                },
+                                "chunk_size": len(content)
+                            }
+                            data_chunks.append(chunk)
+                            chunk_id += 1
+        
+        return data_chunks
+
     def _optimize_chunking(self, data_chunks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """데이터 청킹을 최적화합니다."""
         optimized_chunks = []

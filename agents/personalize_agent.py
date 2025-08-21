@@ -9,11 +9,11 @@ try:
     from state import WorkflowState
     from mcp import MCPManager
 except ImportError:
-    from ..constants import AGENT_NAMES, PERSONALIZE_SYSTEM_PROMPT
-    from ..constants.llm_client import get_llm_client
+    from constants import AGENT_NAMES, PERSONALIZE_SYSTEM_PROMPT
+    from constants.llm_client import get_llm_client
     from .base_agent import BaseAgent, AgentResult
-    from ..state import WorkflowState
-    from ..mcp import MCPManager
+    from state import WorkflowState
+    from mcp import MCPManager
 
 
 class PersonalizeAgent(BaseAgent):

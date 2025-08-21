@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "timestamp": "2025-08-21T22:56:12.526592",
+    "user_query": "AI 연구 동향에 대한 팟캐스트를 만들어주세요",
+    "is_fallback": false,
+    "generation_method": "llm_generated"
+  },
+  "personalized_info_summary": {
+    "research_keywords": [
+      "LLM",
+      "MoE 아키텍처",
+      "Gemma 3",
+      "Amazon SageMaker LMI v15",
+      "데이터 분석",
+      "메모리 구현",
+      "vllm 서빙"
+    ],
+    "research_interests": [
+      "LLM 최적화 방법",
+      "MoE 아키텍처",
+      "Gemma 3",
+      "Amazon SageMaker LMI v15"
+    ],
+    "current_projects": [
+      "메모리 구현",
+      "vllm 서빙 가이드 학습"
+    ]
+  },
+  "generated_queries": "LLM 최적화 방법과 MoE 아키텍처에 대한 최신 AI 연구 동향 및 Gemma 3와 Amazon SageMaker LMI v15 사용 경험에 대한 팟캐스트"
+}

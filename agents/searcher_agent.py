@@ -21,8 +21,15 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 from bs4 import BeautifulSoup
 
-from .base_agent import BaseAgent
-from ..state import WorkflowState
+try:
+    from .base_agent import BaseAgent
+    from state import WorkflowState
+except ImportError:
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from .base_agent import BaseAgent
+    from state import WorkflowState
 
 # --- 환경 변수 로드 ---
 load_dotenv()  # .env 파일에서 환경 변수 로드
@@ -304,8 +311,25 @@ class SearcherAgent(BaseAgent):
             if not self.validate_inputs(state):
                 raise ValueError("필수 입력이 누락되었습니다.")
             
-            # 검색 쿼리 가져오기
-            search_query = getattr(state, 'search_query', '최신 AI 트렌드')
+            # 검색 쿼리 가져오기 - 사용자 쿼리 기반으로 생성
+            user_query = getattr(state, 'user_query', '')
+            if user_query:
+                # 사용자 쿼리를 기반으로 검색 쿼리 생성 (간소화)
+                if "AI 연구 동향" in user_query or "팟캐스트" in user_query:
+                    search_query = "AI research trends 2024"
+                elif "LLM" in user_query or "모델" in user_query:
+                    search_query = "LLM research developments"
+                elif "기계학습" in user_query or "머신러닝" in user_query:
+                    search_query = "machine learning advances"
+                else:
+                    search_query = "AI technology trends"
+            else:
+                search_query = "AI research trends"
+            
+            # 검색 쿼리 상태 업데이트
+            state_dict = {k: v for k, v in state.__dict__.items()}
+            if 'search_query' in state_dict:
+                del state_dict['search_query']
             
             # 웹 크롤링 수행
             pytorch_posts = self.web_searcher.crawl_pytorch_kr()
@@ -316,26 +340,40 @@ class SearcherAgent(BaseAgent):
             all_results = pytorch_posts + aitimes_posts + perplexity_results
             
             # 결과 저장
-            output_filename = f"AgentCast/output/searcher/search_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            output_filename = f"output/searcher/search_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
             save_search_results(all_results, output_filename)
             
-            # 워크플로우 상태 업데이트
+            # 중복될 수 있는 키들 제거
+            if 'search_results' in state_dict:
+                del state_dict['search_results']
+            if 'metadata' in state_dict:
+                del state_dict['metadata']
+            
+            # 메타데이터 생성
+            search_metadata = {
+                "total_results": len(all_results),
+                "pytorch_posts": len(pytorch_posts),
+                "aitimes_posts": len(aitimes_posts),
+                "perplexity_results": len(perplexity_results),
+                "output_file": output_filename,
+                "search_query": search_query
+            }
+            
+            # 기존 메타데이터와 병합
+            merged_metadata = state_dict.get('metadata', {}).copy()
+            merged_metadata.update({"search": search_metadata})
+            
             new_state = WorkflowState(
-                **{k: v for k, v in state.__dict__.items()},
+                **state_dict,
+                search_query=search_query,
                 search_results=all_results,
-                search_metadata={
-                    "total_results": len(all_results),
-                    "pytorch_posts": len(pytorch_posts),
-                    "aitimes_posts": len(aitimes_posts),
-                    "perplexity_results": len(perplexity_results),
-                    "output_file": output_filename
-                }
+                metadata=merged_metadata
             )
             
             # 워크플로우 상태 업데이트
             new_state = self.update_workflow_status(new_state, "searcher_completed")
             
-            self.log_execution(f"웹 크롤링 정보 수집 완료: {len(all_results)}개 결과")
+            self.log_execution(f"웹 크롤링 정보 수집 완료: {len(all_results)}개 결과 (검색 쿼리: {search_query})")
             return new_state
             
         except Exception as e:

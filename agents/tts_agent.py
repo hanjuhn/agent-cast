@@ -218,6 +218,9 @@ class TTSAgent(BaseAgent):
                 combined_audio_data = b''.join(audio_segments)
                 output_filename = f"output/tts/podcast_audio_{datetime.now().strftime('%Y%m%d_%H%M%S')}.mp3"
                 
+                # 디렉토리 생성
+                os.makedirs(os.path.dirname(output_filename), exist_ok=True)
+                
                 # MP3 파일로 저장
                 with open(output_filename, 'wb') as f:
                     f.write(combined_audio_data)

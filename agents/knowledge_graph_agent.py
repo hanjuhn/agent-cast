@@ -390,6 +390,11 @@ class KnowledgeGraphAgent(BaseAgent):
             # Convert query to list format for HippoRAG
             queries = [query]
             
+            # Check if HippoRAG has indexed documents
+            if not hasattr(self.hipporag, 'passage_embeddings') or self.hipporag.passage_embeddings is None or len(self.hipporag.passage_embeddings) == 0:
+                logger.warning("No indexed documents found in HippoRAG. Skipping search.")
+                return []
+            
             # Search using HippoRAG
             search_results = self.hipporag.retrieve(
                 queries=queries,

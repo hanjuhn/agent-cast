@@ -466,6 +466,7 @@ class SearcherAgent(BaseAgent):
             
             # 결과 저장
             output_filename = f"output/searcher/search_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            os.makedirs(os.path.dirname(output_filename), exist_ok=True)
             save_search_results(all_results, output_filename)
             
             # 중복될 수 있는 키들 제거

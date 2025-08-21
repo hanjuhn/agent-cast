@@ -79,6 +79,35 @@ C. 결론 (줄글 형식으로 3개 파트)
             print(f"OpenAI 클라이언트 초기화 실패: {str(e)}")
             raise
     
+    def summarize_article(self, article: Dict[str, Any]) -> Dict[str, Any]:
+        """기사를 요약합니다."""
+        try:
+            title = article.get('title', '제목 없음')
+            content = article.get('content', '내용 없음')
+            source = article.get('source', '출처 없음')
+            date = article.get('date', '날짜 없음')
+            url = article.get('url', '')
+            
+            # 간단한 요약 (실제로는 LLM을 사용할 수 있음)
+            summary = content[:200] + "..." if len(content) > 200 else content
+            
+            return {
+                "title": title,
+                "content": summary,
+                "source": source,
+                "date": date,
+                "url": url
+            }
+        except Exception as e:
+            print(f"기사 요약 중 오류: {e}")
+            return {
+                "title": "요약 실패",
+                "content": "내용을 요약할 수 없습니다.",
+                "source": "알 수 없음",
+                "date": "알 수 없음",
+                "url": ""
+            }
+    
     def _generate_basic_report(self, personal_info: Dict[str, Any], research_context: Dict[str, Any]) -> str:
         """기본 정보를 기반으로 보고서를 생성합니다."""
         return f"""# AI 기술 동향 분석 보고서 (기본 정보 기반)
@@ -186,10 +215,11 @@ AI 기술은 지속적인 혁신을 통해 더욱 실용적이고 효율적인 �
             # 각 기사 요약
             print("[DEBUG] 기사 요약 시작...")
             summarized_articles = []
-            for article in documents:
-                summarized = self.summarize_article(article)
-                summarized_articles.append(summarized)
-                print(f"[DEBUG] 기사 요약 완료 (길이: {len(summarized['content'])}자)")
+            for article in search_results:
+                if isinstance(article, dict) and 'title' in article:
+                    summarized = self.summarize_article(article)
+                    summarized_articles.append(summarized)
+                    print(f"[DEBUG] 기사 요약 완료 (길이: {len(summarized['content'])}자)")
             
             # 기사 정보를 마크다운 리스트로 변환
             articles_md = []
@@ -272,7 +302,22 @@ AI 기술은 지속적인 혁신을 통해 더욱 실용적이고 효율적인 �
             )
             result = response.choices[0].message.content.strip()
             print(f"[DEBUG] 통합 보고서 생성 완료 (길이: {len(result)}자)")
-            return result
+            
+            # 상태 업데이트
+            state_dict = {k: v for k, v in state.__dict__.items()}
+            if 'research_results' in state_dict:
+                del state_dict['research_results']
+            if 'research_result' in state_dict:
+                del state_dict['research_result']
+            
+            new_state = WorkflowState(
+                **state_dict,
+                research_results=[result],
+                research_result=result
+            )
+            
+            new_state = self.update_workflow_status(new_state, "research_completed")
+            return new_state
             
         except Exception as e:
             print(f"[ERROR] 처리 중 오류 발생: {str(e)}")

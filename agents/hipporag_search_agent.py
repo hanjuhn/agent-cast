@@ -19,7 +19,7 @@ sys.path.insert(0, str(hipporag_src_path))
 class HippoRAGSearchAgent:
     """인덱싱된 HippoRAG 결과에서 문서를 검색하는 에이전트."""
     
-    def __init__(self, save_dir: str = "outputs/hipporag_indexing"):
+    def __init__(self, save_dir: str = "output/hipporag_indexing"):
         self.name = "HippoRAGSearchAgent"
         self.description = "인덱싱된 HippoRAG 결과에서 문서를 검색하는 에이전트"
         

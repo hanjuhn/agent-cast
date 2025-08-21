@@ -1,0 +1,63 @@
+{
+  "id": "255d3416-0518-80de-afa8-c2810f3d75f5",
+  "title": "논문 리뷰",
+  "description": "",
+  "last_edited": "2025-08-20T08:03:00.000Z",
+  "created": "2025-08-20T07:56:00.000Z",
+  "url": "https://www.notion.so/255d3416051880deafa8c2810f3d75f5",
+  "properties": {
+    "생성일": "created_time",
+    "태그": "multi_select",
+    "이름": "title"
+  },
+  "entries": [
+    {
+      "id": "255d3416-0518-80ff-acf3-d7b17f884b8b",
+      "title": "[NLP 학습] 3주차 : LoRA / 논문 리뷰 : LoRA: Low-Rank Adaptation of Large Language Models",
+      "last_edited": "2025-08-20T08:03:00.000Z",
+      "created": "2025-08-20T08:03:00.000Z",
+      "url": "https://www.notion.so/NLP-3-LoRA-LoRA-Low-Rank-Adaptation-of-Large-Language-Models-255d3416051880ffacf3d7b17f884b8b",
+      "properties": {
+        "생성일": "2025-08-20T08:03:00.000Z",
+        "태그": [],
+        "이름": "[NLP 학습] 3주차 : LoRA / 논문 리뷰 : LoRA: Low-Rank Adaptation of Large Language Models"
+      }
+    },
+    {
+      "id": "255d3416-0518-80d2-81c9-c7cc5f499e8a",
+      "title": "[논문 리뷰] Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+      "last_edited": "2025-08-20T08:02:00.000Z",
+      "created": "2025-08-20T08:02:00.000Z",
+      "url": "https://www.notion.so/Retrieval-Augmented-Generation-for-Knowledge-Intensive-NLP-Tasks-255d3416051880d281c9c7cc5f499e8a",
+      "properties": {
+        "생성일": "2025-08-20T08:02:00.000Z",
+        "태그": [],
+        "이름": "[논문 리뷰] Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks"
+      }
+    },
+    {
+      "id": "255d3416-0518-809a-a993-c168289ba55d",
+      "title": "[논문 리뷰] BERT",
+      "last_edited": "2025-08-20T08:02:00.000Z",
+      "created": "2025-08-20T08:01:00.000Z",
+      "url": "https://www.notion.so/BERT-255d34160518809aa993c168289ba55d",
+      "properties": {
+        "생성일": "2025-08-20T08:01:00.000Z",
+        "태그": [],
+        "이름": "[논문 리뷰] BERT"
+      }
+    },
+    {
+      "id": "255d3416-0518-804c-94d8-ce5ddf57c5ba",
+      "title": "[논문리뷰] Large Language Models to Diffusion Finetuning",
+      "last_edited": "2025-08-20T08:01:00.000Z",
+      "created": "2025-08-20T08:00:00.000Z",
+      "url": "https://www.notion.so/Large-Language-Models-to-Diffusion-Finetuning-255d34160518804c94d8ce5ddf57c5ba",
+      "properties": {
+        "생성일": "2025-08-20T08:00:00.000Z",
+        "태그": [],
+        "이름": "[논문리뷰] Large Language Models to Diffusion Finetuning"
+      }
+    }
+  ]
+}

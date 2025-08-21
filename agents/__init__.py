@@ -12,6 +12,8 @@ from .researcher_agent import ResearcherAgent
 from .critic_agent import CriticAgent
 from .script_writer_agent import ScriptWriterAgent
 from .tts_agent import TTSAgent
+from .summarizer_agent import SummarizerAgent
+from .reporter_agent import ReporterAgent
 
 __all__ = [
     "BaseAgent",
@@ -25,5 +27,7 @@ __all__ = [
     "ResearcherAgent",
     "CriticAgent",
     "ScriptWriterAgent",
-    "TTSAgent"
+    "TTSAgent",
+    "SummarizerAgent",
+    "ReporterAgent"
 ]

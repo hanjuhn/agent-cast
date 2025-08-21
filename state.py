@@ -123,14 +123,41 @@ class WorkflowState:
     # 개인화 정보
     user_preferences: Dict[str, Any] = field(default_factory=dict)
     user_context: Dict[str, Any] = field(default_factory=dict)
+    personal_info: Dict[str, Any] = field(default_factory=dict)
+    research_context: Dict[str, Any] = field(default_factory=dict)
+    current_progress: Dict[str, Any] = field(default_factory=dict)
     
     # 쿼리 및 검색
     search_queries: List[str] = field(default_factory=list)
     search_results: List[Dict[str, Any]] = field(default_factory=list)
+    search_query: str = ""  # 단수형 추가
     
     # 데이터베이스 및 연구
     vector_db_data: List[Dict[str, Any]] = field(default_factory=list)
     research_results: List[Dict[str, Any]] = field(default_factory=list)
+    research_result: str = ""  # 단수형 추가 (ReporterAgent용)
+    
+    # 요약 및 평가
+    summarized_results: List[Dict[str, Any]] = field(default_factory=list)
+    evaluation_results: Dict[str, Any] = field(default_factory=dict)
+    critic_feedback: str = ""
+    quality_score: float = 0.0
+    
+    # 팟캐스트 생성
+    podcast_script: str = ""
+    script_metadata: Dict[str, Any] = field(default_factory=dict)
+    
+    # 오디오 생성
+    audio_file: str = ""
+    audio_metadata: Dict[str, Any] = field(default_factory=dict)
+    
+    # 리포트 생성
+    html_report: str = ""
+    report_filename: str = ""
+    report_metadata: Dict[str, Any] = field(default_factory=dict)
+    
+    # 개선 피드백 (ReporterAgent용)
+    improvement_prompt: str = ""
     
     # 품질 검토
     quality_scores: Dict[str, float] = field(default_factory=dict)

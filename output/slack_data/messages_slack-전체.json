@@ -1,0 +1,107 @@
+{
+  "channel": "slack-전체",
+  "timestamp": "2025-08-20T18:25:12.236578Z",
+  "message_count": 10,
+  "messages": [
+    {
+      "id": "1755681780.940729",
+      "channel_id": "C09AUJ9J4TC",
+      "user_id": "U09BMD0UBNU",
+      "text": "<@U09BMD0UBNU> 님이 채널에 참여함",
+      "timestamp": "2025-08-20T18:23:00.940729Z",
+      "thread_ts": null,
+      "reply_count": 0,
+      "reactions": []
+    },
+    {
+      "id": "1755681758.871089",
+      "channel_id": "C09AUJ9J4TC",
+      "user_id": "U09AUJ97SRG",
+      "text": "<@U09BMD0UBNU>",
+      "timestamp": "2025-08-20T18:22:38.871089Z",
+      "thread_ts": null,
+      "reply_count": 0,
+      "reactions": []
+    },
+    {
+      "id": "1755680537.384539",
+      "channel_id": "C09AUJ9J4TC",
+      "user_id": "U09AUJ97SRG",
+      "text": "메모리 구현하시는 분들 모두 화이팅입니다!!\n\n<https://news.hada.io/topic?id=20986>",
+      "timestamp": "2025-08-20T18:02:17.384539Z",
+      "thread_ts": null,
+      "reply_count": 0,
+      "reactions": []
+    },
+    {
+      "id": "1755680494.772569",
+      "channel_id": "C09AUJ9J4TC",
+      "user_id": "U09AUJ97SRG",
+      "text": "LLM을 효율적으로 다루는 방법에 대한 논문입니다.\n\n<https://arxiv.org/abs/2505.13840>",
+      "timestamp": "2025-08-20T18:01:34.772569Z",
+      "thread_ts": null,
+      "reply_count": 0,
+      "reactions": []
+    },
+    {
+      "id": "1755680452.918039",
+      "channel_id": "C09AUJ9J4TC",
+      "user_id": "U09AUJ97SRG",
+      "text": "MoE 아키텍처도 고려해보시기 바랍니다\n\n<https://blog.sionic.ai/qwen3-moe-upscaling>",
+      "timestamp": "2025-08-20T18:00:52.918039Z",
+      "thread_ts": null,
+      "reply_count": 0,
+      "reactions": []
+    },
+    {
+      "id": "1755680417.987029",
+      "channel_id": "C09AUJ9J4TC",
+      "user_id": "U09AUJ97SRG",
+      "text": "Gemma 3가 출시되었습니다\n\n<https://developers.googleblog.com/en/gemma-3-quantized-aware-trained-state-of-the-art-ai-to-consumer-gpus/>",
+      "timestamp": "2025-08-20T18:00:17.987029Z",
+      "thread_ts": null,
+      "reply_count": 0,
+      "reactions": []
+    },
+    {
+      "id": "1755680370.405929",
+      "channel_id": "C09AUJ9J4TC",
+      "user_id": "U09AUJ97SRG",
+      "text": "네이버의 약진입니다.\n\n<https://techcrunch.com/2025/04/16/microsoft-researchers-say-theyve-developed-a-hyper-efficient-ai-model-that-can-run-on-cpus/>",
+      "timestamp": "2025-08-20T17:59:30.405929Z",
+      "thread_ts": null,
+      "reply_count": 0,
+      "reactions": []
+    },
+    {
+      "id": "1755680347.550759",
+      "channel_id": "C09AUJ9J4TC",
+      "user_id": "U09AUJ97SRG",
+      "text": "Large Language Model (LLM)을 사람의 의도에 align하는 기법에 혁신적인 변화를 가져온 중요한 논문입니다.\n최근 공개된 업스테이지 SOLAR-10.7B 모델 역시 PPO가 아닌 DPO 알고리즘을 활용하여 높은 성능을 내었답니다.\n\n<https://dalpo0814.tistory.com/62>",
+      "timestamp": "2025-08-20T17:59:07.550759Z",
+      "thread_ts": null,
+      "reply_count": 0,
+      "reactions": []
+    },
+    {
+      "id": "1755680305.663889",
+      "channel_id": "C09AUJ9J4TC",
+      "user_id": "U09AUJ97SRG",
+      "text": "Amazon SageMaker Large Model Inference (LMI) v15 컨테이너가 출시되었습니다. 이전 V0 대비 최대 111% 높은 처리량(throughput)이 추가되었네요\n\n<https://aws.amazon.com/ko/blogs/machine-learning/supercharge-your-llm-performance-with-amazon-sagemaker-large-model-inference-container-v15/>",
+      "timestamp": "2025-08-20T17:58:25.663889Z",
+      "thread_ts": null,
+      "reply_count": 0,
+      "reactions": []
+    },
+    {
+      "id": "1755680215.251819",
+      "channel_id": "C09AUJ9J4TC",
+      "user_id": "U09AUJ97SRG",
+      "text": "vllm 서빙과 관련된 가이드입니다. 많은 팀들이 vllm으로 다중 사용자 대응을 준비하는데 도움이 되겠네요\n\n<https://news.hada.io/topic?id=22232>",
+      "timestamp": "2025-08-20T17:56:55.251819Z",
+      "thread_ts": null,
+      "reply_count": 0,
+      "reactions": []
+    }
+  ]
+}

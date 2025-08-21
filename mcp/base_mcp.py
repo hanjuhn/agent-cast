@@ -6,7 +6,14 @@ from dataclasses import dataclass
 import asyncio
 import logging
 
-from ..constants import MCP_CONNECTION_STATUS, MCP_ERROR_CODES
+try:
+    from .constants.mcp import MCP_CONNECTION_STATUS, MCP_ERROR_CODES
+except ImportError:
+    # 직접 실행할 때를 위한 절대 경로
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from constants.mcp import MCP_CONNECTION_STATUS, MCP_ERROR_CODES
 
 
 @dataclass
@@ -19,8 +26,8 @@ class MCPConnectionInfo:
     last_error: Optional[str] = None
 
 
-class BaseMCPIntegration(ABC):
-    """모든 MCP 통합의 기본 클래스."""
+class BaseMCP(ABC):
+    """모든 MCP 서비스의 기본 클래스."""
     
     def __init__(self, server_type: str, config: Dict[str, Any]):
         self.server_type = server_type

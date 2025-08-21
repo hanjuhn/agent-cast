@@ -94,7 +94,7 @@ class ResearcherAgent(BaseAgent):
             self.log_execution("폴백 데이터 사용으로 계속 진행")
             return updated_state
     
-    async def _perform_rag_search(self, rag_query: Dict[str, Any], vector_db: Dict[str, Any]) -> List[Dict[str, Any]]:
+    async def _perform_rag_search(self, rag_query: Any, vector_db: Dict[str, Any]) -> List[Dict[str, Any]]:
         """RAG 검색을 수행합니다."""
         # 실제 구현에서는 벡터 DB에서 유사도 검색을 수행합니다
         # 현재는 시뮬레이션된 검색 결과를 반환합니다
@@ -264,13 +264,14 @@ class ResearcherAgent(BaseAgent):
         
         return recommendations
     
-    def _generate_search_strategy(self, rag_query: Dict[str, Any], search_results: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def _generate_search_strategy(self, rag_query: Any, search_results: List[Dict[str, Any]]) -> Dict[str, Any]:
         """검색 전략을 생성합니다."""
+        normalized = self._normalize_rag_query(rag_query)
         return {
             "query_optimization": {
-                "primary_queries": rag_query.get("primary_queries", []),
-                "secondary_queries": rag_query.get("secondary_queries", []),
-                "keywords": rag_query.get("keywords", [])
+                "primary_queries": normalized.get("primary_queries", []),
+                "secondary_queries": normalized.get("secondary_queries", []),
+                "keywords": normalized.get("keywords", [])
             },
             "search_parameters": {
                 "top_k": self.search_config["top_k"],
@@ -289,7 +290,7 @@ class ResearcherAgent(BaseAgent):
             }
         }
     
-    def _calculate_rag_metrics(self, search_results: List[Dict[str, Any]], rag_query: Dict[str, Any]) -> Dict[str, Any]:
+    def _calculate_rag_metrics(self, search_results: List[Dict[str, Any]], rag_query: Any) -> Dict[str, Any]:
         """RAG 메트릭을 계산합니다."""
         if not search_results:
             return {"error": "No search results available"}
@@ -306,18 +307,31 @@ class ResearcherAgent(BaseAgent):
         recent_count = len([r for r in search_results if "2024" in str(r["metadata"].get("published_date", ""))])
         recency_score = recent_count / len(search_results) if search_results else 0
         
+        normalized = self._normalize_rag_query(rag_query)
         return {
             "precision": precision,
             "diversity_score": diversity_score,
             "recency_score": recency_score,
             "overall_quality": (precision + diversity_score + recency_score) / 3,
-            "query_coverage": len(rag_query.get("primary_queries", [])) / max(len(search_results), 1),
+            "query_coverage": len(normalized.get("primary_queries", [])) / max(len(search_results), 1),
             "source_distribution": {
                 "research_papers": len([r for r in search_results if r["metadata"]["type"] == "research_paper"]),
                 "news_articles": len([r for r in search_results if r["metadata"]["type"] == "news_article"]),
                 "other": len([r for r in search_results if r["metadata"]["type"] not in ["research_paper", "news_article"]])
             }
         }
+
+    def _normalize_rag_query(self, rag_query: Any) -> Dict[str, Any]:
+        """문자열/딕셔너리 형태의 rag_query를 내부 표준 딕셔너리로 정규화합니다."""
+        if isinstance(rag_query, str):
+            return {
+                "primary_queries": [rag_query],
+                "secondary_queries": [],
+                "keywords": []
+            }
+        if isinstance(rag_query, dict):
+            return rag_query
+        return {"primary_queries": [], "secondary_queries": [], "keywords": []}
     
     def _get_fallback_data(self) -> Dict[str, Any]:
         """폴백 데이터를 반환합니다."""

@@ -78,11 +78,20 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
-# Credentials
+# Credentials and sensitive files
 credentials.json
 token.json
 gmail_token.json
 docs_token.json
+.env.backup
+.env.local
+.env.production
+.env.staging
+*.key
+*.pem
+*.p12
+secrets/
+secrets.json
 
 # Project specific
 outputs/

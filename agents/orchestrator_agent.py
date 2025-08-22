@@ -1,17 +1,10 @@
 """Orchestrator Agent for coordinating the multi-agent workflow."""
 
 from typing import Any, Dict, List
-try:
-    from constants import AGENT_NAMES, WORKFLOW_STEP_ORDER
-    from .base_agent import BaseAgent, AgentResult
-    from state import WorkflowState
-except ImportError:
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from constants import AGENT_NAMES, WORKFLOW_STEP_ORDER
-    from .base_agent import BaseAgent, AgentResult
-    from state import WorkflowState
+
+from constants import AGENT_NAMES, WORKFLOW_STEP_ORDER, AGENT_TIMEOUTS
+from .base_agent import BaseAgent, AgentResult
+from state.state import WorkflowState
 
 
 class OrchestratorAgent(BaseAgent):
@@ -24,7 +17,7 @@ class OrchestratorAgent(BaseAgent):
         )
         self.required_inputs = ["user_query"]
         self.output_keys = ["workflow_status", "next_agents"]
-        self.timeout = 30
+        self.timeout = AGENT_TIMEOUTS["orchestrator"]
         self.retry_attempts = 1
         self.priority = 1
     

@@ -10,17 +10,12 @@ from datetime import datetime
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 from .base_agent import BaseAgent
-try:
-    from state import WorkflowState
-except ImportError:
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from state import WorkflowState
+from state.state import WorkflowState
+from constants import SUMMARIZER_CONFIG
 
 # --- GPU 설정 ---
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"🚀 사용 디바이스: {DEVICE}")
+print(f"사용 디바이스: {DEVICE}")
 
 class KoT5Summarizer:
     """
@@ -41,16 +36,16 @@ class KoT5Summarizer:
     
     def _load_model(self):
         """KoT5 모델과 토크나이저를 로드합니다."""
-        print(f"📥 KoT5 모델('{self.model_name}') 로드 중...")
+        print(f"KoT5 모델('{self.model_name}') 로드 중...")
         try:
             self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
             self.model = AutoModelForSeq2SeqLM.from_pretrained(self.model_name).to(DEVICE)
-            print("✅ KoT5 모델 로드 완료!")
+            print("KoT5 모델 로드 완료!")
         except Exception as e:
-            print(f"❌ 모델 로드 실패: {e}")
+            print(f"모델 로드 실패: {e}")
             raise
     
-    def summarize_text(self, text, max_length=200, min_length=30):
+    def summarize_text(self, text, max_length=SUMMARIZER_CONFIG["default_max_length"], min_length=SUMMARIZER_CONFIG["default_min_length"]):
         """
         텍스트를 요약합니다.
         
@@ -71,7 +66,7 @@ class KoT5Summarizer:
             inputs = self.tokenizer(
                 text, 
                 return_tensors="pt", 
-                max_length=1024, 
+                max_length=SUMMARIZER_CONFIG["max_input_length"], 
                 truncation=True
             ).to(DEVICE)
             
@@ -90,7 +85,7 @@ class KoT5Summarizer:
             return summary.strip()
             
         except Exception as e:
-            print(f"⚠️ 요약 생성 중 오류 발생: {e}")
+            print(f"요약 생성 중 오류 발생: {e}")
             return "요약 생성에 실패했습니다."
 
 def load_search_results(filename="combined_search_results.json"):
@@ -106,13 +101,13 @@ def load_search_results(filename="combined_search_results.json"):
     try:
         with open(filename, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        print(f"✅ '{filename}' 파일에서 {len(data)}개의 샘플을 성공적으로 로드했습니다.")
+        print(f"'{filename}' 파일에서 {len(data)}개의 샘플을 성공적으로 로드했습니다.")
         return data
     except FileNotFoundError:
-        print(f"🚨 에러: '{filename}' 파일을 찾을 수 없습니다.")
+        print(f"에러: '{filename}' 파일을 찾을 수 없습니다.")
         return None
     except json.JSONDecodeError:
-        print(f"🚨 에러: '{filename}' 파일의 형식이 올바르지 않습니다.")
+        print(f"에러: '{filename}' 파일의 형식이 올바르지 않습니다.")
         return None
 
 def save_summarized_results(data, filename=None):
@@ -130,10 +125,10 @@ def save_summarized_results(data, filename=None):
     try:
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
-        print(f"✅ 요약 결과가 '{filename}'에 성공적으로 저장되었습니다.")
+        print(f"요약 결과가 '{filename}'에 성공적으로 저장되었습니다.")
         return filename
     except Exception as e:
-        print(f"❌ 파일 저장 중 오류 발생: {e}")
+        print(f"파일 저장 중 오류 발생: {e}")
         return None
 
 def process_search_results(data, summarizer):
@@ -147,7 +142,7 @@ def process_search_results(data, summarizer):
     Returns:
         list: 요약이 추가된 데이터
     """
-    print(f"📝 총 {len(data)}개 샘플에 대한 요약 생성 시작")
+    print(f"총 {len(data)}개 샘플에 대한 요약 생성 시작")
     
     processed_data = []
     
@@ -161,7 +156,7 @@ def process_search_results(data, summarizer):
                 summary = summarizer.summarize_text(sample['content'])
                 processed_sample['summary'] = summary
             except Exception as e:
-                print(f"⚠️ 샘플 {i+1} 요약 실패: {e}")
+                print(f"샘플 {i+1} 요약 실패: {e}")
                 processed_sample['summary'] = "요약 생성에 실패했습니다."
         else:
             processed_sample['summary'] = "요약할 내용이 없습니다."
@@ -223,53 +218,3 @@ class SummarizerAgent(BaseAgent):
         except Exception as e:
             self.log_execution(f"텍스트 요약 중 오류 발생: {str(e)}", "ERROR")
             raise
-
-def main():
-    """
-    메인 실행 함수
-    """
-    print("🚀 KoT5 요약 파이프라인 시작")
-    print("=" * 50)
-    
-    # 1. 검색 결과 로드
-    print("\n1️⃣ 검색 결과 로드 중...")
-    data = load_search_results()
-    
-    if not data:
-        print("❌ 데이터 로드 실패로 프로그램을 종료합니다.")
-        return
-    
-    # 2. KoT5 모델 초기화
-    print("\n2️⃣ KoT5 모델 초기화 중...")
-    try:
-        summarizer = KoT5Summarizer()
-    except Exception as e:
-        print(f"❌ 모델 초기화 실패: {e}")
-        return
-    
-    # 3. 요약 생성
-    print("\n3️⃣ 요약 생성 중...")
-    processed_data = process_search_results(data, summarizer)
-    
-    # 4. 결과 저장
-    print("\n4️⃣ 결과 저장 중...")
-    saved_filename = save_summarized_results(processed_data)
-    
-    if saved_filename:
-        print(f"\n✅ 요약 파이프라인 완료!")
-        print(f"📊 처리된 샘플 수: {len(processed_data)}")
-        print(f"💾 저장된 파일: {saved_filename}")
-        
-        # 샘플 결과 출력
-        if processed_data:
-            print(f"\n📋 샘플 결과 (첫 번째 항목):")
-            sample = processed_data[0]
-            print(f"제목: {sample.get('title', 'N/A')}")
-            print(f"원본 길이: {len(sample.get('content', ''))}자")
-            print(f"요약 길이: {len(sample.get('summary', ''))}자")
-            print(f"요약: {sample.get('summary', 'N/A')}")
-    else:
-        print("❌ 결과 저장 실패")
-
-if __name__ == "__main__":
-    main()

@@ -110,35 +110,3 @@ class HippoRAGSearchAgent:
         
         search_results = self.search_documents(queries, num_to_retrieve)
         return search_results if search_results else None
-
-
-def main():
-    """메인 함수 - 독립 실행용
-    - 쿼리 여러개 넣어도 됨. 
-    - top-k 지정할 수 있음.
-    """
-    # 에이전트 생성
-    agent = HippoRAGSearchAgent()
-    
-    # 테스트 쿼리
-    test_queries = [
-        "AI 최적화 방법과 MoE 아키텍처, Gemma 3에 대한 최신 연구 동향과 논문"
-    ]
-    
-    # 에이전트 실행
-    results = agent.run(test_queries, num_to_retrieve=5)
-    
-    if results:
-        # JSON 파일로 저장
-        output_file = "search_results.json"
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(results, f, ensure_ascii=False, indent=2)
-        
-        # 결과 요약 출력
-        for i, result in enumerate(results):
-            print(f"쿼리 {i+1}: '{result['query']}' -> {len(result['documents'])}개 문서 검색됨")
-            print(f"결과가 {output_file}에 저장되었습니다.")
-
-
-if __name__ == "__main__":
-    main()

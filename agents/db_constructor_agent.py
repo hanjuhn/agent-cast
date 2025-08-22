@@ -2,27 +2,10 @@
 
 import asyncio
 from typing import Any, Dict, List
-try:
-    from constants import AGENT_NAMES, DB_CONSTRUCTOR_SYSTEM_PROMPT
-except ImportError:
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from constants import AGENT_NAMES, DB_CONSTRUCTOR_SYSTEM_PROMPT
-try:
-    from .base_agent import BaseAgent, AgentResult
-except ImportError:
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from base_agent import BaseAgent, AgentResult
-try:
-    from state import WorkflowState
-except ImportError:
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from state import WorkflowState
+
+from constants import AGENT_NAMES, DB_CONSTRUCTOR_SYSTEM_PROMPT, AGENT_TIMEOUTS, CHUNK_PROCESSING, BATCH_PROCESSING
+from .base_agent import BaseAgent, AgentResult
+from state.state import WorkflowState
 
 
 class DBConstructorAgent(BaseAgent):
@@ -35,7 +18,7 @@ class DBConstructorAgent(BaseAgent):
         )
         self.required_inputs = ["data_chunks", "search_scope"]
         self.output_keys = ["vector_db", "embedding_stats", "db_metadata"]
-        self.timeout = 300
+        self.timeout = AGENT_TIMEOUTS["db_constructor"]
         self.retry_attempts = 2
         self.priority = 3
         
@@ -204,7 +187,7 @@ class DBConstructorAgent(BaseAgent):
         """큰 청크를 작은 청크로 분할합니다."""
         content = chunk["content"]
         words = content.split()
-        chunk_size = 100
+        chunk_size = CHUNK_PROCESSING["db_constructor_chunk_size"]
         
         sub_chunks = []
         for i in range(0, len(words), chunk_size):
@@ -319,7 +302,7 @@ class DBConstructorAgent(BaseAgent):
                 "last_backup": "2024-08-16T10:00:00Z",
             },
             "search_optimization": {
-                "recommended_batch_size": 100,
+                "recommended_batch_size": BATCH_PROCESSING["db_constructor_batch_size"],
                 "optimal_search_params": {
                     "nprobe": 16,
                     "ef": 64

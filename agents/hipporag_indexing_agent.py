@@ -23,7 +23,7 @@ class HippoRAGIndexingAgent:
         self.description = "크롤링 데이터를 HippoRAG로 인덱싱하여 지식 그래프를 생성하는 에이전트"
         
         # HippoRAG 설정
-        self.save_dir = "outputs/hipporag_indexing"
+        self.save_dir = "output/hipporag_indexing"
         self.llm_model_name = "gpt-4o-mini"
         self.embedding_model_name = "text-embedding-3-small"
     
@@ -138,27 +138,4 @@ class HippoRAGIndexingAgent:
             return hipporag_instance
         else:
             print("❌ HippoRAG 인덱싱 실패!")
-            return None
-
-
-def main():
-    """메인 함수 - 독립 실행용"""
-    print("🚀 HippoRAG Indexing Agent 독립 실행")
-    
-    # 에이전트 생성
-    agent = HippoRAGIndexingAgent()
-    
-    # 크롤링 데이터 경로
-    crawled_data_path = "crawled_data/filtered_data.json"
-    
-    # 에이전트 실행
-    result = agent.run(crawled_data_path)
-    
-    if result:
-        print("✅ 에이전트 실행 성공!")
-    else:
-        print("❌ 에이전트 실행 실패!")
-
-
-if __name__ == "__main__":
-    main() 
+            return None 

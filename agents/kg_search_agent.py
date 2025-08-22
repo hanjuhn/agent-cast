@@ -7,17 +7,9 @@ from datetime import datetime
 
 from .base_agent import BaseAgent
 from .knowledge_graph_agent import KnowledgeGraphAgent
-try:
-    from state import WorkflowState
-    from constants.agents import KG_SEARCH_AGENT_NAME
-    from constants.prompts import KG_SEARCH_SYSTEM_PROMPT
-except ImportError:
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from state import WorkflowState
-    from constants.agents import KG_SEARCH_AGENT_NAME
-    from constants.prompts import KG_SEARCH_SYSTEM_PROMPT
+from state.state import WorkflowState
+from constants.agents import KG_SEARCH_AGENT_NAME
+from constants.prompts import KG_SEARCH_SYSTEM_PROMPT
 
 logger = logging.getLogger(__name__)
 

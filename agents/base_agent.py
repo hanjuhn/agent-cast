@@ -6,10 +6,8 @@ from dataclasses import dataclass
 from langgraph.graph import StateGraph
 from langgraph.graph.message import add_messages
 
-try:
-    from state import WorkflowState
-except ImportError:
-    from ..state import WorkflowState
+from state.state import WorkflowState
+from constants import AGENT_TIMEOUTS
 
 
 @dataclass
@@ -30,7 +28,7 @@ class BaseAgent(ABC):
         self.description = description
         self.required_inputs: List[str] = []
         self.output_keys: List[str] = []
-        self.timeout: int = 60
+        self.timeout: int = AGENT_TIMEOUTS["base"]
         self.retry_attempts: int = 1
         self.priority: int = 1
     

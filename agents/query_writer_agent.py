@@ -2,15 +2,15 @@
 
 from typing import Any, Dict, List
 try:
-    from constants import AGENT_NAMES, QUERY_WRITER_SYSTEM_PROMPT
+    from constants import AGENT_NAMES, QUERY_WRITER_SYSTEM_PROMPT, AGENT_TIMEOUTS
     from constants.llm_client import get_llm_client
     from agents.base_agent import BaseAgent, AgentResult
-    from state import WorkflowState
+    from state.state import WorkflowState
 except ImportError:
-    from constants import AGENT_NAMES, QUERY_WRITER_SYSTEM_PROMPT
+    from constants import AGENT_NAMES, QUERY_WRITER_SYSTEM_PROMPT, AGENT_TIMEOUTS
     from constants.llm_client import get_llm_client
     from .base_agent import BaseAgent, AgentResult
-    from state import WorkflowState
+    from state.state import WorkflowState
 
 
 class QueryWriterAgent(BaseAgent):
@@ -23,7 +23,7 @@ class QueryWriterAgent(BaseAgent):
         )
         self.required_inputs = ["current_progress", "personal_info", "research_context"]
         self.output_keys = ["primary_query", "secondary_query", "third_query", "search_scope", "research_priorities"]
-        self.timeout = 60
+        self.timeout = AGENT_TIMEOUTS["query_writer"]
         self.retry_attempts = 2
         self.priority = 3
         

@@ -10,13 +10,8 @@ from dotenv import load_dotenv
 from datetime import datetime
 
 from .base_agent import BaseAgent
-try:
-    from state import WorkflowState
-except ImportError:
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from state import WorkflowState
+from state.state import WorkflowState
+from constants.prompts import TTS_SYSTEM_PROMPT
 
 # --- 환경 변수 로드 ---
 load_dotenv()  # .env 파일에서 환경 변수 로드
@@ -65,79 +60,6 @@ def write_wave_file(filename, pcm, channels=1, rate=24000, sample_width=2):
       wf.setsampwidth(sample_width)
       wf.setframerate(rate)
       wf.writeframes(pcm)
-
-def main():
-    """메인 실행 함수"""
-    # --- 1. 입력 파일 인자 설정 ---
-    parser = argparse.ArgumentParser(description="텍스트 파일에서 스크립트를 읽어 TTS 오디오를 생성합니다.")
-    parser.add_argument("input_file", type=str, help="입력 스크립트 텍스트 파일의 경로")
-    args = parser.parse_args()
-
-    # --- 2. 스크립트 파일 읽기 ---
-    script = read_script_file(args.input_file)
-    if not script:
-        return # 파일 읽기 실패 시 종료
-
-    # --- 3. API 키 설정 ---
-    # API 키는 환경 변수에서 안전하게 로드합니다.
-    API_KEY = os.environ.get('GOOGLE_API_KEY')
-    if not API_KEY:
-        print("❌ GOOGLE_API_KEY 환경 변수가 설정되지 않았습니다.")
-        return
-    os.environ['GOOGLE_API_KEY'] = API_KEY
-    genai.configure(api_key=API_KEY)
-
-    # --- 4. 스크립트 분할 ---
-    final_chunks = split_script_into_chunks(script)
-    
-    # --- 5. 오디오 생성 ---
-    audio_segments = []
-    
-    print("오디오 생성을 시작합니다...")
-    for chunk in tqdm(final_chunks):
-        prompt = f"""TTS the following conversation between Joe and Jane:
-                {chunk}"""
-        try:
-            response = client.models.generate_content(
-              model="gemini-2.5-flash-preview-tts",
-              contents=prompt,
-              config=types.GenerateContentConfig(
-                  response_modalities=["AUDIO"],
-                  speech_config=types.SpeechConfig(
-                    multi_speaker_voice_config=types.MultiSpeakerVoiceConfig(
-                        speaker_voice_configs=[
-                          types.SpeakerVoiceConfig(
-                              speaker='Joe',
-                              voice_config=types.VoiceConfig(
-                                prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name='Kore')
-                              )
-                          ),
-                          types.SpeakerVoiceConfig(
-                              speaker='Jane',
-                              voice_config=types.VoiceConfig(
-                                prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name='Puck')
-                              )
-                          ),
-                        ]
-                    )
-                  )
-              )
-            )
-            data = response.candidates[0].content.parts[0].inline_data.data
-            audio_segments.append(data)
-        except Exception as e:
-            print(f"청크 처리 중 오류 발생: {e}")
-            continue
-
-    # --- 6. 오디오 병합 및 저장 ---
-    if audio_segments:
-        print("\n모든 오디오 조각을 합치는 중...")
-        combined_audio_data = b''.join(audio_segments)
-        output_filename = 'combined_output.wav'
-        write_wave_file(output_filename, combined_audio_data)
-        print(f"성공적으로 '{output_filename}' 파일로 저장되었습니다.")
-    else:
-        print("생성된 오디오가 없어 파일을 저장하지 않았습니다.")
 
 class TTSAgent(BaseAgent):
     """팟캐스트 오디오 생성 에이전트"""

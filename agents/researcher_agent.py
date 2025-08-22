@@ -7,15 +7,10 @@ from typing import List, Dict, Any
 from openai import OpenAI
 from dotenv import load_dotenv
 
-try:
-    from .base_agent import BaseAgent
-    from state import WorkflowState
-except ImportError:
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from .base_agent import BaseAgent
-    from state import WorkflowState
+from .base_agent import BaseAgent
+from state.state import WorkflowState
+from constants import OPENAI_RESEARCHER_PARAMS
+from constants.prompts import AI_RESEARCH_EXPERT_PROMPT
 
 class ResearcherAgent(BaseAgent):
     """AI 기술 동향을 분석하여 심층 보고서를 생성하는 에이전트"""
@@ -30,48 +25,7 @@ class ResearcherAgent(BaseAgent):
         if not api_key:
             raise ValueError("OPENAI_API_KEY 환경 변수가 설정되어 있지 않습니다. .env 또는 환경 변수에 키를 등록하세요.")
             
-        self.report_template = """# AI 기술 동향 심층 분석 보고서
-
-{articles}
-
-작성 지침:
-
-1. 문서 스타일
-- 서론과 결론은 반드시 단락형 서술식(줄글)으로 작성
-- 본론은 말머리 구조(bullet points)와 단락형 서술식을 적절히 혼합하여 가독성 있게 구성
-- 각 섹션은 명확한 소제목과 함께 시작
-
-2. 보고서 구조
-A. 서론 (줄글 형식)
-- 현재 AI 기술의 주요 트렌드와 발전 방향 서술
-- 이러한 발전이 가지는 의미와 중요성 설명
-- 보고서의 분석 범위와 관점 제시
-
-B. 본론
-- 주요 기술 동향 분석 (말머리와 서술식 혼합)
-- 기술 간 연관성과 시너지 효과 설명 (서술식 위주)
-- 실용적 적용 사례와 한계점 분석 (말머리 구조 활용)
-- 구체적 수치와 기술 스펙 포함
-
-C. 결론 (줄글 형식으로 3개 파트)
-[거시적 결론]
-- 전반적인 기술 발전의 방향성과 의미
-- 산업과 사회에 미치는 영향
-
-[보고서 인사이트]
-- 주요 발견 사항과 시사점
-- 기술 발전이 제시하는 기회와 도전 과제
-
-[향후 탐구 포인트]
-- 추가 연구가 필요한 영역
-- 주목해야 할 핵심 질문들
-- 잠재적 리스크와 대응 방안
-
-3. 형식
-- 마크다운 형식 준수
-- 주요 기술용어는 영문 병기
-- 섹션별 명확한 소제목 사용
-- 중요 내용은 적절한 강조 표시 활용"""
+        self.report_template = AI_RESEARCH_EXPERT_PROMPT
 
         try:
             self.client = OpenAI(api_key=api_key)
@@ -298,7 +252,7 @@ AI 기술은 지속적인 혁신을 통해 더욱 실용적이고 효율적인 �
                         "content": self.report_template.format(articles=articles_str)
                     }
                 ],
-                temperature=0.3
+                temperature=OPENAI_RESEARCHER_PARAMS["temperature"]
             )
             result = response.choices[0].message.content.strip()
             print(f"[DEBUG] 통합 보고서 생성 완료 (길이: {len(result)}자)")

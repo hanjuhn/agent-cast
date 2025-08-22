@@ -27,34 +27,25 @@ def _import_hipporag():
         if multiprocessing.get_start_method() != 'fork':
             try:
                 multiprocessing.set_start_method('fork', force=True)
-                print("✅ Multiprocessing start method changed to 'fork'")
+                print("Multiprocessing start method changed to 'fork'")
             except Exception as mp_error:
-                print(f"⚠️ Could not change multiprocessing method: {mp_error}")
+                print(f"Could not change multiprocessing method: {mp_error}")
         
         # Try to import HippoRAG
         from hipporag import HippoRAG as _HippoRAG
         HippoRAG = _HippoRAG
         HIPPORAG_AVAILABLE = True
-        print("✅ Local HippoRAG imported successfully")
+        print("Local HippoRAG imported successfully")
         return HippoRAG
     except Exception as e:
-        print(f"❌ Failed to import local HippoRAG: {e}")
-        print("⚠️ Using mock implementation instead")
+        print(f"Failed to import local HippoRAG: {e}")
+        print("Using mock implementation instead")
         return None
 
-try:
-    from .base_agent import BaseAgent
-    from state import WorkflowState
-    from constants.agents import KNOWLEDGE_GRAPH_AGENT_NAME
-    from constants.prompts import KNOWLEDGE_GRAPH_SYSTEM_PROMPT
-except ImportError:
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from .base_agent import BaseAgent
-    from state import WorkflowState
-    from constants.agents import KNOWLEDGE_GRAPH_AGENT_NAME
-    from constants.prompts import KNOWLEDGE_GRAPH_SYSTEM_PROMPT
+from .base_agent import BaseAgent
+from state.state import WorkflowState
+from constants.agents import KNOWLEDGE_GRAPH_AGENT_NAME
+from constants.prompts import KNOWLEDGE_GRAPH_SYSTEM_PROMPT
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +79,7 @@ class KnowledgeGraphAgent(BaseAgent):
             self.hipporag = hipporag_class(
                 llm_model_name="gpt-4o-mini",  # Use correct parameter name
                 embedding_model_name="text-embedding-3-small",
-                save_dir="outputs/hipporag_workflow"
+                save_dir="output/hipporag_workflow"
             )
             
             logger.info("Knowledge Graph Agent initialized successfully with local HippoRAG")

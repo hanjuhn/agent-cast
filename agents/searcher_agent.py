@@ -21,15 +21,9 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 from bs4 import BeautifulSoup
 
-try:
-    from .base_agent import BaseAgent
-    from state import WorkflowState
-except ImportError:
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from .base_agent import BaseAgent
-    from state import WorkflowState
+from .base_agent import BaseAgent
+from state.state import WorkflowState
+from constants import OPENAI_SEARCHER_PARAMS, OPENAI_SEARCHER_FALLBACK_PARAMS
 
 # --- 환경 변수 로드 ---
 load_dotenv()  # .env 파일에서 환경 변수 로드
@@ -40,7 +34,7 @@ class WebSearcher:
         # API 키는 환경 변수에서 안전하게 로드합니다.
         self.perplexity_api_key = perplexity_api_key or os.environ.get('PERPLEXITY_API_KEY')
         if not self.perplexity_api_key:
-            print("⚠️ PERPLEXITY_API_KEY 환경 변수가 설정되지 않았습니다.")
+            print("PERPLEXITY_API_KEY 환경 변수가 설정되지 않았습니다.")
         self.setup_driver()
     
     def setup_driver(self):
@@ -178,10 +172,10 @@ class WebSearcher:
                     "source": "pytorch_kr"
                 }
                 posts_data.append(post_data)
-                print(f"✅ '{title}' 수집 완료")
+                print(f"'{title}' 수집 완료")
                 
             except Exception as e:
-                print(f"⚠️ 게시글 수집 중 오류 발생: {e}")
+                print(f"게시글 수집 중 오류 발생: {e}")
                 continue
         
         return posts_data
@@ -241,10 +235,10 @@ class WebSearcher:
                     "source": "aitimes_kr"
                 }
                 posts_data.append(post_data)
-                print(f"✅ '{title}' 수집 완료")
+                print(f"'{title}' 수집 완료")
                 
             except Exception as e:
-                print(f"⚠️ 기사 수집 중 오류 발생: {e}")
+                print(f"기사 수집 중 오류 발생: {e}")
                 continue
         
         return posts_data
@@ -252,8 +246,8 @@ class WebSearcher:
     def search_perplexity(self, query: str, max_results: int = 10):
         """Perplexity API를 사용한 검색"""
         if not self.perplexity_api_key:
-            print("❌ Perplexity API 키가 설정되지 않았습니다.")
-            return []
+                    print("Perplexity API 키가 설정되지 않았습니다.")
+        return []
         
         print(f"\n=== Perplexity 검색 시작: '{query}' ===")
         
@@ -271,8 +265,8 @@ class WebSearcher:
                     "content": f"Search for recent information about: {query}. Provide detailed, factual information about current trends and developments."
                 }
             ],
-            "max_tokens": 800,
-            "temperature": 0.1,
+            "max_tokens": OPENAI_SEARCHER_PARAMS["max_tokens"],
+            "temperature": OPENAI_SEARCHER_PARAMS["temperature"],
             "search_recency_filter": "month"
         }
         
@@ -293,25 +287,24 @@ class WebSearcher:
                 "source": "perplexity"
             }
             
-            print("✅ Perplexity 검색 완료")
+            print("Perplexity 검색 완료")
             return [search_result]
             
         except Exception as e:
-            print(f"❌ Perplexity 검색 중 오류 발생: {e}")
-            print("🔄 GPT fallback으로 전환 중...")
+            print(f"Perplexity 검색 중 오류 발생: {e}")
+            print("GPT fallback으로 전환 중...")
             
-            # GPT fallback 시도
             try:
                 fallback_result = self._search_with_gpt_fallback(query)
                 if fallback_result:
-                    print("✅ GPT fallback 검색 성공")
+                    print("GPT fallback 검색 성공")
                     return fallback_result
                 else:
-                    print("⚠️ GPT fallback도 실패")
+                    print("GPT fallback도 실패")
                     return []
             except Exception as fallback_error:
-                print(f"❌ GPT fallback 실패: {fallback_error}")
-                return []
+                    print(f"GPT fallback 실패: {fallback_error}")
+                    return []
     
     def _search_with_gpt_fallback(self, query: str):
         """GPT를 사용한 fallback 검색"""
@@ -322,7 +315,7 @@ class WebSearcher:
             
             openai_api_key = os.getenv('OPENAI_API_KEY')
             if not openai_api_key:
-                print("❌ OpenAI API 키가 설정되지 않았습니다.")
+                print("OpenAI API 키가 설정되지 않았습니다.")
                 return None
             
             import openai
@@ -349,8 +342,8 @@ class WebSearcher:
                     {"role": "system", "content": "당신은 AI 연구 동향 전문가입니다. 최신 정보를 바탕으로 정확하고 유용한 답변을 제공합니다."},
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=1000,
-                temperature=0.3
+                max_tokens=OPENAI_SEARCHER_FALLBACK_PARAMS["max_tokens"],
+                temperature=OPENAI_SEARCHER_FALLBACK_PARAMS["temperature"]
             )
             
             content = response.choices[0].message.content
@@ -368,7 +361,7 @@ class WebSearcher:
             return [search_result]
             
         except Exception as e:
-            print(f"❌ GPT fallback 검색 중 오류 발생: {e}")
+            print(f"GPT fallback 검색 중 오류 발생: {e}")
             return None
 
 def save_search_results(data, filename=None):
@@ -380,10 +373,10 @@ def save_search_results(data, filename=None):
     try:
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
-        print(f"✅ 검색 결과가 '{filename}'에 성공적으로 저장되었습니다.")
+        print(f"검색 결과가 '{filename}'에 성공적으로 저장되었습니다.")
         return filename
     except Exception as e:
-        print(f"❌ 파일 저장 중 오류 발생: {e}")
+        print(f"파일 저장 중 오류 발생: {e}")
         return None
 
 class SearcherAgent(BaseAgent):
@@ -437,7 +430,7 @@ class SearcherAgent(BaseAgent):
             
             # 검색 결과가 없으면 기존 데이터 사용
             if not all_results:
-                print("⚠️ 웹 크롤링 결과가 없어 기존 데이터를 사용합니다.")
+                print("웹 크롤링 결과가 없어 기존 데이터를 사용합니다.")
                 try:
                     import json
                     existing_data_path = "output/combined_search_results.json"
@@ -458,11 +451,11 @@ class SearcherAgent(BaseAgent):
                                 }
                                 all_results.append(search_item)
                         
-                        print(f"✅ 기존 데이터에서 {len(all_results)}개 항목을 검색 결과로 변환했습니다.")
+                        print(f"기존 데이터에서 {len(all_results)}개 항목을 검색 결과로 변환했습니다.")
                     else:
-                        print("❌ 기존 데이터 파일도 없습니다.")
+                        print("기존 데이터 파일도 없습니다.")
                 except Exception as e:
-                    print(f"❌ 기존 데이터 로드 중 오류: {e}")
+                    print(f"기존 데이터 로드 중 오류: {e}")
             
             # 결과 저장
             output_filename = f"output/searcher/search_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
@@ -508,63 +501,3 @@ class SearcherAgent(BaseAgent):
         finally:
             # WebDriver 종료
             self.web_searcher.close_driver()
-
-def main():
-    """
-    메인 실행 함수
-    """
-    print("🚀 웹 크롤링 파이프라인 시작")
-    print("=" * 50)
-    
-    # 1. WebSearcher 초기화
-    print("\n1️⃣ WebSearcher 초기화 중...")
-    searcher = WebSearcher()
-    
-    try:
-        # 2. 파이토치 한국 사용자 모임 크롤링
-        print("\n2️⃣ 파이토치 한국 사용자 모임 크롤링 중...")
-        pytorch_posts = searcher.crawl_pytorch_kr()
-        
-        # 3. AI타임스 크롤링
-        print("\n3️⃣ AI타임스 크롤링 중...")
-        aitimes_posts = searcher.crawl_aitimes_kr()
-        
-        # 4. Perplexity 검색
-        print("\n4️⃣ Perplexity 검색 중...")
-        perplexity_results = searcher.search_perplexity("최신 AI 트렌드")
-        
-        # 5. 결과 합치기
-        print("\n5️⃣ 결과 합치기 중...")
-        all_results = pytorch_posts + aitimes_posts + perplexity_results
-        
-        # 6. 결과 저장
-        print("\n6️⃣ 결과 저장 중...")
-        saved_filename = save_search_results(all_results)
-        
-        if saved_filename:
-            print(f"\n✅ 웹 크롤링 파이프라인 완료!")
-            print(f"📊 총 수집된 결과: {len(all_results)}개")
-            print(f"   - 파이토치: {len(pytorch_posts)}개")
-            print(f"   - AI타임스: {len(aitimes_posts)}개")
-            print(f"   - Perplexity: {len(perplexity_results)}개")
-            print(f"💾 저장된 파일: {saved_filename}")
-            
-            # 샘플 결과 출력
-            if all_results:
-                print(f"\n📋 샘플 결과 (첫 번째 항목):")
-                sample = all_results[0]
-                print(f"제목: {sample.get('title', 'N/A')}")
-                print(f"출처: {sample.get('source', 'N/A')}")
-                print(f"날짜: {sample.get('date', 'N/A')}")
-                print(f"내용 길이: {len(sample.get('content', ''))}자")
-        else:
-            print("❌ 결과 저장 실패")
-            
-    except Exception as e:
-        print(f"❌ 웹 크롤링 중 오류 발생: {e}")
-    finally:
-        # WebDriver 종료
-        searcher.close_driver()
-
-if __name__ == "__main__":
-    main()

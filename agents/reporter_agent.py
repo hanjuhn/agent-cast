@@ -12,20 +12,8 @@ import anthropic
 from dotenv import load_dotenv
 
 from .base_agent import BaseAgent, AgentResult
-try:
-    from state import WorkflowState
-except ImportError:
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from state import WorkflowState
-try:
-    from constants.ai_models import ANTHROPIC_MODELS
-except ImportError:
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from constants.ai_models import ANTHROPIC_MODELS
+from state.state import WorkflowState
+from constants.ai_models import ANTHROPIC_MODELS
 
 # 환경 변수 로드
 load_dotenv()
@@ -596,60 +584,3 @@ class ReporterAgent(BaseAgent):
 </html>
         """
         return preview_html
-
-
-# 독립 실행을 위한 메인 함수
-def main():
-    """독립 실행용 메인 함수"""
-    import argparse
-    
-    parser = argparse.ArgumentParser(description="리서치 결과를 바탕으로 인터랙티브 리포트를 생성합니다.")
-    parser.add_argument("research_file", type=str, help="리서치 결과 텍스트 파일의 경로")
-    parser.add_argument("--output", "-o", type=str, default="interactive_report.html", 
-                       help="출력 파일명 (기본값: interactive_report.html)")
-    parser.add_argument("--api-key", type=str, help="Claude API 키")
-    parser.add_argument("--package", "-p", action="store_true", help="ZIP 패키지로 생성")
-    args = parser.parse_args()
-
-    # API 키 설정
-    api_key = args.api_key or os.getenv('ANTHROPIC_API_KEY')
-    if not api_key:
-        api_key = input("Claude API 키를 입력하세요: ").strip()
-
-    try:
-        # 리서치 파일 읽기
-        with open(args.research_file, 'r', encoding='utf-8') as f:
-            research_content = f.read()
-        
-        # 에이전트 생성 및 실행
-        agent = ReporterAgent(api_key=api_key)
-        
-        # 임시 상태 생성
-        temp_state = WorkflowState(research_result=research_content)
-        
-        # 리포트 생성
-        import asyncio
-        result_state = asyncio.run(agent.process(temp_state))
-        
-        # 결과 저장
-        html_content = result_state.html_report
-        filename = result_state.report_filename
-        
-        # 파일 저장
-        agent.save_report(html_content, args.output)
-        
-        # 패키지 생성 (옵션)
-        if args.package:
-            agent.create_report_package(html_content, research_content)
-        
-        print(f"✅ 리포트가 성공적으로 생성되었습니다: {args.output}")
-        
-    except Exception as e:
-        print(f"❌ 오류 발생: {str(e)}")
-        return 1
-    
-    return 0
-
-
-if __name__ == "__main__":
-    exit(main())

@@ -1,11 +1,9 @@
 """Researcher Agent for generating concise article reports."""
 
 import os
-import json
 from datetime import datetime
 from typing import List, Dict, Any
 from openai import OpenAI
-from dotenv import load_dotenv
 
 from .base_agent import BaseAgent
 from state.state import WorkflowState
@@ -20,8 +18,7 @@ class ResearcherAgent(BaseAgent):
             name="researcher",
             description="AI 기술 동향을 분석하여 심층 보고서를 생성하는 에이전트"
         )
-        load_dotenv()
-        api_key = os.getenv("OPENAI_API_KEY")
+        api_key = os.environ.get("OPENAI_API_KEY")
         if not api_key:
             raise ValueError("OPENAI_API_KEY 환경 변수가 설정되어 있지 않습니다. .env 또는 환경 변수에 키를 등록하세요.")
             
@@ -30,7 +27,7 @@ class ResearcherAgent(BaseAgent):
         try:
             self.client = OpenAI(api_key=api_key)
         except Exception as e:
-            print(f"OpenAI 클라이언트 초기화 실패: {str(e)}")
+            self.log_execution(f"OpenAI 클라이언트 초기화 실패: {str(e)}", "ERROR")
             raise
     
     def summarize_article(self, article: Dict[str, Any]) -> Dict[str, Any]:
@@ -53,7 +50,7 @@ class ResearcherAgent(BaseAgent):
                 "url": url
             }
         except Exception as e:
-            print(f"기사 요약 중 오류: {e}")
+            self.log_execution(f"기사 요약 중 오류: {e}", "ERROR")
             return {
                 "title": "요약 실패",
                 "content": "내용을 요약할 수 없습니다.",
@@ -173,7 +170,7 @@ AI 기술은 지속적인 혁신을 통해 더욱 실용적이고 효율적인 �
                 if isinstance(article, dict) and 'title' in article:
                     summarized = self.summarize_article(article)
                     summarized_articles.append(summarized)
-                    print(f"[DEBUG] 기사 요약 완료 (길이: {len(summarized['content'])}자)")
+                    self.log_execution(f"기사 요약 완료 (길이: {len(summarized['content'])}자)", "INFO")
             
             # 기사 정보를 마크다운 리스트로 변환
             articles_md = []
@@ -255,7 +252,7 @@ AI 기술은 지속적인 혁신을 통해 더욱 실용적이고 효율적인 �
                 temperature=OPENAI_RESEARCHER_PARAMS["temperature"]
             )
             result = response.choices[0].message.content.strip()
-            print(f"[DEBUG] 통합 보고서 생성 완료 (길이: {len(result)}자)")
+            self.log_execution(f"통합 보고서 생성 완료 (길이: {len(result)}자)", "INFO")
             
             # 상태 업데이트
             state_dict = {k: v for k, v in state.__dict__.items()}
@@ -274,7 +271,7 @@ AI 기술은 지속적인 혁신을 통해 더욱 실용적이고 효율적인 �
             return new_state
             
         except Exception as e:
-            print(f"[ERROR] 처리 중 오류 발생: {str(e)}")
+            self.log_execution(f"처리 중 오류 발생: {str(e)}", "ERROR")
             raise
 
 
@@ -297,48 +294,6 @@ AI 기술은 지속적인 혁신을 통해 더욱 실용적이고 효율적인 �
             return result
             
         except Exception as e:
-            print(f"[ERROR] Google Docs 업로드 중 오류 발생: {str(e)}")
+            self.log_execution(f"Google Docs 업로드 중 오류 발생: {str(e)}", "ERROR")
             raise
 
-if __name__ == "__main__":
-    # 입력 파일과 출력 파일 경로 설정
-    input_json = "output/rag_data/search_results.json"
-    output_dir = "output/docs_data"
-    output_file = os.path.join(output_dir, "research_report.md")
-
-    print(f"[DEBUG] 시작...")
-    print(f"[DEBUG] 입력 파일: {input_json}")
-    print(f"[DEBUG] 출력 파일: {output_file}")
-
-    # 출력 디렉토리가 없으면 생성
-    if not os.path.exists(output_dir):
-        print(f"[DEBUG] 출력 디렉토리 생성: {output_dir}")
-        os.makedirs(output_dir)
-
-    print(f"[DEBUG] ResearcherAgent 초기화...")
-    # 에이전트 생성 및 실행
-    agent = ResearcherAgent()
-
-    print(f"[DEBUG] 기사 분석 시작...")
-    try:
-        # 보고서 생성
-        report_text = agent.process(input_json)
-        print(f"[DEBUG] 기사 분석 완료")
-        
-        # 로컬 파일로 저장
-        print(f"[DEBUG] 결과 파일 저장 중...")
-        with open(output_file, 'w', encoding='utf-8') as f:
-            f.write(report_text)
-        print(f"[DEBUG] 로컬 파일 저장 완료: {output_file}")
-        
-        # Google Docs에 업로드
-        print(f"[DEBUG] Google Docs에 업로드 중...")
-        current_date = datetime.now().strftime("%Y-%m-%d")
-        docs_result = agent.save_to_docs(report_text, f"AI 기술 동향 심층 분석 보고서 ({current_date})")
-        print(f"[DEBUG] Google Docs 업로드 완료")
-        print(f"\n보고서가 생성되었습니다:")
-        print(f"- 로컬 파일: {output_file}")
-        print(f"- Google Docs: {docs_result['url']}")
-        
-    except Exception as e:
-        print(f"[ERROR] 처리 중 오류 발생: {str(e)}")

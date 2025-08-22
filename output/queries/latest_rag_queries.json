@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2025-08-22T17:32:01.996650",
+    "timestamp": "2025-08-22T18:31:43.703403",
     "user_query": "AI 연구 동향 테스트",
     "is_fallback": false,
     "generation_method": "llm_generated"
@@ -18,5 +18,5 @@
       "AI 연구 프로젝트"
     ]
   },
-  "generated_queries": "최근 AI 연구 동향에 대한 최신 논문과 리뷰 검색"
+  "generated_queries": "AI 연구의 최근 동향과 관련된 최신 논문과 리뷰"
 }

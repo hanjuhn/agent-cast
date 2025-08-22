@@ -1,65 +1,17 @@
 """TTS Agent for converting podcast scripts to audio using TTS."""
 
 import os
-import google.generativeai as genai
-from google.generativeai import types
-import wave
 from tqdm import tqdm
-import argparse # 명령행 인자를 처리하기 위해 추가
-from dotenv import load_dotenv
 from datetime import datetime
+from openai import OpenAI
 
 from .base_agent import BaseAgent
 from state.state import WorkflowState
 from constants.prompts import TTS_SYSTEM_PROMPT
 
-# --- 환경 변수 로드 ---
-load_dotenv()  # .env 파일에서 환경 변수 로드
 
-def read_script_file(filepath):
-    """지정된 경로의 텍스트 파일을 읽어 내용을 반환합니다."""
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            return f.read()
-    except FileNotFoundError:
-        print(f"오류: 파일을 찾을 수 없습니다 - {filepath}")
-        return None
-    except Exception as e:
-        print(f"오류: 파일을 읽는 중 문제가 발생했습니다 - {e}")
-        return None
 
-def split_script_into_chunks(script_text):
-    """스크립트 텍스트를 API 제한에 맞는 청크로 분할합니다."""
-    print("스크립트를 청크 단위로 나누는 중...")
-    MAX_BYTES = 4500
-    final_chunks = []
-    current_chunk = ""
-    dialogue_turns = script_text.strip().split('\n\n')
 
-    for turn in tqdm(dialogue_turns):
-        if len((current_chunk + turn).encode('utf-8')) > MAX_BYTES:
-            if current_chunk:
-                final_chunks.append(current_chunk)
-            current_chunk = turn
-        else:
-            if current_chunk:
-                current_chunk += "\n\n" + turn
-            else:
-                current_chunk = turn
-    
-    if current_chunk:
-        final_chunks.append(current_chunk)
-        
-    print(f"총 {len(final_chunks)}개의 청크로 분할되었습니다.")
-    return final_chunks
-
-def write_wave_file(filename, pcm, channels=1, rate=24000, sample_width=2):
-   """오디오 데이터를 .wav 파일로 저장합니다."""
-   with wave.open(filename, "wb") as wf:
-      wf.setnchannels(channels)
-      wf.setsampwidth(sample_width)
-      wf.setframerate(rate)
-      wf.writeframes(pcm)
 
 class TTSAgent(BaseAgent):
     """팟캐스트 오디오 생성 에이전트"""
@@ -72,6 +24,31 @@ class TTSAgent(BaseAgent):
         self.required_inputs = ["podcast_script"]
         self.output_keys = ["audio_file", "audio_metadata"]
         self.api_key = api_key
+    
+    def _split_script_into_chunks(self, script_text: str) -> list:
+        """스크립트 텍스트를 API 제한에 맞는 청크로 분할합니다."""
+        self.log_execution("스크립트를 청크 단위로 나누는 중...")
+        MAX_BYTES = 4500
+        final_chunks = []
+        current_chunk = ""
+        dialogue_turns = script_text.strip().split('\n\n')
+
+        for turn in tqdm(dialogue_turns):
+            if len((current_chunk + turn).encode('utf-8')) > MAX_BYTES:
+                if current_chunk:
+                    final_chunks.append(current_chunk)
+                current_chunk = turn
+            else:
+                if current_chunk:
+                    current_chunk += "\n\n" + turn
+                else:
+                    current_chunk = turn
+        
+        if current_chunk:
+            final_chunks.append(current_chunk)
+            
+        self.log_execution(f"총 {len(final_chunks)}개의 청크로 분할되었습니다.")
+        return final_chunks
     
     async def process(self, state: WorkflowState) -> WorkflowState:
         """팟캐스트 대본을 오디오로 변환합니다."""
@@ -87,18 +64,8 @@ class TTSAgent(BaseAgent):
             if not podcast_script:
                 raise ValueError("변환할 팟캐스트 대본이 없습니다.")
             
-            # API 키 확인
-            if not self.api_key:
-                self.api_key = os.environ.get("GOOGLE_API_KEY")
-                if not self.api_key:
-                    raise ValueError("Google API 키가 필요합니다.")
-            
-            # API 설정
-            os.environ['GOOGLE_API_KEY'] = self.api_key
-            genai.configure(api_key=self.api_key)
-            
             # 스크립트 분할
-            final_chunks = split_script_into_chunks(podcast_script)
+            final_chunks = self._split_script_into_chunks(podcast_script)
             
             # 오디오 생성 (OpenAI TTS 사용)
             audio_segments = []
@@ -208,5 +175,4 @@ class TTSAgent(BaseAgent):
             self.log_execution(f"팟캐스트 오디오 생성 중 오류 발생: {str(e)}", "ERROR")
             raise
 
-if __name__ == "__main__":
-    main()
+

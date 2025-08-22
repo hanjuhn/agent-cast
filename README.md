@@ -1,245 +1,91 @@
-# 🎙️ Agent-Cast | 에이전트 기반 AI 트렌드 팟캐스트 자동화
+# Agent-Cast | 에이전트 기반 AI 트렌드 팟캐스트
 
-AI 연구 동향을 자동으로 분석하고 팟캐스트를 생성하는 멀티 에이전트 시스템입니다.
+## 🌟 **Project Overview | 프로젝트 개요**
+Agent-Cast는 멀티 에이전트 간의 협업을 통해 개인 맞춤형으로 AI 트렌드 팟캐스트를 생성하는 서비스입니다. 웹 크롤링, RAG 검색, AI 분석을 통해 최신 AI 트렌드를 수집하고 MCP를 사용하여 개인화된 정보와 결합하여 고품질의 팟캐스트 콘텐츠를 자동으로 제작합니다. 주요 기능으로는 실시간 웹 크롤링, 지식 그래프 구축, AI 기반 콘텐츠 평가, TTS 등이 있으며 연구자들이 AI 트렌드를 쉽게 파악하고 공유할 수 있도록 지원합니다.
 
-## 🚀 빠른 시작
-
-```bash
-# 1. 저장소 클론
-git clone <repository-url>
-cd AgentCast
-
-# 2. 의존성 설치
-pip install -r requirements.txt
-
-# 3. 환경 변수 설정
-cp env_example.txt .env
-# .env 파일에 API 키 입력
-
-# 4. 워크플로우 실행
-python -m AgentCast.run_workflow "AI 연구 동향에 대한 팟캐스트를 만들어주세요"
-```
-
-## 🏗️ 시스템 구조
-
-### 📁 프로젝트 구조
-```
-AgentCast/
-├── __init__.py                    - 메인 패키지 초기화
-├── state.py                       - 상태 관리 시스템
-├── orchestrator_graph.py          - LangGraph 워크플로우 정의
-├── run_workflow.py                - 워크플로우 실행 엔진
-├── mcp_config.yaml                - MCP 서버 설정
-├── test_mcp_integration.py        - MCP 통합 테스트
-├── README.md                      - 이 파일
-├── agents/                        - 🤖 에이전트 클래스들
-│   ├── base_agent.py             - 기본 에이전트 클래스
-│   ├── orchestrator_agent.py     - 워크플로우 조율자
-│   ├── personalize_agent.py      - 사용자 맞춤화
-│   ├── query_writer_agent.py     - 검색 쿼리 생성
-│   ├── searcher_agent.py         - 웹 크롤링
-│   ├── db_constructor_agent.py   - 벡터 DB 구축
-│   ├── researcher_agent.py       - RAG 검색 및 분석
-│   ├── critic_agent.py           - 품질 검토
-│   ├── script_writer_agent.py    - 팟캐스트 스크립트 작성
-│   ├── tts_agent.py              - 음성 변환
-│   ├── summarizer_agent.py       - 텍스트 요약
-│   └── reporter_agent.py         - 인터랙티브 리포트 생성
-├── constants/                     - ⚙️ 시스템 상수
-│   ├── agents.py                 - 에이전트 설정
-│   ├── mcp.py                    - MCP 관련 상수
-│   ├── workflow.py               - 워크플로우 설정
-│   ├── ai_models.py              - AI 모델 설정
-│   ├── prompts.py                - AI 프롬프트
-│   └── configuration.py          - 시스템 설정
-├── mcp/                           - 🔌 MCP 서비스 연결
-│   ├── base_mcp.py               - 기본 MCP 클래스
-│   ├── mcp_manager.py            - MCP 서비스 관리자
-│   ├── slack_mcp.py              - Slack 연결
-│   ├── notion_mcp.py             - Notion 연결
-│   └── gmail_mcp.py              - Gmail 연결
-└── output/                        - 📁 출력 파일들
-    ├── searcher/                 - 검색 결과
-    ├── summarizer/               - 요약 결과
-    ├── critic/                   - 평가 결과
-    ├── script_writer/            - 대본 파일
-    ├── tts/                      - 오디오 파일
-    └── reporter/                 - 리포트 파일
-```
-
-### 🔄 워크플로우 흐름
-```
-사용자 쿼리 → Orchestrator → Personalize → Searcher → Summarizer → 
-QueryWriter → DBConstructor → Researcher → Critic → ScriptWriter → 
-TTS → 🎵 오디오 + Reporter → 📊 인터랙티브 리포트
-```
-
-## 🤖 에이전트 설명
-
-| 에이전트 | 역할 | 주요 기능 | 사용 모델 |
-|---------|------|-----------|-----------|
-| **Orchestrator** | 🎭 워크플로우 조율 | 전체 프로세스 관리 및 단계별 진행 | - |
-| **Personalize** | 👤 사용자 맞춤화 | Slack/Notion/Gmail에서 개인 정보 수집 | - |
-| **Searcher** | 🌐 웹 크롤링 | TechCrunch, AI Times, arXiv 등에서 정보 수집 | Perplexity API |
-| **Summarizer** | 📝 텍스트 요약 | 수집된 정보를 KoT5 모델로 요약 | KoT5 |
-| **QueryWriter** | 🔍 쿼리 생성 | RAG 검색을 위한 최적화된 쿼리 생성 | - |
-| **DBConstructor** | 🗄️ 벡터 DB 구축 | 수집된 데이터를 벡터화하여 저장 | - |
-| **Researcher** | 📚 RAG 검색 | 벡터 DB에서 관련 정보 검색 및 분석 | - |
-| **Critic** | ✅ 품질 검토 | 연구 결과의 정확성 및 신뢰성 평가 | GPT-4o |
-| **ScriptWriter** | 📝 스크립트 작성 | 연구 결과를 팟캐스트 대본으로 변환 | Claude Sonnet 4 |
-| **TTS** | 🎵 음성 변환 | 텍스트를 자연스러운 음성으로 변환 | Gemini TTS |
-| **Reporter** | 📊 리포트 생성 | 인터랙티브 HTML 리포트 생성 | Claude Sonnet 4 |
-
-## ⚙️ 설정
-
-### 환경 변수 (`.env`)
-```env
-# OpenAI API (CriticAgent)
-OPENAI_API_KEY=sk-your_openai_api_key_here
-
-# Anthropic API (ScriptWriterAgent, ReporterAgent)
-ANTHROPIC_API_KEY=sk-ant-your_anthropic_api_key_here
-
-# Google API (TTSAgent)
-GOOGLE_API_KEY=your_google_api_key_here
-
-# Perplexity API (SearcherAgent)
-PERPLEXITY_API_KEY=your_perplexity_api_key_here
-
-# Slack MCP
-SLACK_BOT_TOKEN=xoxb-your-bot-token
-
-# Notion MCP
-NOTION_INTEGRATION_TOKEN=secret-your-token
-
-# Gmail MCP
-GMAIL_CREDENTIALS_FILE=path/to/credentials.json
-```
-
-### MCP 설정 (`mcp_config.yaml`)
-```yaml
-mcpServers:
-  slack:
-    command: slack-mcp-server
-    args: ["--token", "YOUR_SLACK_BOT_TOKEN"]
-  notion:
-    command: notion-mcp-server
-    args: ["--token", "YOUR_NOTION_TOKEN"]
-  gmail:
-    command: gmail-mcp-server
-    args: ["--credentials", "path/to/credentials.json"]
-```
-
-## 📖 사용법
-
-### 기본 실행
-```python
-from agent-cast.run_workflow import run_workflow
-
-# 전체 워크플로우 실행
-result = await run_workflow("AI 연구 동향에 대한 팟캐스트를 만들어주세요")
-```
-
-### 단계별 실행
-```python
-from agent-cast.run_workflow import run_step_by_step
-
-# 특정 단계까지 실행
-result = await run_step_by_step("AI 연구 동향에 대한 팟캐스트를 만들어주세요", steps=["personalize", "searcher"])
-```
-
-### MCP 통합 테스트
-```bash
-python -m agent-cast.test_mcp_integration
-```
-
-## 🔧 개발
-
-### 새로운 에이전트 추가
-```python
-# 1. agents/ 디렉토리에 새 에이전트 클래스 생성
-from .base_agent import BaseAgent
-
-class NewAgent(BaseAgent):
-    async def process(self, state: WorkflowState) -> WorkflowState:
-        # 에이전트 로직 구현
-        pass
-
-# 2. orchestrator_graph.py에 노드 추가
-workflow.add_node("NEW_AGENT", new_agent.process)
-
-# 3. 엣지 연결
-workflow.add_edge("PREVIOUS_AGENT", "NEW_AGENT")
-```
-
-### 새로운 MCP 서버 추가
-```python
-# 1. mcp/ 디렉토리에 새 MCP 클래스 생성
-from .base_mcp import BaseMCP
-
-class NewMCP(BaseMCP):
-    async def connect(self) -> bool:
-        # 연결 로직 구현
-        pass
-
-# 2. mcp_manager.py에 서비스 추가
-self.integrations["new_service"] = NewMCP(config)
-```
-
-## 🧪 테스트
-
-```bash
-# 전체 테스트
-python -m pytest
-
-# MCP 통합 테스트
-python -m agent-cast.test_mcp_integration
-
-# 워크플로우 테스트
-python -m agent-cast.run_workflow "테스트 쿼리"
-```
-
-## 🚨 문제 해결
-
-### 일반적인 문제
-- **MCP 연결 실패**: 서버 상태 및 인증 정보 확인
-- **에이전트 실행 오류**: 의존성 및 설정 파일 확인
-- **메모리 부족**: 벡터 DB 설정 및 청킹 크기 조정
-
-### 로그 확인
-```bash
-# 디버그 모드로 실행
-export LOG_LEVEL=DEBUG
-python -m agent-cast.run_workflow "쿼리"
-```
-
-## 📈 성능 최적화
-
-- **병렬 처리**: MCP 통합 및 에이전트 병렬 실행
-- **캐싱**: MCP 응답 및 임베딩 결과 캐싱
-- **리소스 관리**: 연결 풀 및 메모리 사용량 최적화
-
-## 🔮 향후 계획
-
-- [ ] 실제 MCP 서버 연동
-- [ ] OpenAI API 연동
-- [ ] 벡터 DB 연동
-- [ ] 웹 크롤링 도구 구현
-- [ ] 다국어 지원
-- [ ] 실시간 모니터링
-
-## 📄 라이선스
-
-MIT License
-
-## 🤝 기여하기
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+![pipeline.png](https://github.com/user-attachments/assets/75233fe1-d716-4a4a-80e0-a668df4f47f5)
 
 ---
 
-**참고**: 이 시스템은 현재 개발 중이며, 일부 기능은 시뮬레이션 모드로 동작합니다.
+## 🧑‍🤝‍🧑 **Team Members | 팀원**
+- **14기**: 김민열, 김영홍, 김홍재, 배한준
+
+---
+
+## 📅 **Progress Period | 진행 기간**
+- **2025.06.28 ~ 2025.08.23**
+
+---
+
+## 📊 **Data Collection | 데이터 수집**
+- **웹 크롤링 데이터**: 파이토치 한국 사용자 모임, AI타임스 등 기술 커뮤니티
+- **개인화 데이터**: Slack, Notion, Gmail을 통한 MCP 연동
+
+---
+
+## 🧠 **Data Processing | 데이터 처리**
+- **지식 그래프**: HippoRAG 기반의 구조화된 지식 베이스 구축
+- **벡터 데이터베이스**: FAISS를 통한 의미론적 검색 인덱스
+- **엔티티 추출**: NER 및 Triple Extraction을 통한 관계 분석
+
+---
+
+## 🤖 **Agents | 에이전트 설명**
+
+| 에이전트 | 역할 | 주요 기능 | 사용 기술 |
+|---------|------|-----------|-----------|
+| **Orchestrator** | 워크플로우 조율 | 전체 프로세스 관리 및 단계별 진행 | LangGraph, Python asyncio |
+| **Personalize** | 사용자 맞춤화 | Slack/Notion/Gmail MCP 연동, 개인 관심사 분석 | MCP, OpenAI GPT |
+| **Searcher** | 웹 크롤링 | 파이토치 한국, AI타임스 크롤링, Perplexity API 검색 | Selenium, BeautifulSoup, Perplexity API |
+| **Query Writer** | 쿼리 생성 | RAG 검색을 위한 최적화된 쿼리 생성 | OpenAI GPT-4, LangChain |
+| **Knowledge Graph** | 지식 그래프 | HippoRAG 기반 지식 구조화, 엔티티 추출 | HippoRAG, NER, Triple Extraction |
+| **DB Constructor** | 벡터 DB | 문서 임베딩, 벡터 저장, 유사도 검색 | FAISS, OpenAI Embeddings |
+| **Researcher** | AI 분석 | AI 기술 동향 분석, 통합 보고서 작성 | OpenAI GPT-4, Google Docs API |
+| **Critic** | 품질 평가 | 콘텐츠 품질 평가, 정량적 지표 계산 | OpenAI GPT-4, BERTScore, ROUGE |
+| **Script Writer** | 대본 생성 | 팟캐스트 대본 작성, 호스트 캐릭터 설정 | Claude Sonnet, OpenAI GPT |
+| **TTS** | 음성 변환 | 텍스트를 자연스러운 음성으로 변환 | OpenAI TTS, 오디오 처리 |
+
+---
+
+## 📁 **Key Directories and Files | 주요 디렉토리 및 파일**
+- `agents/`: 멀티 에이전트 시스템 (Orchestrator, Searcher, Researcher, Critic, ScriptWriter, TTS 등)
+- `constants/`: 시스템 설정, 프롬프트, AI 모델 파라미터
+- `state/`: 워크플로우 상태 관리
+- `graph/`: LangGraph 기반 워크플로우 정의
+- `mcp/`: MCP 서비스 연동 (Slack, Notion, Gmail)
+- `output/`: 생성된 콘텐츠 (검색 결과, 스크립트, 오디오, 리포트)
+- `run.py`: 메인 실행 파일
+
+---
+
+## 🛠️ **Installation and Execution | 설치 및 실행 방법**
+1. **Clone the repository | 저장소 클론**:
+    ```bash
+    git clone https://github.com/hanjuhn/agent-cast.git
+    cd agent-cast
+    ```
+
+2. **Install required packages | 필수 패키지 설치**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3. **Set environment variables | 환경 변수 설정**:
+    ```bash
+    cp env_example.txt .env
+    # .env 파일에 API 키 입력
+    ```
+
+4. **Run the main script | 실행**:
+    ```bash
+    python run.py "AI 연구 동향에 대한 팟캐스트를 만들어주세요"
+    ```
+    
+---
+
+## 🎯 **Project Impact | 프로젝트 효용**
+- **콘텐츠 제작 자동화**: 수동 작업 대비 시간 단축 및 효율성 증대
+- **실시간 트렌드 분석**: 최신 AI 동향의 신속한 파악 및 공유
+- **개인화된 콘텐츠**: 사용자 관심사 기반의 맞춤형 정보 제공
+- **접근성 향상**: 기술적 배경에 관계없이 AI 트렌드 정보 접근 가능
+- **지식 공유 촉진**: AI 연구 동향의 대중적 이해 및 확산

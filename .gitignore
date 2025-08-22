@@ -101,3 +101,4 @@ search_results.json
 *.pickle
 *.sqlite
 *.sqlite.lock
+•gitignore

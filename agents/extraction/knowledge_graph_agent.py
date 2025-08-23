@@ -42,7 +42,7 @@ def _import_hipporag():
         print("Using mock implementation instead")
         return None
 
-from .base_agent import BaseAgent
+from ..base_agent import BaseAgent
 from state.state import WorkflowState
 from constants.agents import KNOWLEDGE_GRAPH_AGENT_NAME
 from constants.prompts import KNOWLEDGE_GRAPH_SYSTEM_PROMPT

@@ -4,7 +4,7 @@ import asyncio
 from typing import Any, Dict, List
 
 from constants import AGENT_NAMES, DB_CONSTRUCTOR_SYSTEM_PROMPT, AGENT_TIMEOUTS, CHUNK_PROCESSING, BATCH_PROCESSING
-from .base_agent import BaseAgent, AgentResult
+from ..base_agent import BaseAgent, AgentResult
 from state.state import WorkflowState
 
 

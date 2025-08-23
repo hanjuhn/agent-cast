@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional
 
 from constants import AGENT_NAMES, AGENT_TIMEOUTS, OPENAI_PERSONALIZE_PARAMS
 from constants.llm_client import get_llm_client
-from agents.base_agent import BaseAgent, AgentResult
+from ..base_agent import BaseAgent, AgentResult
 from state.state import WorkflowState
 from mcp import MCPManager
 

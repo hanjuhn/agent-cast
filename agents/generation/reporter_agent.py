@@ -11,7 +11,7 @@ from dataclasses import dataclass
 import anthropic
 from dotenv import load_dotenv
 
-from .base_agent import BaseAgent, AgentResult
+from ..base_agent import BaseAgent, AgentResult
 from state.state import WorkflowState
 from constants.ai_models import ANTHROPIC_MODELS
 

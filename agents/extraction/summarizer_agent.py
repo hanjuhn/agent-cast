@@ -9,7 +9,7 @@ from datetime import datetime
 # Transformers 라이브러리 임포트
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-from .base_agent import BaseAgent
+from ..base_agent import BaseAgent
 from state.state import WorkflowState
 from constants import SUMMARIZER_CONFIG
 

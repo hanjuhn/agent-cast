@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import List, Dict, Any
 from openai import OpenAI
 
-from .base_agent import BaseAgent
+from ..base_agent import BaseAgent
 from state.state import WorkflowState
 from constants import OPENAI_RESEARCHER_PARAMS
 from constants.prompts import AI_RESEARCH_EXPERT_PROMPT

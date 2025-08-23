@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from rouge_score import rouge_scorer
 from bert_score import score as bert_score
 
-from .base_agent import BaseAgent
+from ..base_agent import BaseAgent
 from state.state import WorkflowState
 from constants import OPENAI_CRITIC_PARAMS, OPENAI_CRITIC_FALLBACK_PARAMS, CHUNK_PROCESSING
 from constants.prompts import RESEARCH_CRITIC_DETAILED_PROMPT

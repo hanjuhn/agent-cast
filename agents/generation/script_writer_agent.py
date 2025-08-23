@@ -6,7 +6,7 @@ import argparse
 from datetime import datetime
 from dotenv import load_dotenv
 
-from .base_agent import BaseAgent
+from ..base_agent import BaseAgent
 from state.state import WorkflowState
 from constants import OPENAI_SCRIPT_WRITER_PARAMS, ANTHROPIC_SCRIPT_WRITER_PARAMS, OPENAI_SCRIPT_WRITER_FALLBACK_PARAMS
 from constants.prompts import PODCAST_SCRIPT_WRITER_DETAILED_PROMPT, SCRIPT_WRITER_SYSTEM_PROMPT

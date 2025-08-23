@@ -4,12 +4,12 @@ from typing import Any, Dict, List
 try:
     from constants import AGENT_NAMES, QUERY_WRITER_SYSTEM_PROMPT, AGENT_TIMEOUTS
     from constants.llm_client import get_llm_client
-    from agents.base_agent import BaseAgent, AgentResult
+    from ..base_agent import BaseAgent, AgentResult
     from state.state import WorkflowState
 except ImportError:
     from constants import AGENT_NAMES, QUERY_WRITER_SYSTEM_PROMPT, AGENT_TIMEOUTS
     from constants.llm_client import get_llm_client
-    from .base_agent import BaseAgent, AgentResult
+    from ..base_agent import BaseAgent, AgentResult
     from state.state import WorkflowState
 
 

@@ -5,7 +5,7 @@ from tqdm import tqdm
 from datetime import datetime
 from openai import OpenAI
 
-from .base_agent import BaseAgent
+from ..base_agent import BaseAgent
 from state.state import WorkflowState
 from constants.prompts import TTS_SYSTEM_PROMPT
 

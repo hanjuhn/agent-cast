@@ -21,7 +21,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 from bs4 import BeautifulSoup
 
-from .base_agent import BaseAgent
+from ..base_agent import BaseAgent
 from state.state import WorkflowState
 from constants import OPENAI_SEARCHER_PARAMS, OPENAI_SEARCHER_FALLBACK_PARAMS
 

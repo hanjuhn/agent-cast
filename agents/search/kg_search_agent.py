@@ -5,8 +5,8 @@ import logging
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 
-from .base_agent import BaseAgent
-from .knowledge_graph_agent import KnowledgeGraphAgent
+from ..base_agent import BaseAgent
+from ..extraction.knowledge_graph_agent import KnowledgeGraphAgent
 from state.state import WorkflowState
 from constants.agents import KG_SEARCH_AGENT_NAME
 from constants.prompts import KG_SEARCH_SYSTEM_PROMPT

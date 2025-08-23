@@ -50,9 +50,9 @@ def _get_agent_for_step(step_name: str):
 async def run_workflow(user_query: str) -> Dict[str, Any]:
     """멀티 에이전트 워크플로우를 실행합니다."""
     
-    print("🚀 멀티 에이전트 워크플로우 시작")
-    print(f"📝 사용자 쿼리: {user_query}")
-    print(f"⏰ 시작 시간: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("멀티 에이전트 워크플로우 시작")
+    print(f"사용자 쿼리: {user_query}")
+    print(f"시작 시간: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("-" * 60)
     
     # 초기 상태 생성
@@ -67,7 +67,7 @@ async def run_workflow(user_query: str) -> Dict[str, Any]:
         }
     )
     
-    print(f"📊 워크플로우 정보:")
+    print(f"워크플로우 정보:")
     print(f"   총 단계 수: {len(WORKFLOW_STEP_ORDER)}")
     print(f"   단계 순서: {' -> '.join(WORKFLOW_STEP_ORDER)}")
     print("-" * 60)
